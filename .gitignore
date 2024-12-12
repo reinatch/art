@@ -42,4 +42,5 @@ next-env.d.ts
 /TODO
 
 /*.rar
+/*.zip
 .npmrc

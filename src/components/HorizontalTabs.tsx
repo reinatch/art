@@ -127,15 +127,13 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
 
     const handleScroll = () => {
       if (isContactOpen) {
-        closeContact(); // Toggle contact on scroll if it's open
+        closeContact();  //Toggle contact on scroll if it's open
       }
     };
 
-    // Add event listeners
     document.addEventListener("mousedown", handleClickOutside);
     window.addEventListener("scroll", handleScroll);
 
-    // Cleanup event listeners on unmount
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("scroll", handleScroll);
@@ -145,44 +143,20 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
   useGSAP(() => {
     gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
     gsap.registerPlugin(ScrollSmoother);
-    // Ensure ScrollSmoother instance is created
     sectionRefs.current.forEach((section, i) => {
       console.log(`Section ${i} offsetTop: ${section?.offsetTop}`);
     });
-    //  const buttons = gsap.utils.toArray<HTMLElement>('a.tabsClick');
-    //     console.log(selectedTab, "selectedTab",buttons)
-    // buttons.forEach((button, i) => {
-    //   console.log(button, i)
-    //   button.addEventListener('click', (e) => {
-    //     e.preventDefault();
-    //     const target = e.target as HTMLElement | null;
-    //     if (target) {
-    //       const id = target.getAttribute('href');
-    //       if (id) {
-    //         // scrollSmootherInstance.scrollTo(id, true, 'top top');
-    //       }
-    //     }
-    //   });
-    // });
 
-    // // Cleanup event listeners on unmount
-    // return () => {
-    //   buttons.forEach((button) => {
-    //     button.removeEventListener('click', (e) => {});
-    //   });
-    // };
   }, []);
 
   useGSAP(() => {
     const mm = gsap.matchMedia();
 
     const scrollSmootherInstance = new ScrollSmoother({
-      // wrapper: '[data-scroll-smoother="wrapper"]',
       content: scrollContainerRef.current,
       smooth: 1,
       smoothTouch: 1,
       ignoreMobileResize: true,
-      // normalizeScroll: true
     });
     scrollSmootherInstanceRef.current = scrollSmootherInstance;
 

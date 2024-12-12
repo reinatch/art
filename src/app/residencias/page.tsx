@@ -4,11 +4,11 @@ import { getLocale } from "next-intl/server";
 
 const baseUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const locales = ['en', 'pt']; // Add your supported locales here
-  return locales.map(locale => ({ locale }));
+  const locales = ["en", "pt"];
+  return locales.map((locale) => ({ locale }));
 }
 
 export default async function AboutPage() {
@@ -25,8 +25,6 @@ export default async function AboutPage() {
 
   const tabData = await fetchData();
   return (
-    <div>
-      {tabData.length > 0 && <HorizontalTabs tabData={tabData} />}
-    </div>
+    <div>{tabData.length > 0 && <HorizontalTabs tabData={tabData} />}</div>
   );
 }

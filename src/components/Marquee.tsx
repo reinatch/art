@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 
 interface ScrollingBoxesProps {
-  children: React.ReactNode; // Accept children as props
+  children: React.ReactNode; 
 }
 
 const ScrollingBoxes: React.FC<ScrollingBoxesProps> = ({ children }) => {
@@ -12,7 +12,6 @@ const ScrollingBoxes: React.FC<ScrollingBoxesProps> = ({ children }) => {
   useEffect(() => {
     const boxes = gsap.utils.toArray<HTMLElement>(".box");
 
-    // Start the horizontal loop animation
     const loop = horizontalLoop(boxes, {
       paused: false,
       repeat: -1,
@@ -21,11 +20,10 @@ const ScrollingBoxes: React.FC<ScrollingBoxesProps> = ({ children }) => {
     });
 
     return () => {
-      loop.kill(); // Clean up the animation on component unmount
+      loop.kill(); 
     };
   }, []);
 
-  // Horizontal loop function
   function horizontalLoop(items: HTMLElement[], config: {
     snap: boolean; paused?: boolean; repeat?: number; speed?: number; reversed?: boolean;
   }) {
@@ -92,7 +90,7 @@ const ScrollingBoxes: React.FC<ScrollingBoxesProps> = ({ children }) => {
     tl.current = () => curIndex;
     tl.toIndex = (index: number, vars: gsap.TweenVars) => toIndex(index, vars);
     tl.times = times;
-    tl.progress(1, true).progress(0, true); // pre-render for performance
+    tl.progress(1, true).progress(0, true); 
 
     if (config.reversed) {
       if (tl.vars && tl.vars.onReverseComplete) {
@@ -107,15 +105,14 @@ const ScrollingBoxes: React.FC<ScrollingBoxesProps> = ({ children }) => {
     <>
       <div
         ref={wrapperRef}
-        className="wrapper relative mx-auto  w-full h-auto" // Set width to 100% of parent
+        className="wrapper relative mx-auto  w-full h-auto" 
       >
         <div
           ref={boxesRef}
-          className="boxes relative flex gap-4 h-10" // Use flex to allow children to size based on content
+          className="boxes relative flex gap-4 h-10" 
         >
           {React.Children.map(children, (child, index) => (
-            <div key={index} className="box relative h-auto  text-black whitespace-nowrap"> {/* Added whitespace-nowrap for responsiveness */}
-              {child}
+            <div key={index} className="box relative h-auto  text-black whitespace-nowrap"> 
             </div>
           ))}
         </div>

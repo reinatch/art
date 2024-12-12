@@ -627,7 +627,6 @@ button {
     animation: none;
     display: none !important;
   }
-
 }
 #target .line {
   overflow: hidden;
@@ -759,25 +758,12 @@ button {
   }
 }
 
-
 .capital::first-letter {
   text-transform: uppercase;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-#container1::before, #container2::before {
+#container1::before,
+#container2::before {
   position: absolute;
   text-align: center;
   top: 50%;

@@ -3,10 +3,10 @@ import { getAllProjectoss, getAllMaterials, getAno, getAllArtists } from "@/util
 import { Projecto, Material, Artista } from "@/utils/types";
 import { getLocale, setRequestLocale } from "next-intl/server";
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const locales = ['en', 'pt']; // Add your supported locales here
+  const locales = ['en', 'pt']; 
   return locales.map(locale => ({ locale }));
 }
 

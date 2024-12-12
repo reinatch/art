@@ -1,8 +1,5 @@
 'use client';
-
-// import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-// import { Locale, routing, useRouter } from "@/i18n/routing";
 import TransitionLink from './TransitionLink';
 import { useLocale } from 'next-intl';
 import {setUserLocale} from '@/services/locale';
@@ -12,13 +9,7 @@ export default function LocaleSwitcher() {
   const pathname = usePathname();
   const router = useRouter();
   const activeLocale = useLocale();
-// alert(activeLocale)
-  // const getRedirectedPath = (locale: Locale) => {
-  //   const segments = pathname.split('/');
-  //   segments[1] = locale;
 
-  //   return segments.join('/');
-  // };
   const handleClick = async (locale: Locale) => {
     await setUserLocale(locale);
     router.refresh();
@@ -43,8 +34,7 @@ export default function LocaleSwitcher() {
               </button>
             </TransitionLink>
           </div>
-        {/* {routing.locales.map((locale, index) => (
-        ))} */}
+ 
       </div>
   );
 }

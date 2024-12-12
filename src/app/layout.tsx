@@ -11,13 +11,12 @@ import Sitemap from "@/components/Sitemap";
 import { ToggleContactProvider } from "@/lib/useToggleContact";
 import { ToggleSearchProvider } from "@/lib/useToggleSearch";
 import { ThumbnailsProvider } from "@/lib/useThumbnailsContext";
-import CustomCursor from '@/components/CustomCursor';
+import CustomCursor from "@/components/CustomCursor";
 import { CursorContextProvider } from "@/lib/CustomCursorContext";
 import { DataFetchProvider } from "@/lib/DataFetchContext";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
-import {getLocale} from 'next-intl/server';
-import { LocaleProvider } from '@/lib/LocaleContext'; // Import the provider
+import { getLocale } from "next-intl/server";
 
 const suisse_mono = localFont({
   src: "./fonts/SuisseIntlMono-Regular.ttf",
@@ -55,15 +54,18 @@ export default async function RootLayout({
   const messages = await getMessages({ locale });
 
   return (
-    <html lang={locale} className="snap-y snap-proximity " suppressHydrationWarning>
+    <html
+      lang={locale}
+      className="snap-y snap-proximity "
+      suppressHydrationWarning
+    >
       <body
         className={`${suisse_mono.variable} ${suisse_intl.variable} ${suisse_works.variable} !cursor-none overflow-x-hidden font-intl`}
       >
         <NextIntlClientProvider messages={messages}>
-          <LocaleProvider initialLocale={locale}>
-            <DataFetchProvider>
-              <CursorContextProvider>
-                <ToggleSearchProvider>
+          <DataFetchProvider>
+            <CursorContextProvider>
+              <ToggleSearchProvider>
                 <ToggleContactProvider>
                   <TabsProvider>
                     <ThumbnailsProvider>
@@ -77,10 +79,9 @@ export default async function RootLayout({
                     </ThumbnailsProvider>
                   </TabsProvider>
                 </ToggleContactProvider>
-                </ToggleSearchProvider>
-              </CursorContextProvider>
-            </DataFetchProvider>
-          </LocaleProvider>
+              </ToggleSearchProvider>
+            </CursorContextProvider>
+          </DataFetchProvider>
         </NextIntlClientProvider>
       </body>
     </html>

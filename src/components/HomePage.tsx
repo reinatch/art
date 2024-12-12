@@ -68,21 +68,19 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
     const handleClickOutside = (event: MouseEvent) => {
       // Check if the click is outside the sitemap
       if (sitempa && !sitempa.contains(event.target as Node)) {
-        closeContact(); // Toggle contact if clicked outside
+        closeContact(); 
       }
     };
 
     const handleScroll = () => {
       if (isContactOpen) {
-        closeContact(); // Toggle contact on scroll if it's open
+        closeContact();
       }
     };
 
-    // Add event listeners
     document.addEventListener("mousedown", handleClickOutside);
     window.addEventListener("scroll", handleScroll);
 
-    // Cleanup event listeners on unmount
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("scroll", handleScroll);
@@ -185,11 +183,9 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
       snapPoints.push(currentHeight);
     }
     if (ScrollTrigger.isTouch === 1) {
-      // alert("touvh")
       ScrollTrigger.normalizeScroll(true);
     }
     ScrollTrigger.config({ ignoreMobileResize: true });
-    // const maxScroll = snapPoints[snapPoints.length - 1] + windowSize?.height;
 
     const mm = gsap.matchMedia();
 
@@ -201,9 +197,7 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
       ignoreMobileResize: true,
       normalizeScroll: true,
     });
-    // const maxScroller = ScrollTrigger.maxScroll(window);
 
-    // console.log( maxScroll,  maxScroller, "maxScrollerTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
     mm.add("(max-width: 899px)", () => {
       gsap.set(scrolll, {
         autoAlpha: 0,
@@ -211,26 +205,18 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
         display: "none",
         ease: "none",
       });
-      // gsap.set(document.body, { backgroundColor: "red"})
-      //   alert("rei")
+
     });
 
     mm.add("(min-width: 900px)", () => {
-      // alert("mobile")
-      // console.log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+
       gsap.set(scrolll, {
         autoAlpha: 0,
         opacity: 0,
         display: "none",
         ease: "none",
       });
-      // gsap
-      //   .timeline({ repeat: -1 })
-      //   .fromTo(
-      //     scrolll,
-      //     { y: -10, duration: 100, ease: "power1.inOut" },
-      //     { y: 10 }
-      //   );
+
       
       
       
@@ -256,20 +242,12 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
           start: "top top",
           end: "bottom-=50px 10%",
           scrub: true,
-          //   markers: {
-          //   startColor: "BLACK",
-          //   endColor: "black",
-          //   fontSize: "22px",
-          //   indent: 200
-          // },
           onEnter: () => {
-            // Snap forward when entering a new section
-            // console.log("onEnter",self)
+
             scrollToSection(index);
           },
           onEnterBack: () => {
-            // Snap backward when re-entering a previous section
-            // console.log("onEnterBack",self)
+   
             scrollToSection(index);
           },
         });
@@ -280,7 +258,6 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
       };
     });
 
-    // Optional: Global ScrollTrigger for debug or control
     ScrollTrigger.create({
       id: "sec",
 
@@ -288,33 +265,9 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
       start: "top top",
       end: "bottom bottom",
       scrub: true,
-      // pin: true,
-      // markers: {
-      //   startColor: "purple",
-      //   endColor: "purple",
-      //   fontSize: "22px",
-      //   indent: 100
-      // },
-      onUpdate: () => {
-        // Calculate the snapped index based on scroll progress
-        // const snappedProgress = snap(self.progress * (sections.length - 1));
-        // const snappedIndex = Math.round(snappedProgress);
-        // Update visual indicators or state if needed
-        // console.log(`self`, self);
-      },
-    });
-    // ScrollTrigger.observe({
-    //   target: window, // can be any element (selector text is fine)
-    //   type: "wheel,touch", // comma-delimited list of what to listen for ("wheel,touch,scroll,pointer")
-    //   onUp: () => console.log("up"),
-    //   onDown: () => console.log("down"),
-    //   onChange: () =>  {
-    //     // console.log("velocity:", self.velocityX, self.velocityY, "delta:", self.deltaX, self.deltaY, "target element:", self.target, "last event:", self.event);
-    //   }
-    // });
 
-    //   .to(scrolll, { y: 0, duration: 0.5, ease: "power1.inOut" });
-    //   gsap.to(scrolll,{y:"-1dvh", repeat:-1, duration:1 , ease:"power3.inOut"});
+    });
+
     gsap
       .timeline({
         scrollTrigger: {
@@ -328,7 +281,6 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
         },
       })
       .to(".home_video", { scale: 0.9, duration: 0.2, ease: "none" }, "s")
-      //   .to(scrolll, {autoAlpha:0, opacity:0,  display: "none", duration: 0.8, ease: "none" })
       .to(".home_video", { y: -40, duration: 0.8, ease: "none" });
 
     gsap
@@ -338,10 +290,7 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
           trigger: "#home_splash",
           start: "bottom bottom-=10px",
           end: "bottom 90%",
-          // toggleActions: "play pause resume reset"
-          // pin: true,
-          // scrub: 1,
-          // markers:true,
+   
         },
       })
       .to(scrolll, { autoAlpha: 0, opacity: 0, ease: "none" });
@@ -371,7 +320,6 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
       // markers: true,
       onUpdate: (self) => {
         const skew = clamp(self.getVelocity() / -200);
-        // only do something if the skew is MORE severe. Remember, we're always tweening back to 0, so if the user slows their scrolling quickly, it's more natural to just let the tween handle that smoothly rather than jumping to the smaller skew.
         if (Math.abs(skew) > Math.abs(proxy.skew)) {
           proxy.skew = skew;
           gsap.to(proxy, {
@@ -401,15 +349,11 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
           trigger: "#project0",
           start: "top+=100px top",
           end: "bottom bottom",
-          // pin: true,
-          // anticipatePin: 1,
-          // pinSpacing: true,
           scrub: 1,
           // markers:true,
         },
       })
       .to("#pro-title", { y: toPX("-50dvh"), duration: 1, ease: "none" }, "s")
-      // .to("#pro-row1", { y: toPX("-30dvh"), duration: 1, ease: "none" }, "s")
       .from("#pro-row2", { y: toPX("50dvh"), duration: 1, ease: "none" }, "st")
       .from(
         "#pro-link",
@@ -455,23 +399,13 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
         },
 
         onLeave: () => {
-          // gsap.to(".staggerElements", { opacity: 1, y: toPX("-80dvh"), ease: "power3.inOut",stagger: 0.2 })
-          // gsap.to("#text2", { y: toPX("-75dvh"), duration:1, ease: "power3.inOut", delay: 1 })
-          // gsap.to("#text3", { y: toPX("-65dvh"), duration:1, ease: "power3.inOut", delay: 1 })
-
-          // if (!isInSnapRange()) {
             openContact();
-            // console.log("onleave");
-          // }
+
         },
         onEnterBack: () => {
-          // gsap.to(".staggerElements", { opacity: 1, y: toPX("80dvh"), ease: "power3.inOut",stagger: 0.2 })
-          // gsap.to("#text2", { y: toPX("75dvh"), duration:1, ease: "power3.inOut", delay: 1 })
-          // gsap.to("#text3", { y: toPX("65dvh"), duration:1, ease: "power3.inOut", delay: 1 })
-          // if (!isInSnapRange()) {
+
             closeContact();
-            // console.log("onEnterBack");
-          // }
+     
         },
       },
     });
@@ -499,19 +433,13 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
           trigger: "#residency0",
           start: "top bottom",
           end: `bottom top`,
-          // pin: true,
-          // pinSpacing: true,
-          // scrub: 1,
-          // pinType: "transform",
-          // anticipatePin: 1,
-          // markers:true,
+  
         },
       })
       .from(negativeXArray, { x: -2000, duration: 5, stagger: 1 })
       .from(positiveXArray, { x: 2000, duration: 5, stagger: 1 }, "<");
 
     return () => {
-      // cleanup (return the element to original parent)
       const sphereWrapper = document.querySelector(
         ".production0_video_wrapper_main"
       );
@@ -577,14 +505,12 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
                   >
                     <source src={value.video.url} type="video/mp4" />
                     <source src={value.mov.url} type="video/mov" />
-                    {/* <source src="/videos/home/out.mp4" type="video/mp4" /> */}
                     Your browser does not support the video tag.
                   </video>
                 </div>
               )}
               {key === "about0" && (
                 <div className="about-section  px-0  md:px-10 md:py-8 md:pb-[10dvh] text-center  w-11/12 self-center flex flex-col justify-center gap-4 md:gap-[10dvh] h-[25dvh] md:h-[80dvh]  md:mt-[10dvh] ">
-                  {/* <AnimWrapper> */}
 
                   <div
                     id="target"
@@ -593,7 +519,7 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
                   >
                     <AnimatedText
                       trigger="#about0"
-                      splitType="words" // Can be "lines", "words", "chars" or any combination
+                      splitType="words" 
                       x={1000}
                       y={0}
                       scale={1}
@@ -613,7 +539,6 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
                     </AnimatedText>
                   </div>
 
-                  {/* </AnimWrapper> */}
                   <TransitionLink
                     href={`/about/`}
                     className="toAnim text-[1.5em] md:text-corpo-a-md"
@@ -624,14 +549,13 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
               )}
               {key === "about1" && (
                 <div className="about-section px-4 mt-20 gap-4 md:gap-0  md:px-10 md:py-20 w-full flex-col justify-around h-[80dvh]  md:mt-[10dvh] grid-cols-1 grid md:grid-cols-2 relative">
-                  {/* <div className='flex flex-col gap-16'> */}
                   <div
                     className="w-full leading-tight title text-corpo-a md:w-10/12"
                     style={{ gridArea: "title" }}
                   >
                     <AnimatedText
                       trigger="#about1"
-                      splitType="lines" // Can be "lines", "words", "chars" or any combination
+                      splitType="lines" 
                       x={-500}
                       y={0}
                       duration={1}
@@ -656,7 +580,7 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
                   >
                     <AnimatedText
                       trigger="#about1"
-                      splitType="lines" // Can be "lines", "words", "chars" or any combination
+                      splitType="lines" 
                       x={-500}
                       y={0}
                       duration={1}
@@ -719,7 +643,7 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
                   >
                     <AnimatedText
                       trigger="#production0"
-                      splitType="lines" // Can be "lines", "words", "chars" or any combination
+                      splitType="lines" 
                       x={500}
                       y={0}
                       duration={1}
@@ -742,7 +666,7 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
                   >
                     <AnimatedText
                       trigger="#production0"
-                      splitType="lines" // Can be "lines", "words", "chars" or any combination
+                      splitType="lines" 
                       x={-500}
                       y={0}
                       duration={1}
@@ -776,13 +700,7 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
                       <source src={value.mov.url} type="video/mov" />
                       Your browser does not support the video tag.
                     </video>
-                    {/* <Image
-                                                  width={100}
-                                                  height={500}
-                                                  src={section.content?.image || '/videos/AW_GIF.gif'}
-                                                  alt={section.content?.title || 'default alt text'}
-                                                  className='w-10/12 h-auto toAnim image rounded-3xl '
-                                                  style={{ gridArea: 'image' }} /> */}
+           
                   </div>
 
                   <TransitionLink
@@ -819,10 +737,7 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
                     <div className="production0_video_target flex w-[80dvw] md:w-full h-full">
                       <div className="production0_video_wrapper_target w-full h-[70dvh] perspective-200"></div>
                     </div>
-                    {/* <video className="object-cover w-full h-full rounded-3xl" autoPlay muted loop preload="true" playsInline>
-                      <source src="/videos/out.mp4" type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video> */}
+              
                   </div>
                 </div>
               )}
@@ -930,7 +845,7 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
                   <div className="text-[1.5em] md:text-destaque-xl">
                     <AnimatedText
                       trigger="#residency0"
-                      splitType="lines" // Can be "lines", "words", "chars" or any combination
+                      splitType="lines" 
                       x={-500}
                       y={0}
                       duration={1}
@@ -962,8 +877,7 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
                       position="random"
                       overlay
                     />
-                    {/* <RandomVideoPosition src="/videos/c.webm" poster="/images/residencias/3.png" position="random" overlay/> */}
-                    {/* <RandomVideoPosition src="/videos/c.webm" poster="/images/residencias/6.png" position="random" overlay/> */}
+                   
                     <RandomVideoPosition
                       src="/videos/c.webm"
                       poster="/images/residencias/12.png"
@@ -975,18 +889,12 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
                       poster="/images/residencias/9.png"
                       position="random"
                     />
-                    {/* <Image
-                              src={"/videos/out1.gif"}
-                              alt="Logo Text"
-                              width={200}
-                              height={200}
-                              className="absolute transition-opacity duration-300 ease-in-out w-auto h-[20dvh] left-[70%]"
-                            /> */}
+          
 
                     <div className="w-full px-0 text-center text-destaque-md md:px-20 movable-elements-wrapper">
                       <AnimatedText
                         trigger="#residency0"
-                        splitType="lines" // Can be "lines", "words", "chars" or any combination
+                        splitType="lines" 
                         x={-500}
                         y={0}
                         duration={1}
@@ -996,10 +904,7 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
                         end="top top"
                         scrub
                       >
-                        {/* <span className='text-6xl leading-[1.12]'>
-                                
-                                {section.content?.subtitle}
-                                </span>  */}
+               
 
                         <div className="absolute w-full text-center transform -translate-x-1/2 -translate-y-1/2 z-1 top-1/2 left-1/2">
                           {value?.subtitle && (
