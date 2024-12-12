@@ -1,0 +1,53 @@
+
+{
+    "NavbarLinks": {
+      "home": "Home",
+      "projects": "Projects",
+      "about": "About",
+      "residencies": "Residencies",
+      "production": "Production",
+      "contact": "Contact",
+      "search": "Search"
+    },
+    "HomePage": {
+      "title": "Landing page"
+    },
+    "AboutPage": {
+      "title": "About"
+    },
+    "ProfilePage": {
+      "title": "Profile"
+    },
+    "Sitemap": {
+      "title": "SUBSCRIBE TO OUR NEWSLETTER",
+      "name": "NAME",
+      "subscribe": "SUBSCRIBE",
+      "right": "© ArtWorks 2024 all rights reserved.",
+      "credits": "Website design by Ana Luísa Martelo, code by reinatch",
+      "residencias": "Art Residencies",
+      "successMessage": "Thank you"
+
+    },
+    "ProjectDetailPage": {
+      "goBack": "Back to Projects",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "ProjectList": {
+      "gallery": "Gallery",
+      "list": "List",
+      "artists": "Artists",
+      "years": "Years",
+      "materiais": "Materials & Techniques"
+    },
+    "Search":{
+      "submit": "Search", 
+      "results": "Search Result", 
+      "searching": "Searching"
+    },
+    "Footer":{
+      "lets": "Let's",
+      "talk": "talk!",
+      "scroll": "Scroll to explore"
+    }
+  }
