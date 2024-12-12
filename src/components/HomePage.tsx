@@ -761,7 +761,7 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
               {key === "project1" && (
                 <div className="project-section h-[80dvh] md:mt-[10dvh] w-full text-center items-center py-8 gap-32 ">
                   {/* <div className="h-[12dvh] w-full snap-start "></div> */}
-                  <div className="h-[80dvh] flex flex-col  pb-[10dvh] justify-between gap-10 md:gap-0 w-10/12 md:w-full mx-auto md:mx-0">
+                  <div className="h-[80dvh] flex flex-col md:grid pb-[10dvh] justify-center gap-10 md:gap-12 w-10/12 md:w-full mx-auto md:mx-0">
                     <div
                       id="pro-row1"
                       className="grid justify-around w-full grid-cols-1 gap-10 flex-nowrap sm:grid-cols-3 md:w-full"

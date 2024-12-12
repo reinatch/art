@@ -188,7 +188,7 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
                     className="w-full h-auto object-contain block"
                   />
                   <div className="card--text text-center">
-                    <span className="text-xl md:text-4xl">{card.title}</span>
+                    <span className="text-xl md:text-4xl relative bottom-4">{card.title}</span>
                   </div>
                 </div>
                 <div className="card-back bg-red-500">
