@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useTabsContext } from "@/lib/TabsContext";
 import { useThumbnailsContext } from "@/lib/useThumbnailsContext";
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import Search from "@/components/Search";
