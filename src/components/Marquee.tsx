@@ -2,28 +2,13 @@ import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 
 interface ScrollingBoxesProps {
-  children: React.ReactNode; 
+  children: React.ReactNode; // Accept children as props
 }
 
 const ScrollingBoxes: React.FC<ScrollingBoxesProps> = ({ children }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const boxesRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const boxes = gsap.utils.toArray<HTMLElement>(".box");
-
-    const loop = horizontalLoop(boxes, {
-      paused: false,
-      repeat: -1,
-      speed: 0.75,
-      snap: true,
-    });
-
-    return () => {
-      loop.kill(); 
-    };
-  }, []);
-
+  // Horizontal loop function
   function horizontalLoop(items: HTMLElement[], config: {
     snap: boolean; paused?: boolean; repeat?: number; speed?: number; reversed?: boolean;
   }) {
@@ -90,7 +75,7 @@ const ScrollingBoxes: React.FC<ScrollingBoxesProps> = ({ children }) => {
     tl.current = () => curIndex;
     tl.toIndex = (index: number, vars: gsap.TweenVars) => toIndex(index, vars);
     tl.times = times;
-    tl.progress(1, true).progress(0, true); 
+    tl.progress(1, true).progress(0, true); // pre-render for performance
 
     if (config.reversed) {
       if (tl.vars && tl.vars.onReverseComplete) {
@@ -100,19 +85,37 @@ const ScrollingBoxes: React.FC<ScrollingBoxesProps> = ({ children }) => {
     }
     return tl;
   }
+  useEffect(() => {
+    const boxes = gsap.utils.toArray<HTMLElement>(".box");
+
+    // Start the horizontal loop animation
+    const loop = horizontalLoop(boxes, {
+      paused: false,
+      repeat: -1,
+      speed: 0.75,
+      snap: true,
+    });
+
+    return () => {
+      loop.kill(); // Clean up the animation on component unmount
+    };
+  }, []);
+
+
 
   return (
     <>
       <div
         ref={wrapperRef}
-        className="wrapper relative mx-auto  w-full h-auto" 
+        className="wrapper relative mx-auto  w-full h-auto" // Set width to 100% of parent
       >
         <div
           ref={boxesRef}
-          className="boxes relative flex gap-4 h-10" 
+          className="boxes relative flex gap-4 h-10" // Use flex to allow children to size based on content
         >
           {React.Children.map(children, (child, index) => (
-            <div key={index} className="box relative h-auto  text-black whitespace-nowrap"> 
+            <div key={index} className="box relative h-auto  text-black whitespace-nowrap"> {/* Added whitespace-nowrap for responsiveness */}
+              {child}
             </div>
           ))}
         </div>

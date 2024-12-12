@@ -716,7 +716,7 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
                 <div className="production-section px-8 md:px-20 w-screen md:w-full items-center flex-col grid gap-2 relative  h-[80dvh] py-8 mt-[10dvh]">
                   <div
                     id="productionHighlight"
-                    className="marquee mx-8 text-rodape  title1 font-mono capitalize flex w-[65dvw] md:w-[85dvw]  overflow-x-hidden gap-4 "
+                    className="marquee mx-8 text-rodape  title1 font-mono capitalize flex w-[65dvw] md:w-[95%]  overflow-x-hidden gap-4 "
                   >
                     <Marquee>
                       {[...Array(8)].map((_, index) => (
