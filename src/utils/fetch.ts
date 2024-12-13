@@ -37,7 +37,7 @@ export async function getAllProjectoss(locale: string): Promise<Projecto[]> {
 
   try {
     while (page <= totalPages) {
-      const url = getUrl(`/projectos?acf_format=standard&lang=${locale}&per_page=${perPage}&page=${page}&_fields=featured_media,id,title,slug,acf.page_title,acf.year,featured_image,artistas,materiais`);
+      const url = getUrl(`/projectos?acf_format=standard&lang=${locale}&per_page=${perPage}&page=${page}&_fields=featured_media,id,title,slug,acf.page_title,acf.year,featured_image,artistas,materiais,modified`);
       const res = await fetch(url, { cache: 'force-cache' });
 console.log(url)
       if (!res.ok) {
