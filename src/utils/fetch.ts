@@ -18,7 +18,7 @@ function getUrl(path: string, query?: Record<string, unknown>) {
 // Fetching data utility function
 export const fetchData = async (endpoint: string) => {
   const url = `${baseUrl}${endpoint}`;
-  const res = await fetch(url, { cache: 'force-cache' });
+  const res = await fetch(url, { cache: 'force-cache', next: { revalidate: 60 } });
 
   if (!res.ok) {
     throw new Error(`Failed to fetch data from ${url}`); // Use the constructed URL in the error message for better debugging
@@ -38,7 +38,7 @@ export async function getAllProjectoss(locale: string): Promise<Projecto[]> {
   try {
     while (page <= totalPages) {
       const url = getUrl(`/projectos?acf_format=standard&lang=${locale}&per_page=${perPage}&page=${page}&_fields=featured_media,id,title,slug,acf.page_title,acf.year,featured_image,artistas,materiais,modified`);
-      const res = await fetch(url, { cache: 'force-cache' });
+      const res = await fetch(url, { cache: 'force-cache', next: { revalidate: 60  } });
 console.log(url)
       if (!res.ok) {
         throw new Error(`Failed to fetch data from ${url}`);
@@ -67,7 +67,7 @@ export async function getAllArtists(locale: string): Promise<Artista[]> {
   try {
     while (page <= totalPages) {
       const url = getUrl(`/artistas?acf_format=standard&lang=${locale}&per_page=${perPage}&page=${page}&_fields=id,title,slug,name`);
-      const res = await fetch(url, { cache: 'force-cache' });
+      const res = await fetch(url, { cache: 'force-cache', next: { revalidate: 60  } });
 
       if (!res.ok) {
         throw new Error(`Failed to fetch data from ${url}`);
@@ -96,7 +96,7 @@ export async function getAllMaterials(locale: string): Promise<Material[]> {
   try {
     while (page <= totalPages) {
       const url = getUrl(`/materiais?acf_format=standard&lang=${locale}&per_page=${perPage}&page=${page}&_fields=id,title,slug,name`);
-      const res = await fetch(url, { cache: 'force-cache' });
+      const res = await fetch(url, { cache: 'force-cache', next: { revalidate: 60  } });
 
       if (!res.ok) {
         throw new Error(`Failed to fetch data from ${url}`);
@@ -117,7 +117,7 @@ export async function getAllMaterials(locale: string): Promise<Material[]> {
 
 // Fetch all 'years'
 export const getAllYears = async (locale: string): Promise<number[]> => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/project_years?lang=${locale}&per_page=100`, { cache: 'force-cache' });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/project_years?lang=${locale}&per_page=100`, { cache: 'force-cache', next: { revalidate: 60  } });
 
   if (!res.ok) {
     throw new Error('Failed to fetch years');
@@ -129,7 +129,7 @@ export const getAllYears = async (locale: string): Promise<number[]> => {
 
 // Fetch 'ano'
 export async function getAno(locale: string): Promise<number[]> {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/project_years?lang=${locale}`, { cache: 'force-cache' });
+  const response = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/project_years?lang=${locale}`, { cache: 'force-cache', next: { revalidate: 60  } });
   const projectos: string[] = await response.json();
 
   // Extract the years from the projectos
@@ -146,7 +146,7 @@ export async function getAno(locale: string): Promise<number[]> {
 // Fetch project by ID
 export async function getProjectById(id: number, locale: string): Promise<Projecto> {
   const url = getUrl(`/projectos/${id}?acf_format=standard&lang=${locale}&_fields=featured_media,id,title,slug,acf.page_title,acf.year,featured_image,artistas,materiais`);
-  const res = await fetch(url, { cache: 'force-cache' });
+  const res = await fetch(url, { cache: 'force-cache', next: { revalidate: 60  } });
 
   if (!res.ok) {
     throw new Error(`Failed to fetch project with ID ${id} from ${url}`);
