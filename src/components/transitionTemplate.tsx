@@ -89,10 +89,10 @@ const { isSearchOpen, closeSearch} = useToggleSearch();
                       </video> */}
                   {/* {locale === "pt" ? ( */}
                 <Image
-                src="/videos/luva/t.gif"
+                src="/videos/luva/output.gif"
                 alt="Logo Text"
-                width={1000}
-                height={1000}
+                width={100}
+                height={100}
                 className="relative w-auto h-full transition-opacity duration-300 ease-in-out will-change-transform"
                 unoptimized={true}
                 data-flip-id="img" 

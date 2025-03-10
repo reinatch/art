@@ -3,8 +3,8 @@ import { fetchData } from '@/utils/fetch';
 import { Projecto } from '@/utils/types';
 import { getLocale } from 'next-intl/server';
 
-export const revalidate = 60; // Revalidate every 60 seconds
-
+export const revalidate = 3600; // Revalidate every 60 seconds
+// export const dynamic = 'force-static';
 export async function generateStaticParams() {
   const locales = ['en', 'pt']; // Add your supported locales here
   const allProjects = await Promise.all(locales.map(locale => fetchData(

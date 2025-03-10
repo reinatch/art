@@ -1,3 +1,4 @@
+
 "use client";
 // components/HomePageContent.tsx
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -23,19 +24,25 @@ import Image from "next/image";
 import { HomePageData, Projecto } from "@/utils/types";
 import { getProjectById } from "@/utils/fetch";
 import { getUserLocale, setUserLocale } from "@/services/locale";
+import { useHome } from "@/utils/useHome";  
 
-interface HomePageContentProps {
-  sections: HomePageData[];
-}
+// interface HomePageContentProps {
+//   sections: HomePageData[];
+// }
 
-const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
+const HomePageContent: React.FC = () => {
+  
+  const locale = useLocale();
+    const { data } = useHome(locale);
+    console.log(data)
+    const [sections, setSections] = useState<HomePageData[]>([]);
+  // const sections: HomePageData = data;
   const containerRef = useRef<HTMLDivElement>(null);
   const { isContactOpen, openContact, closeContact } = useToggleContact();
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const windowSize = useWindowSize();
   const { setIsVideoReady } = useDataFetchContext();
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const locale = useLocale();
   useEffect(() => {
     const setLocaleCookie = async () => {
       const userLocale = await getUserLocale();
@@ -45,6 +52,12 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
     };
     setLocaleCookie();
   }, [locale]);
+
+  useEffect(() => {
+
+    setSections(data);
+  }, [data]);
+
   useEffect(() => {
     const videoElement = videoRef.current;
 
@@ -93,10 +106,8 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
 
   const fetchThumbnails = useCallback(async () => {
     const fetchedThumbnails = new Set<string>();
-
-    const project0Ids = sections.flatMap(
-      (section) => section.acf.project1.thumbnails
-    );
+    if (sections && sections[0]?.acf && sections[0].acf.project1) {
+    const project0Ids = sections[0].acf.project1.thumbnails;
     const uniqueProject0Ids = project0Ids.filter((id) => {
       if (fetchedThumbnails.has(id)) {
         return false;
@@ -108,14 +119,13 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
 
     const project0Details = await Promise.all(uniqueProject0Ids);
     setThumbnails(project0Details);
+  }
   }, [sections]);
 
   const fetchProjects = useCallback(async () => {
     const fetchedProjects = new Set<number>();
-
-    const project0Ids = sections.flatMap(
-      (section) => section.acf.project1.items
-    );
+  if (sections && sections[0]?.acf && sections[0].acf.project1) {
+    const project0Ids = sections[0].acf.project1.items;
     const uniqueProject0Ids = project0Ids.filter((id) => {
       if (fetchedProjects.has(id)) {
         return false;
@@ -129,10 +139,9 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
       uniqueProject0Ids.map((id) => getProjectById(id, locale))
     );
     setProjects0(project0Details);
-
-    const project1Ids = sections.flatMap(
-      (section) => section.acf.project1.items0
-    );
+  }
+  if (sections && sections[0].acf && sections[0].acf.project1) {
+    const project1Ids = sections[0].acf.project1.items0;
     const uniqueProject1Ids = project1Ids.filter((id) => {
       if (fetchedProjects.has(id)) {
         return false;
@@ -146,6 +155,7 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
       uniqueProject1Ids.map((id) => getProjectById(id, locale))
     );
     setProjects1(project1Details);
+  }
   }, [sections, locale]);
 
   useEffect(() => {
@@ -156,15 +166,15 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
     fetchProjects();
   }, [fetchProjects]);
 
+  gsap.registerPlugin(
+    ScrollTrigger,
+    ScrollSmoother,
+    ScrollToPlugin,
+    Observer,
+    useGSAP,
+    Flip
+  );
   useGSAP(() => {
-    gsap.registerPlugin(
-      ScrollTrigger,
-      ScrollSmoother,
-      ScrollToPlugin,
-      Observer,
-      useGSAP,
-      Flip
-    );
     const sections = sectionRefs.current;
     const movableArray: HTMLDivElement[] = gsap.utils.toArray(".movable");
 
@@ -448,16 +458,18 @@ const HomePageContent: React.FC<HomePageContentProps> = ({ sections }) => {
       }
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  });
-
+  }, [sections]);
+  if (!sections) return <p>Loading...</p>; 
   return (
+   
     <div id="smooth-wrapper">
       <div
         ref={containerRef}
         id="content"
         className="relative grid w-screen min-h-full "
       >
-        {Object.entries(sections[0].acf).map(([key, value], index) => {
+     
+        { sections && sections[0]?.acf && Object.entries(sections[0].acf).map(([key, value], index) => {
           return (
             <div
               key={key}

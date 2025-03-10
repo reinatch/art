@@ -27,6 +27,8 @@ import { useDataFetchContext } from "@/lib/DataFetchContext";
 import { useToggleContact } from "@/lib/useToggleContact";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
+import { usePage } from "@/utils/usePages";  
+
 // import { GSDevTools } from "gsap/GSDevTools";
 // import SmoothScrolling from "@/components/SmoothScrolling";
 interface JornaisType {
@@ -75,10 +77,10 @@ interface TabContent {
 // Define a type for images in the gallery
 
 interface HorizontalTabsProps {
-  tabData: AboutTabData[];
+  slug: string;
 }
 
-const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
+const HorizontalTabs: React.FC<HorizontalTabsProps> = ({slug }) => {
   const {
     setTabs,
     setSelectedTab,
@@ -93,12 +95,15 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
 
   const pathname = usePathname();
   const locale = useLocale();
+  const { data } = usePage(locale, slug)
+  const tabData: AboutTabData[] = data;
+  console.log(tabData)
   const isProduction = pathname === `/production`;
   const isAbout = pathname === `/about`;
   const isResidencias = pathname === `/residencias`;
 
   useEffect(() => {
-    if (tabData.length > 0 && tabData[0].acf) {
+    if (tabData && tabData.length > 0 && tabData[0]?.acf) {
       const tabs = Object.entries(tabData[0].acf).map(([key, value]) => {
         const content = value as ContentItem;
         return {
@@ -945,7 +950,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
         // style={{ x: scrollXProgress }} // Link horizontal scroll with vertical scroll progress${key === "support_artists" || key === "jornais"  ? "snap-none" : "snap-start"}
       >
         {/*snap-y snap-mandatory <pre >{JSON.stringify(tabData, null, 2)}</pre> */}
-        {Object.entries(tabData[0].acf).map(
+        {tabData && Object.entries(tabData[0].acf).map(
           ([key, tabContent]: [string, TabContent], index) => {
             return (
               <div

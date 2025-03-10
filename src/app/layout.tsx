@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Template from "@/components/transitionTemplate";
 import { TabsProvider } from "@/lib/TabsContext";
+import ReactQueryProvider from "@/providers/react-query-provider";
 import Sitemap from "@/components/Sitemap";
 import { ToggleContactProvider } from "@/lib/useToggleContact";
 import { ToggleSearchProvider } from "@/lib/useToggleSearch";
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
   description: "art works",
 };
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 export default async function RootLayout({
   children,
@@ -64,6 +65,7 @@ export default async function RootLayout({
       >
         <NextIntlClientProvider messages={messages}>
           <DataFetchProvider>
+          <ReactQueryProvider>
             <CursorContextProvider>
               <ToggleSearchProvider>
                 <ToggleContactProvider>
@@ -81,6 +83,7 @@ export default async function RootLayout({
                 </ToggleContactProvider>
               </ToggleSearchProvider>
             </CursorContextProvider>
+            </ReactQueryProvider>
           </DataFetchProvider>
         </NextIntlClientProvider>
       </body>

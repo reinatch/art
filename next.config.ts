@@ -18,19 +18,22 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "backend.artworks.pt",
+        hostname: "backend.reinatch.website",
       },
     ],
   },
   experimental: {
-    // ppr: "incremental",
-    // after: true,
+    // staleTimes: {
+    //   dynamic: 30,
+    // },
+    // backend.artworks.pt
   },
   devIndicators: {
     appIsrStatus: false,
     buildActivity: false,
     buildActivityPosition: "bottom-right",
   },
+
 };
 
 export default withNextIntl(nextConfig);

@@ -4,7 +4,8 @@ import { getLocale } from "next-intl/server";
 
 const baseUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
 
-export const revalidate = 60;
+export const revalidate = 3600;
+export const dynamic = 'force-static';
 
 export async function generateStaticParams() {
   const locales = ["en", "pt"];
@@ -25,6 +26,6 @@ export default async function AboutPage() {
 
   const tabData = await fetchData();
   return (
-    <div>{tabData.length > 0 && <HorizontalTabs tabData={tabData} />}</div>
+    <div>{tabData.length > 0 && <HorizontalTabs slug={"about"} />}</div>
   );
 }

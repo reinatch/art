@@ -1,59 +1,28 @@
 import { Projecto } from "@/utils/types";
-// import Link from "next/link";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import TransitionLink from "./TransitionLink";
-// import Image from "next/image";
-
-import gsap from "gsap";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-// import { useToggleContact } from "@/lib/useToggleContact";
 import { useToggleSearch } from "@/lib/useToggleSearch";
-import ReactDOM from "react-dom";
-// import Form from 'next/form'
-interface ProjectListItemProps {
-  projecto: Projecto;
-  onMouseEnter: (id: number) => void;
-  onMouseLeave: () => void;
-}
+import { toBase64, shimmer } from "@/utils/imageUtils";
+
+
+
 const baseUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
+
 const Search: React.FC = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Projecto[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [, setHoveredProjectId] = useState<number | null>(null);
-  const locale = useLocale(); // Get the current locale
+  const [filteredResults, setFilteredResults] = useState<Projecto[]>([]);
+  const locale = useLocale();
   const { closeSearch, isSearchOpen, openSearch } = useToggleSearch();
-  // const { closeContact, isContactOpen, openContact } = useToggleContact();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const memoizedPositions = useRef<{
-    [key: number]: { x: number; y: number; z: number };
-  }>({});
-  const modalRef = useRef<HTMLDivElement>(null); // Reference to modal
+  const modalRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("Search");
-  const getRandomInRange = (min: number, max: number) =>
-    Math.random() * (max - min) + min;
 
-  const handleMouseEnter = (id: number) => {
-    if (!memoizedPositions.current[id]) {
-      memoizedPositions.current[id] = {
-        x: getRandomInRange(10, 30),
-        y: getRandomInRange(10, 30),
-        z: 0,
-      };
-    }
 
-    gsap.set(`#element-${id} img`, {
-      x: `${memoizedPositions.current[id].x}vw`,
-      y: `${memoizedPositions.current[id].y}vh`,
-      zIndex: memoizedPositions.current[id].z,
-      ease: "power1.inOut",
-    });
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredProjectId(null);
-  };
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -69,7 +38,7 @@ const Search: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${baseUrl}/projectos?search=${value}&per_page=15&_fields=id,title,slug,acf,featured_image&wpessid&lang=${locale}`
+        `${baseUrl}/projectos_search?lang=${locale}&search=${value}`
       );
       const data = await response.json();
       setResults(data as Projecto[]);
@@ -80,22 +49,25 @@ const Search: React.FC = () => {
     }
   };
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsModalOpen(false);
     setQuery("");
     setResults([]);
+    setFilteredResults([]);
 
     if (isSearchOpen) {
       closeSearch();
-    } else {
     }
-  };
+  }, [isSearchOpen, closeSearch]);
 
-  const handleOutsideClick = (e: MouseEvent) => {
-    if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-      closeModal();
-    }
-  };
+  const handleOutsideClick = useCallback(
+    (e: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+        closeModal();
+      }
+    },
+    [closeModal, modalRef]
+  );
 
   useEffect(() => {
     document.addEventListener("click", handleOutsideClick);
@@ -109,11 +81,30 @@ const Search: React.FC = () => {
     e.preventDefault();
     setLoading(true);
 
-    handleSearch({ target: { value: query } } as React.ChangeEvent<
-      HTMLInputElement
-    >);
+    handleSearch({ target: { value: query } } as React.ChangeEvent<HTMLInputElement>);
     setLoading(false);
   };
+  useEffect(() => {
+    console.log(results);
+  }, [results]);
+  useEffect(() => {
+    if (!query || query.length < 3) {
+      setFilteredResults([]);
+      return;
+    }
+
+    const lowerCaseQuery = query.toLowerCase();
+    const filtered = results.filter((projecto: Projecto) =>
+      projecto.title.rendered.toLowerCase().includes(lowerCaseQuery) ||
+      projecto.slug.toLowerCase().includes(lowerCaseQuery) ||
+      projecto.acf.location?.toLowerCase().includes(lowerCaseQuery) ||
+      projecto.acf.right_field?.toLowerCase().includes(lowerCaseQuery) ||
+      projecto.acf.year?.toLowerCase().includes(lowerCaseQuery) ||
+      projecto.acf.page_title?.toLowerCase().includes(lowerCaseQuery)
+    );
+
+    setFilteredResults(filtered);
+  }, [query, results]);
 
   useEffect(() => {
     const closeSearchAfterTimeout = () => {
@@ -140,42 +131,12 @@ const Search: React.FC = () => {
     };
   }, [isSearchOpen, isModalOpen, closeSearch, openSearch]);
 
-  const ProjectListItem: React.FC<ProjectListItemProps> = ({
-    projecto,
-    onMouseEnter,
-    onMouseLeave,
-  }) => (
-    <li
-      id={`element-${projecto.id}`}
-      className="hover__item flex gap-4 w-9/12 pl-10 -indent-10"
-      onMouseEnter={() => onMouseEnter(projecto.id)}
-      onMouseLeave={onMouseLeave}
-    >
-      <div
-        className="hover__item-image_wrapper top-1/2 left-1/2 opacity-100 flex"
-        onClick={() => closeModal()}
-      >
-        <TransitionLink
-          href={`/projects/${projecto.slug}`}
-          className="hover__item-text relative font-works flex"
-          onClick={() => closeModal()}
-        >
-          <div className="hover__item-innertext flex gap-2 uppercase">
-            <div className="w-full">
-              <span className="font-intl">{projecto.title.rendered}, </span>
-              <span>{projecto.acf.year}</span>
-            </div>
-          </div>
-        </TransitionLink>
-        <div className="hover__item-image_inner fixed top-0 h-auto w-[20vw] object-cover hidden"></div>
-      </div>
-    </li>
-  );
+
 
   return (
     <div className="relative mx-auto w-[50vw]">
       <div className="flex flex-col gap-4">
-        <div className="flex   ">
+        <div className="flex">
           <form className="w-11/12" onSubmit={handleSubmit} action={""}>
             <input
               name="query"
@@ -183,7 +144,7 @@ const Search: React.FC = () => {
               value={query}
               onChange={handleSearch}
               placeholder=""
-              className="border-b border-black outline-none  w-full px-10 py-2 focus:outline-none focus:ring-none focus:border-blue-700"
+              className="border-b border-black outline-none w-full px-10 py-2 focus:outline-none focus:ring-none focus:border-blue-700"
             />
           </form>
           <button className="w-1/12" type="submit">
@@ -192,52 +153,56 @@ const Search: React.FC = () => {
         </div>
       </div>
 
-      {isModalOpen &&
-        ReactDOM.createPortal(
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-            onClick={() => closeModal()}
+            ref={modalRef}
+            className="bottom-[10vh] bg-white bg-opacity-90 absolute w-[90vw] max-h-[80vh] px-12 rounded-lg overflow-y-auto py-12 flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
           >
-            <div
-              ref={modalRef}
-              className="bg-white bg-opacity-90 absolute w-[100vw] h-[80vh] px-12 rounded-lg overflow-auto py-12 flex flex-col items-center"
-              onClick={(e) => e.stopPropagation()}
+            <button
+              onClick={() => closeModal()}
+              className="absolute top-3 right-3 text-gray-600 hover:text-gray-800 focus:outline-none"
             >
-              <button
-                onClick={() => closeModal()}
-                className="absolute top-3 right-3 text-gray-600 hover:text-gray-800 focus:outline-none"
-              >
-                ✕
-              </button>
-              <h2 className="text-xl font-semibold mb-4">{t("results")}</h2>
-              <div
-                className={`relative bottom-0 ${
-                  loading ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                {t("searching")}
-              </div>
-              {results.length > 0 ? (
-                <ul
-                  className="space-y-2 text-start w-full"
-                  onClick={() => closeModal()}
-                >
-                  {results.map((projecto) => (
-                    <ProjectListItem
-                      key={projecto.id}
-                      projecto={projecto}
-                      onMouseEnter={handleMouseEnter}
-                      onMouseLeave={handleMouseLeave}
-                    />
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-gray-500 animate-bounce">{t("searching")}</p>
-              )}
+              ✕
+            </button>
+            <h2 className="text-xl font-semibold mb-4">{t("results")}</h2>
+            <div className={`relative bottom-0 ${loading ? "opacity-100" : "opacity-0"}`}>
+              {t("searching")}
             </div>
-          </div>,
-          document.body
-        )}
+            {filteredResults.length > 0 ? (
+              <ul className="grid grid-cols-2 md:grid-cols-6 gap-4">
+                {filteredResults.map((projecto: Projecto) => (
+                  <li key={projecto.id} className="relative w-full">
+                    <TransitionLink href={`/projects/${projecto.slug}`} className="flex flex-col gap-4">
+                      {projecto.featured_image && (
+                        <Image
+                          src={projecto.featured_image.url}
+                          alt={projecto.title.rendered}
+                          width={projecto.featured_image.width / 4}
+                          height={projecto.featured_image.height / 4}
+                          placeholder={`data:image/svg+xml;base64,${toBase64(shimmer(700, 475))}`}
+                          className="w-full h-auto rounded-md"
+                        />
+                      )}
+                      <div className="flex flex-col">
+                        <div className="uppercase text-rodape font-intl text-ellipsis whitespace-nowrap overflow-hidden w-full leading-[1.25em] block my-0">
+                          {projecto.acf.page_title}
+                        </div>
+                        <div className="text-ellipsis lowercase whitespace-nowrap font-works overflow-hidden w-full text-xs my-0">
+                          {projecto.title.rendered}, {projecto.acf.year}
+                        </div>
+                      </div>
+                    </TransitionLink>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500 animate-bounce">{t("searching")}</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

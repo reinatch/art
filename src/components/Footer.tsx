@@ -167,35 +167,22 @@ export default function Footer() {
     gsap.registerPlugin(ScrollToPlugin);
     const footer_essencials = document.querySelector("#footer_essencials");
     const footer_wrapper = document.querySelector("#wrapper_footer_luva");
-
+    console.log(isSearchOpen , "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
     const scrollIndicator = gsap.utils.toArray(".scroll-indicator");
     if (searchInputRef.current) {
-      if (isSearchOpen) {
-        gsap.set(scrollIndicator, { autoAlpha: 0 });
-        gsap.set(footer_wrapper, { display: "flex" });
-        gsap.fromTo(
-          searchInputRef.current,
-          { y: 50, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }
-        );
-      } else {
-        // console.log(isSearchOpen , "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
-        gsap.set(scrollIndicator, { autoAlpha: 0 });
-        gsap.set(footer_wrapper, { display: "none" });
-        gsap.set(footer_essencials, {
-          y: 0,
-          duration: 1,
-          display: "flex",
-          autoAlpha: 1,
-        });
-        gsap.to(searchInputRef.current, {
-          y: 50,
-          opacity: 0,
-          duration: 0.5,
-          ease: "power2.in",
-          onComplete: () => {},
-        });
-      }
+      gsap.set(scrollIndicator, { autoAlpha: 0 });
+      gsap.set(footer_wrapper, { display: isSearchOpen ? "flex" : "none" });
+      gsap.set(footer_essencials, {
+        y: 0,
+        duration: 1,
+        display: "flex",
+        autoAlpha: 1,
+      });
+      gsap.fromTo(
+        searchInputRef.current,
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }
+      );
     }
   }, [isSearchOpen]);
 
@@ -304,17 +291,11 @@ export default function Footer() {
     <footer
       id="footer"
       className={`fixed z-[55] w-screen  h-[10dvh] md:h-[12dvh] ${
-        isHome && !isOpen
-          ? "mix-blend-difference md:mix-blend-normal bg-transparent text-white md:text-black md:bg-white"
-          : ""
-      } ${
-        isHome ? "bg-transparent md:bg-white" : "bg-white"
-      } font-mono text-rodape text-black left-0 bottom-0 text-center inset-x-0 mx-auto container-full `}
+        isHome && !isOpen ? "mix-blend-difference md:mix-blend-normal bg-transparent text-white md:text-black md:bg-white"
+          : "" } ${ isHome ? "bg-transparent md:bg-white" : "bg-white" } font-mono text-rodape text-black left-0 bottom-0 text-center inset-x-0 mx-auto container-full `}
     >
       <div
-        className={`${
-          isMatchingPath ? "items-center" : "items-end"
-        }  h-full footer-inner md:py-10 md:flex md:justify-between lg:px-10`}
+        className={`${ isMatchingPath ? "items-center" : "items-end" }  h-full footer-inner md:py-10 md:flex md:justify-between lg:px-10`}
       >
         <div
           className="uppercase absolute left-4 md:left-10 w-[10vw] z-[55] text-start bottom-4 md:bottom-10 leading-3 "
@@ -331,7 +312,7 @@ export default function Footer() {
 
         {isHome && (
           <div
-            className={`seta   hidden md:flex text-rodape justify-end scroll-indicator w-full ${
+            className={`seta   hidden md:flex text-rodape-sm justify-end scroll-indicator w-full ${
               isSearchOpen ? "opacity-0" : ""
             }`}
           >
@@ -382,7 +363,7 @@ export default function Footer() {
               data-flip-id=""
             >
               <Image
-                src="/videos/luva/t.gif"
+                src="/videos/luva/output.gif"
                 alt="Logo Text"
                 width={1000}
                 height={1000}
@@ -400,6 +381,59 @@ export default function Footer() {
             </span>
           </Link>
         </div>
+
+
+        {isHome && (
+          <div
+            className={`seta hidden md:flex text-rodape justify-start  scroll-indicator  w-full ${
+              isSearchOpen ? "opacity-0" : ""
+            }`}
+          >
+            <div className="relative leading-3">
+              {f("scroll")} <span className="relative font-works">↓</span>
+            </div>
+          </div>
+        )}
+
+        {isProjectPage ? (
+          <div className="absolute flex flex-col font-mono w-max md:flex-row right-4 md:right-10 bottom-4 md:bottom-10">
+            <span className="flex gap-2 leading-3 md:flex-row">
+              <TransitionLink
+                className="hidden md:block"
+                href={`/projects/${prevProject?.slug}`}
+              >
+                {p("prev")}{" "}
+              </TransitionLink>
+              <TransitionLink
+                className="block md:hidden"
+                href={`/projects/${prevProject?.slug}`}
+              >
+                {locale === "pt" ? "Ante" : "Prev"}
+              </TransitionLink>
+              <span className=":block"> / </span>
+              <TransitionLink
+                className="hidden md:block"
+                href={`/projects/${nextProject?.slug}`}
+              >
+                {" "}
+                {p("next")}
+              </TransitionLink>
+              <TransitionLink
+                className="block md:hidden"
+                href={`/projects/${nextProject?.slug}`}
+              >
+                {" "}
+                {locale === "pt" ? "Prox" : "Next"}
+              </TransitionLink>
+            </span>
+          </div>
+        ) : (
+          <div className="absolute z-50 flex whitespace-nowrap right-4 md:right-10 bottom-3 md:bottom-8">
+            <LocaleSwitcher />
+          </div>
+        )}
+
+
         {/* Right - Hamburger Menu  MOBILE*/}
         <div className="absolute flex items-center justify-center w-full bottom-4 lg:hidden">
           <button
@@ -472,56 +506,6 @@ export default function Footer() {
             </>
           )}
         </div>
-
-        {isHome && (
-          <div
-            className={`seta hidden md:flex text-rodape justify-start  scroll-indicator  w-full ${
-              isSearchOpen ? "opacity-0" : ""
-            }`}
-          >
-            <div className="relative leading-3">
-              {f("scroll")} <span className="relative font-works">↓</span>
-            </div>
-          </div>
-        )}
-
-        {isProjectPage ? (
-          <div className="absolute flex flex-col font-mono w-max md:flex-row right-4 md:right-10 bottom-4 md:bottom-10">
-            <span className="flex gap-2 leading-3 md:flex-row">
-              <TransitionLink
-                className="hidden md:block"
-                href={`/projects/${prevProject?.slug}`}
-              >
-                {p("prev")}{" "}
-              </TransitionLink>
-              <TransitionLink
-                className="block md:hidden"
-                href={`/projects/${prevProject?.slug}`}
-              >
-                {locale === "pt" ? "Ante" : "Prev"}
-              </TransitionLink>
-              <span className=":block"> / </span>
-              <TransitionLink
-                className="hidden md:block"
-                href={`/projects/${nextProject?.slug}`}
-              >
-                {" "}
-                {p("next")}
-              </TransitionLink>
-              <TransitionLink
-                className="block md:hidden"
-                href={`/projects/${nextProject?.slug}`}
-              >
-                {" "}
-                {locale === "pt" ? "Prox" : "Next"}
-              </TransitionLink>
-            </span>
-          </div>
-        ) : (
-          <div className="absolute z-50 flex whitespace-nowrap right-4 md:right-10 bottom-3 md:bottom-8">
-            <LocaleSwitcher />
-          </div>
-        )}
       </div>
     </footer>
   );

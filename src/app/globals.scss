@@ -11,17 +11,14 @@
 //   font-style: normal;
 //   display: swap;
 // }
-/* @font-face {
+@font-face {
   font-family: 'suissemono';
   src: url('/fonts/suisseintlmono-regular-webfont.woff2') format('woff2'),
        url('/fonts/suisseintlmono-regular-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
-
+  font-display: swap; // Add font-display: swap
 }
-
-
-
 
 @font-face {
   font-family: 'suisse_intl';
@@ -29,11 +26,8 @@
        url('/fonts/suisseintl-regular-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
-
+  font-display: swap; // Add font-display: swap
 }
-
-
-
 
 @font-face {
   font-family: 'suisse_works';
@@ -41,8 +35,8 @@
        url('/fonts/suisseworks-regular-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
-
-} */
+  font-display: swap; // Add font-display: swap
+}
 
 /* Tailwind CSS for #footer_luva and #banner_luva */
 // #footer_luva, #footer_luva.flipping {
@@ -188,8 +182,8 @@ body {
   font-kerning: none;
 }
 ::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
+  // width: 0px;
+  // height: 0px;
 }
 
 .snap-parent-y-mandatory {

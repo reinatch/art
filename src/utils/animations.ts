@@ -42,7 +42,7 @@ export const animatePageIn = (
   if (bannerWrapper) {
     const tl = gsap.timeline();
     const scalemobile = "30vh";
-    const scaleOut = isMobile ? "0vh" : "10vh";
+    // const scaleOut = isMobile ? "0vh" : "10vh";
     const luvaOfsset = isMobile ? "-50vh" : "-40vh";
     const bannerBack = bannerWrapper.querySelector(".back");
     gsap.set(bannerBack, { scale: 1, autoAlpha: 1 });
@@ -70,13 +70,13 @@ export const animatePageIn = (
           {
             height: "0vh",
             y: 0,
-            duration: 1,
+            duration: 0.25,
             ease: "power3.inOut",
             opacity: 1,
             onComplete: () => {
               gsap.to(footer_essencials, {
                 y: 0,
-                duration: 1,
+                duration: 0.25,
                 display: "flex",
                 autoAlpha: 1,
               }); // Hide footerLuva after it fades out
@@ -92,15 +92,15 @@ export const animatePageIn = (
         )
         .to(
           bannerBack,
-          { scale: 1, autoAlpha: 0, duration: 0.1, ease: "none" },
+          { scale: 1, autoAlpha: 0, duration: 0.25, ease: "none" },
           "f"
         )
-        .to(bannerWrapper, { scale: 0, duration: 0.1, ease: "none" }, "a")
+        .to(bannerWrapper, { scale: 0, duration: 0.25, ease: "none" }, "a")
         // .set(luvaWrapper,{ backgroundColor: "gray", autoAlpha: 0 }) // Hide footerLuva after it fades out
         .set(toMail, { display: "flex" })
         .fromTo(
           scrollIndicator,
-          { y: 200, duration: 0.5, ease: "power3.inOut" },
+          { y: 200, duration: 0.25, ease: "power3.inOut" },
           { y: 0 }
         )
         .set(luvaWrapper, { display: "none" });
@@ -109,8 +109,8 @@ export const animatePageIn = (
         // .set(header, { zIndex: 60 })
         // .set(footer, { zIndex: 60 })
         // .set(bannerLuva, {autoAlpha: 1}, "+=2")
-        .to([header], { zIndex: 62, duration: 3 }, "redo")
-        .to([footer], { zIndex: 61, duration: 3 }, "redo")
+        .to([header], { zIndex: 62, duration: 0.1 }, "redo")
+        .to([footer], { zIndex: 61, duration: 0.1 }, "redo")
 
         .set(bannerLuva, { opacity: 0 }, "+=3")
         .set(footerLuva, { autoAlpha: 1 }, "<")
@@ -119,7 +119,7 @@ export const animatePageIn = (
           {
             height: isMobile ? "0vh" : "10vh",
             y: 0,
-            duration: 1.5,
+            duration: 0.25,
             ease: "power3.inOut",
             opacity: 1,
           },
@@ -127,10 +127,10 @@ export const animatePageIn = (
         )
         .to(
           bannerBack,
-          { scale: 1, autoAlpha: 0, duration: 0.1, ease: "none" },
+          { scale: 1, autoAlpha: 0, duration: 0.25, ease: "none" },
           "f"
         )
-        .to(bannerWrapper, { scale: 0, duration: 0.1, ease: "none" }, "a")
+        .to(bannerWrapper, { scale: 0, duration: 0.25, ease: "none" }, "a")
         .set(toMail, { display: "flex" })
         .to(
           scrollIndicator,
@@ -195,18 +195,18 @@ export const animatePageOut = (
     // gsap.set(footerLuva, { display: "flex", transformOrigin: "50% 100%", scale: 1 , opacity: 1});
     if (isMatchingPath) {
       // gsap.set(luvaWrapper, {display: "flex",backgroundColor: "pink",autoAlpha:1, scale: 1});
-      tl.to(scrollIndicator, { opacity: 0, duration: 1, display:"none", ease: "power3.inOut" })
+      tl.to(scrollIndicator, { opacity: 0, duration: 0.25, display:"none", ease: "power3.inOut" })
         .set(toMail, { display: "none" })
-        .to(footer_essencials, { y: 200, duration: 1, display: "flex" })
+        .to(footer_essencials, { y:0, duration: 0.25, display: "none" })
         // .set(luvaWrapper,{autoAlpha:1,backgroundColor: "green", onComplete: () => {alert("hello")}})
         // .to(luvaWrapper,{ duration:1, ease: "none", display:"flex"})
         // .set(toMail, {display: "none"})
         .to(
           bannerWrapper,
-          { scale: 1, duration: 0.1, ease: "power3.inOut" },
+          { scale: 1, duration: 0.25, ease: "power3.inOut" },
           "A"
         )
-        .to(back, { scale: 1, autoAlpha: 1, duration: 0.1, ease: "none" }, "c")
+        .to(back, { scale: 1, autoAlpha: 1, duration: 0.25, ease: "none" }, "c")
         .set(footerLuva, {
           display: "flex",
           transformOrigin: "50% 100%",
@@ -219,7 +219,7 @@ export const animatePageOut = (
           {
             height: scalemobile,
             y: toPX(luvaOfsset),
-            duration: 1.5,
+            duration: 0.25,
             ease: "power3.inOut",
             opacity: 1,
             // backgroundColor: "#abcef0",
@@ -231,21 +231,21 @@ export const animatePageOut = (
         );
     } else {
       tl.set(footer, {mixBlendMode:"normal"})
-        .to(footer_essencials, { y: 200, autoAlpha: 1, duration: 1 })
-        .to(scrollIndicator, { display: "none" , duration: 1, ease: "power3.inOut" })
+        .to(footer_essencials, { y: 0, display: "flex", duration: 0.1 })
+        .to(scrollIndicator, { display: "none" , duration: 0.25, ease: "power3.inOut" })
         .set(toMail, { display: "none" })
         .to(
           bannerWrapper,
-          { scale: 1, duration: 0.1, ease: "power3.inOut" },
+          { scale: 1, duration: 0.25, ease: "power3.inOut" },
           "a"
         )
-        .to(back, { scale: 1, autoAlpha: 1, duration: 0.1, ease: "none" }, "c")
+        .to(back, { scale: 1, autoAlpha: 1, duration: 0.25, ease: "none" }, "c")
         .to(
           footerLuva,
           {
             height: scalemobile,
             y: toPX(luvaOfsset),
-            duration: 2,
+            duration: 0.25,
             ease: "power3.inOut",
             opacity: 1,
             // backgroundColor: "yellow",

@@ -99,7 +99,7 @@ const Sitemap = () => {
               {/* <p className="font-mono "> © ArtWorks 2024 all rights reserved.</p>
               <p className="font-mono "> Website design by Ana Luísa Martelo, code by Rei Rodrigues</p> */}
               <p className="font-mono text-[0.5rem] md:text-rodape"> {t("right")}</p>
-              <p className="font-mono text-[0.5rem] md:text-rodape"> {t("credits")}</p>
+              <p className="font-mono text-[0.5rem] md:text-rodape"> {t("credits")} <a className="underline" href='https://reinatch.website/' target='_blank'>reinatch</a></p>
             </div>
           </footer>
         </div>
