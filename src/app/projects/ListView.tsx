@@ -117,8 +117,8 @@ interface ListViewProps {
                   className="hover__item-image absolute z-50 rounded-md"
                   src={projecto.featured_image.url}
                   alt={projecto.title.rendered}
-                  width={projecto.featured_image.width/4}
-                  height={projecto.featured_image.height/4}
+                  width={projecto.featured_image.width}
+                  height={projecto.featured_image.height}
                   loading="lazy" // Use lazy loading
                   priority={false} // Remove priority to defer loading
                 />

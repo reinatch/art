@@ -10,7 +10,6 @@ import { useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import Search from "@/components/Search";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import TransitionLink from "./TransitionLink";
 import { useLocale, useTranslations } from "next-intl";
 import { useWindowSize } from "@custom-react-hooks/use-window-size";
@@ -164,27 +163,33 @@ export default function Footer() {
   );
 
   useGSAP(() => {
-    gsap.registerPlugin(ScrollToPlugin);
     const footer_essencials = document.querySelector("#footer_essencials");
     const footer_wrapper = document.querySelector("#wrapper_footer_luva");
     console.log(isSearchOpen , "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
     const scrollIndicator = gsap.utils.toArray(".scroll-indicator");
-    if (searchInputRef.current) {
-      gsap.set(scrollIndicator, { autoAlpha: 0 });
-      gsap.set(footer_wrapper, { display: isSearchOpen ? "flex" : "none" });
-      gsap.set(footer_essencials, {
-        y: 0,
-        duration: 1,
-        display: "flex",
-        autoAlpha: 1,
-      });
-      gsap.fromTo(
-        searchInputRef.current,
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }
-      );
-    }
-  }, [isSearchOpen]);
+    // if (searchInputRef.current) {
+      if (isSearchOpen) {
+        
+        gsap.set(scrollIndicator, { autoAlpha: 0 });
+        gsap.set(footer_wrapper, { display: "none" });
+        gsap.set(footer_essencials, {
+          y: 0,
+          duration: 1,
+          display: "flex",
+          autoAlpha: 1,
+        });
+        gsap.fromTo(
+          searchInputRef.current,
+          { y: 50, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }
+        );
+      }else
+      {
+        gsap.set(footer_wrapper, { display:  "flex" });
+
+      // }
+    
+  }}, [isSearchOpen]);
 
   const [aspectRatios, setAspectRatios] = useState<{ [key: string]: string }>(
     {}
@@ -312,7 +317,7 @@ export default function Footer() {
 
         {isHome && (
           <div
-            className={`seta   hidden md:flex text-rodape-sm justify-end scroll-indicator w-full ${
+            className={`seta   hidden md:flex text-rodape justify-end scroll-indicator w-full ${
               isSearchOpen ? "opacity-0" : ""
             }`}
           >

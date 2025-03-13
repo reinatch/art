@@ -1,8 +1,8 @@
 import HorizontalTabs from "@/components/HorizontalTabs";
-import { AboutTabData } from "@/utils/types";
-import { getLocale } from "next-intl/server";
+// import { AboutTabData } from "@/utils/types";
+// import { getLocale } from "next-intl/server";
 
-const baseUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
+// const baseUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
 
 export const revalidate = 3600;
 export const dynamic = 'force-static';
@@ -13,20 +13,20 @@ export async function generateStaticParams() {
 }
 
 export default async function AboutPage() {
-  const locale = await getLocale();
+  // const locale = await getLocale();
 
-  const fetchData = async (): Promise<AboutTabData[]> => {
-    const url = `${baseUrl}/pages?acf_format=standard&per_page=100&slug=residencias-${locale}&_fields=id,title,slug,acf&lang=${locale}`;
-    const response = await fetch(url);
-    console.log(url)
-    if (!response.ok) {
-      throw new Error("Failed to fetch tab data");
-    }
-    return response.json();
-  };
+  // const fetchData = async (): Promise<AboutTabData[]> => {
+  //   const url = `${baseUrl}/pages?acf_format=standard&per_page=100&slug=residencias-${locale}&_fields=id,title,slug,acf&lang=${locale}`;
+  //   const response = await fetch(url);
+  //   console.log(url)
+  //   if (!response.ok) {
+  //     throw new Error("Failed to fetch tab data");
+  //   }
+  //   return response.json();
+  // };
 
-  const tabData = await fetchData();
+  // const tabData = await fetchData();
   return (
-    <div>{tabData.length > 0 && <HorizontalTabs slug={"residencias"} />}</div>
+    <div><HorizontalTabs slug={"residencias"} /></div>
   );
 }

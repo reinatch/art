@@ -556,3 +556,94 @@ export type Projecto = {
     curies: { name: string; href: string; templated: boolean }[];
   };
 };
+export type homeProjecto = {
+  thumbnail: string;
+  lang: string;
+  translations: unknown;
+  id: number;
+  date: string;
+  date_gmt: string;
+  guid: {
+    rendered: string;
+  };
+  modified: string;
+  modified_gmt: string;
+  slug: string;
+  status: "publish" | "future" | "draft" | "pending" | "private";
+  type: "projectos"; // Custom post type identifier
+  link: string;
+  title:  string;
+  excerpt: {
+    rendered: string;
+    protected: boolean;
+  };
+  author: number;
+  featured_media: number;
+  parent: number;
+  menu_order: number;
+  template: string;
+  featured_image: {
+    url:string;
+    width:number;
+    height:number;
+  
+  };
+  format: "standard";
+  meta: unknown[];
+  materiais: number[]; // Array of material taxonomy IDs
+  artistas: number[]; // Array of artist taxonomy IDs
+  class_list: string[]; // Array of class names associated with the post
+  acf: {
+    [x: string]: ReactNode;
+    rightField: ReactNode;
+    page_title: string;
+    year: string;
+    location: string;
+    right_field: string;
+    galeria: {
+      ID: number;
+      id: number;
+      title: string;
+      filename: string;
+      filesize: number;
+      url: string;
+      link: string;
+      alt: string;
+      author: string;
+      description: string;
+      caption: string;
+      name: string;
+      status: string;
+      uploaded_to: number;
+      date: string;
+      modified: string;
+      menu_order: number;
+      mime_type: string;
+      type: string;
+      subtype: string;
+      icon: string;
+      width: number;
+      height: number;
+      sizes: {
+        [key: string]: {
+          file: string;
+          width: number;
+          height: number;
+          mime_type: string;
+          source_url: string;
+        };
+      };
+    }[];
+  };
+  _links: {
+    self: { href: string }[];
+    collection: { href: string }[];
+    about: { href: string }[];
+    author: { embeddable: boolean; href: string }[];
+    "acf:attachment": { embeddable: boolean; href: string }[];
+    "wp:featuredmedia": { embeddable: boolean; href: string }[];
+    "wp:attachment": { href: string }[];
+    "wp:term": { taxonomy: string; embeddable: boolean; href: string }[];
+    curies: { name: string; href: string; templated: boolean }[];
+  };
+};

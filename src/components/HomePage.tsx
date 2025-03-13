@@ -1,7 +1,7 @@
 
 "use client";
 // components/HomePageContent.tsx
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import {
   ScrollTrigger,
@@ -21,8 +21,8 @@ import AnimatedText from "@/lib/AnimatedText ";
 import AnimatedImages from "@/lib/AnimatedImages";
 import Marquee from "@/components/Marquee";
 import Image from "next/image";
-import { HomePageData, Projecto } from "@/utils/types";
-import { getProjectById } from "@/utils/fetch";
+import { HomePageData, homeProjecto } from "@/utils/types";
+// import { getProjectById } from "@/utils/fetch";
 import { getUserLocale, setUserLocale } from "@/services/locale";
 import { useHome } from "@/utils/useHome";  
 
@@ -34,7 +34,7 @@ const HomePageContent: React.FC = () => {
   
   const locale = useLocale();
     const { data } = useHome(locale);
-    console.log(data)
+    // console.log(data)
     const [sections, setSections] = useState<HomePageData[]>([]);
   // const sections: HomePageData = data;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -54,9 +54,9 @@ const HomePageContent: React.FC = () => {
   }, [locale]);
 
   useEffect(() => {
-
     setSections(data);
-  }, [data]);
+    console.log(sections, "REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+  }, [data, sections]);
 
   useEffect(() => {
     const videoElement = videoRef.current;
@@ -100,71 +100,71 @@ const HomePageContent: React.FC = () => {
     };
   }, [closeContact, isContactOpen]);
 
-  const [projects0, setProjects0] = useState<Projecto[]>([]);
-  const [projects1, setProjects1] = useState<Projecto[]>([]);
-  const [thumbnails, setThumbnails] = useState<string[]>([]);
+  // const [projects0, setProjects0] = useState<Projecto[]>([]);
+  // const [projects1, setProjects1] = useState<Projecto[]>([]);
+  // const [thumbnails, setThumbnails] = useState<string[]>([]);
 
-  const fetchThumbnails = useCallback(async () => {
-    const fetchedThumbnails = new Set<string>();
-    if (sections && sections[0]?.acf && sections[0].acf.project1) {
-    const project0Ids = sections[0].acf.project1.thumbnails;
-    const uniqueProject0Ids = project0Ids.filter((id) => {
-      if (fetchedThumbnails.has(id)) {
-        return false;
-      } else {
-        fetchedThumbnails.add(id);
-        return true;
-      }
-    });
+  // const fetchThumbnails = useCallback(async () => {
+  //   const fetchedThumbnails = new Set<string>();
+  //   if (sections && sections[0]?.acf && sections[0].acf.project1) {
+  //   const project0Ids = sections[0].acf.project1.thumbnails;
+  //   const uniqueProject0Ids = project0Ids.filter((id) => {
+  //     if (fetchedThumbnails.has(id)) {
+  //       return false;
+  //     } else {
+  //       fetchedThumbnails.add(id);
+  //       return true;
+  //     }
+  //   });
 
-    const project0Details = await Promise.all(uniqueProject0Ids);
-    setThumbnails(project0Details);
-  }
-  }, [sections]);
+  //   const project0Details = await Promise.all(uniqueProject0Ids);
+  //   setThumbnails(project0Details);
+  // }
+  // }, [sections]);
 
-  const fetchProjects = useCallback(async () => {
-    const fetchedProjects = new Set<number>();
-  if (sections && sections[0]?.acf && sections[0].acf.project1) {
-    const project0Ids = sections[0].acf.project1.items;
-    const uniqueProject0Ids = project0Ids.filter((id) => {
-      if (fetchedProjects.has(id)) {
-        return false;
-      } else {
-        fetchedProjects.add(id);
-        return true;
-      }
-    });
+  // const fetchProjects = useCallback(async () => {
+  //   const fetchedProjects = new Set<number>();
+  // if (sections && sections[0]?.acf && sections[0].acf.project1) {
+  //   const project0Ids = sections[0].acf.project1.items;
+  //   const uniqueProject0Ids = project0Ids.filter((id) => {
+  //     if (fetchedProjects.has(id)) {
+  //       return false;
+  //     } else {
+  //       fetchedProjects.add(id);
+  //       return true;
+  //     }
+  //   });
 
-    const project0Details = await Promise.all(
-      uniqueProject0Ids.map((id) => getProjectById(id, locale))
-    );
-    setProjects0(project0Details);
-  }
-  if (sections && sections[0].acf && sections[0].acf.project1) {
-    const project1Ids = sections[0].acf.project1.items0;
-    const uniqueProject1Ids = project1Ids.filter((id) => {
-      if (fetchedProjects.has(id)) {
-        return false;
-      } else {
-        fetchedProjects.add(id);
-        return true;
-      }
-    });
+  //   const project0Details = await Promise.all(
+  //     uniqueProject0Ids.map((id) => getProjectById(id, locale))
+  //   );
+  //   setProjects0(project0Details);
+  // }
+  // if (sections && sections[0]?.acf && sections[0].acf.project1) {
+  //   const project1Ids = sections[0].acf.project1.items0;
+  //   const uniqueProject1Ids = project1Ids.filter((id) => {
+  //     if (fetchedProjects.has(id)) {
+  //       return false;
+  //     } else {
+  //       fetchedProjects.add(id);
+  //       return true;
+  //     }
+  //   });
 
-    const project1Details = await Promise.all(
-      uniqueProject1Ids.map((id) => getProjectById(id, locale))
-    );
-    setProjects1(project1Details);
-  }
-  }, [sections, locale]);
+  //   const project1Details = await Promise.all(
+  //     uniqueProject1Ids.map((id) => getProjectById(id, locale))
+  //   );
+  //   setProjects1(project1Details);
+  // }
+  // }, [sections, locale]);
 
-  useEffect(() => {
-    fetchThumbnails();
-  }, [fetchThumbnails]);
+  // useEffect(() => {
+  //   fetchThumbnails();
+  // }, [fetchThumbnails]);
 
-  useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
+  // useEffect(() => {
+  //   fetchProjects();
+  // }, [fetchProjects]);
 
   gsap.registerPlugin(
     ScrollTrigger,
@@ -252,6 +252,8 @@ const HomePageContent: React.FC = () => {
           start: "top top",
           end: "bottom-=50px 10%",
           scrub: true,
+          // markers: true,
+       
           onEnter: () => {
 
             scrollToSection(index);
@@ -268,15 +270,15 @@ const HomePageContent: React.FC = () => {
       };
     });
 
-    ScrollTrigger.create({
-      id: "sec",
+    // ScrollTrigger.create({
+    //   id: "sec",
 
-      trigger: containerRef.current,
-      start: "top top",
-      end: "bottom bottom",
-      scrub: true,
+    //   trigger: containerRef.current,
+    //   start: "top top",
+    //   end: "bottom bottom",
+    //   scrub: true,
 
-    });
+    // });
 
     gsap
       .timeline({
@@ -374,18 +376,21 @@ const HomePageContent: React.FC = () => {
     // let mm = gsap.matchMedia();
 
     // mm.add("(min-width: 900px)", () => {
+
+
+
     gsap.timeline({
       scrollTrigger: {
         id: "residency0",
         trigger: "#residency0",
         start: "top top",
-        end: `80% 10%-=10px`,
+        end: `bottom center`,
         pin: true,
         pinSpacing: true,
-        scrub: 1,
+        // scrub: 1,
         // pinType: "transform",
        
-        anticipatePin: 1,
+        // anticipatePin: 1,
         // markers:true,
 
         onUpdate: (self) => {
@@ -408,17 +413,21 @@ const HomePageContent: React.FC = () => {
           }
         },
 
-        onLeave: () => {
-            openContact();
+        // onLeave: () => {
+        //     openContact();
 
-        },
-        onEnterBack: () => {
+        // },
+        // onEnterBack: () => {
 
-            closeContact();
+        //     closeContact();
      
-        },
+        // },
       },
     });
+
+
+
+
     // });
     const negativeXArray: HTMLDivElement[] = [];
     const positiveXArray: HTMLDivElement[] = [];
@@ -459,7 +468,6 @@ const HomePageContent: React.FC = () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, [sections]);
-  if (!sections) return <p>Loading...</p>; 
   return (
    
     <div id="smooth-wrapper">
@@ -778,8 +786,8 @@ const HomePageContent: React.FC = () => {
                       id="pro-row1"
                       className="grid justify-around w-full grid-cols-1 gap-10 flex-nowrap sm:grid-cols-3 md:w-full"
                     >
-                      {projects0 &&
-                        projects0.map((item: Projecto, idx: number) => (
+                      {value.items &&
+                        value.items.map((item: homeProjecto, idx: number) => (
                           <div
                             key={idx}
                             className="flex flex-col items-center h-full md:h-[20dvh] w-auto gap-4"
@@ -789,8 +797,8 @@ const HomePageContent: React.FC = () => {
                             <Image
                               width={1000}
                               height={1000}
-                              src={thumbnails[idx]}
-                              alt={item.title.rendered}
+                              src={item.thumbnail}
+                              alt={item.title}
                               className="object-contain w-full h-auto rounded-md md:w-auto md:h-full"
                               />
                             <div className="w-8/12 text-sm">
@@ -799,7 +807,7 @@ const HomePageContent: React.FC = () => {
                               </span>
 
                               <span className="capital capitalize md:text-lg font-works kerning">
-                                {item.title.rendered}, {item.acf.year}
+                                {item.title}, {item.acf.year}
                               </span>
                             </div>
 
@@ -812,8 +820,8 @@ const HomePageContent: React.FC = () => {
                       id="pro-row2"
                       className="grid justify-around w-full grid-cols-1 gap-10 mx-auto flex-nowrap md:mx-0 sm:grid-cols-3 md:w-full"
                     >
-                      {projects1 &&
-                        projects1.map((item: Projecto, idx: number) => (
+                      {value.items0 &&
+                        value.items0.map((item: homeProjecto, idx: number) => (
                           <div
                             key={idx}
                             className="flex flex-col items-center h-full md:h-[20dvh] md:w-auto gap-4"
@@ -822,8 +830,8 @@ const HomePageContent: React.FC = () => {
                             <Image
                               width={1000}
                               height={1000}
-                              src={thumbnails[idx + 3]}
-                              alt={item.title.rendered}
+                              src={item.thumbnail}
+                              alt={item.title}
                               className="object-contain w-full h-auto rounded-md md:w-auto md:h-full"
                             />
                             <div className="w-8/12 text-sm">
@@ -832,7 +840,7 @@ const HomePageContent: React.FC = () => {
                               </span>
 
                               <span className="capital capitalize md:text-lg font-works">
-                                {item.title.rendered}, {item.acf.year}
+                                {item.title}, {item.acf.year}
                               </span>
                             </div>
                             </TransitionLink>

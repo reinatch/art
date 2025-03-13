@@ -7,7 +7,7 @@ function getUrl(path: string, query?: Record<string, unknown>) {
 }
 
 async function fetchHome({ locale }: {locale: string }) {
-  const url = getUrl(`/home_cache?acf_format=standard&per_page=1&slug=home-${locale}&_fields=id,title,slug,acf&lang=${locale}&locale=${locale}`);
+  const url = getUrl(`/home_cache?acf_format=standard&slug=home-${locale}&lang=${locale}&locale=${locale}`);
   console.log("Fetching:", url);
 
   const res = await fetch(url, { cache: "force-cache", next: { revalidate: 3600 } });

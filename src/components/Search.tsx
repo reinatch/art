@@ -154,10 +154,10 @@ const Search: React.FC = () => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-50">
           <div
             ref={modalRef}
-            className="bottom-[10vh] bg-white bg-opacity-90 absolute w-[90vw] max-h-[80vh] px-12 rounded-lg overflow-y-auto py-12 flex flex-col items-center"
+            className="bottom-[8vh] bg-white bg-opacity-90 absolute w-[94vw] h-[80vh] px-12 rounded-lg overflow-y-auto py-12 flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
             <button
