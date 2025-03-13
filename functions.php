@@ -143,34 +143,31 @@ add_filter( 'wp_rest_cache/allowed_endpoints', 'wprc_add_acf_posts_endpoint', 10
 
 
 function get_homepage_content($request) {
-    $locale = $request->get_param('locale'); 
-    $slug = "home-" . $locale;
-
-    error_log("Fetching homepage content for locale: " . $locale);
+    $locale = $request->get_param('locale'); // Get locale from request
+    $slug = "home-" . $locale; // Construct slug
 
     $args = [
         'post_type'      => 'page',
         'posts_per_page' => 1,
         'name'           => $slug,
-        'lang'           => $locale,
+        'lang'           => $locale, // WPML support
         'fields'         => 'ids',
     ];
 
     $query = new WP_Query($args);
 
     if (!$query->have_posts()) {
-        error_log("Homepage not found for slug: " . $slug);
         return new WP_Error('no_homepage', __('Homepage not found'), ['status' => 404]);
     }
 
     $post_id = $query->posts[0];
-    error_log("Found homepage with ID: " . $post_id);
 
+    // Fetch ACF fields
     $acf_data = get_fields($post_id);
-    // error_log("Fetched ACF data: " . print_r($acf_data, true));
 
-    $project_ids = $acf_data['projecto1']['items'] ?? [];
-    $project_ids0 = $acf_data['projecto1']['items0'] ?? [];
+    $project_ids = $acf_data['project1']['items'] ?? [];
+    $project_ids0 = $acf_data['project1']['items0'] ?? [];
+    $project_thumbnail = $acf_data['project1']['thumbnails'] ?? [];
 
     $all_project_ids = array_merge($project_ids, $project_ids0);
     error_log("Project IDs: " . print_r($all_project_ids, true));
@@ -178,7 +175,7 @@ function get_homepage_content($request) {
     $projects = [];
 
     if (!empty($all_project_ids)) {
-        foreach ($all_project_ids as $project_id) {
+        foreach ($all_project_ids as $index => $project_id) {
             $project = get_post($project_id);
             
             if ($project) {
@@ -189,13 +186,20 @@ function get_homepage_content($request) {
                     continue;
                 }
 
+                // Assign a thumbnail to each project
+                $thumbnail_index = $index % count($project_thumbnail);
+                $thumbnail_url = $project_thumbnail[$thumbnail_index];
+
                 $projects[$project_id] = [
                     'id'        => $project->ID,
                     'title'     => $project->post_title,
                     'content'   => apply_filters('the_content', $project->post_content),
                     'excerpt'   => get_the_excerpt($project->ID),
-                    'thumbnail' => get_the_post_thumbnail_url($project->ID, 'medium'),
-                    'acf'       => get_fields($project->ID),
+                    'thumbnail' => $thumbnail_url, // Assign the thumbnail URL
+                    'acf'       => [
+                        'page_title' => get_field('page_title', $project->ID), // Fetch specific ACF field
+                        'year'       => get_field('year', $project->ID), // Fetch specific ACF field
+                    ],
                 ];
             } else {
                 error_log("Project ID $project_id not found.");
@@ -207,19 +211,36 @@ function get_homepage_content($request) {
 
     error_log("Projects fetched: " . print_r($projects, true));
 
-    $acf_data['projecto1']['items'] = array_values(array_filter(array_map(fn($id) => $projects[$id] ?? null, $project_ids)));
-    $acf_data['projecto1']['items0'] = array_values(array_filter(array_map(fn($id) => $projects[$id] ?? null, $project_ids0)));
+    $acf_data['project1']['items'] = array_values(array_filter(array_map(fn($id) => $projects[$id] ?? null, $project_ids)));
+    $acf_data['project1']['items0'] = array_values(array_filter(array_map(fn($id) => $projects[$id] ?? null, $project_ids0)));
+
+    // Organize the acf_data elements
+    $organized_acf_data = [
+        'home_splash' => $acf_data['home_splash'] ?? [],
+        'about0' => $acf_data['about0'] ?? [],
+        'about1' => $acf_data['about1'] ?? [],
+        'production0' => $acf_data['production0'] ?? [],
+        'production1' => $acf_data['production1'] ?? [],
+        'project0' => $acf_data['project0'],
+        'project1' => [
+            'items'      => $acf_data['project1']['items'] ?? [],
+            'items0'     => $acf_data['project1']['items0'] ?? [],
+            'link'       => $acf_data['project1']['link'] ?? [],
+            'thumbnails' => $acf_data['project1']['thumbnails'] ?? [],
+        ],
+        'residency0' => $acf_data['residency0'] ?? [],
+    ];
 
     $response = [
         'id'    => $post_id,
         'title' => get_the_title($post_id),
         'slug'  => $slug,
-        'acf'   => $acf_data,
+        'acf'   => $organized_acf_data,
     ];
 
-    // error_log("Final ACF Data: " . print_r($acf_data, true));
-    return rest_ensure_response($response);
+    return rest_ensure_response([$response]);
 }
+
 
 
 function get_projectos(WP_REST_Request $request) {
@@ -439,6 +460,56 @@ add_action('rest_api_init', function () {
         'permission_callback' => '__return_true',
     ]);
 });
+
+
+
+
+
+
+
+
+
+function flush_projectos_cache() {
+    if (class_exists('\WP_REST_Cache_Plugin\Includes\Caching\Caching')) {
+        $cache_instance = \WP_REST_Cache_Plugin\Includes\Caching\Caching::get_instance();
+
+        // Define all endpoints to be flushed
+        $endpoints = [
+            '/wp-json/wp/v2/projectos_cache',
+            '/wp-json/wp/v2/home_cache',
+            '/wp-json/wp/v2/pages',
+            '/wp-json/wp/v2/projectos_search',
+   
+        ];
+
+        // Loop through and flush each endpoint
+        foreach ($endpoints as $endpoint) {
+            $cache_instance->delete_cache_by_endpoint($endpoint, \WP_REST_Cache_Plugin\Includes\Caching\Caching::FLUSH_LOOSE);
+            error_log("Cache flushed for: " . $endpoint);
+        }
+    } else {
+        error_log("Cache plugin class not found.");
+    }
+}
+
+
+// Flush cache when a custom post type 'projectos' is saved, updated, or deleted
+add_action('save_post_projectos', 'flush_projectos_cache', 10);
+add_action('publish_projectos', 'flush_projectos_cache', 10);
+add_action('delete_post', 'flush_projectos_cache', 10);
+
+// Flush cache when a page is saved, updated, or deleted
+add_action('save_post_page', 'flush_projectos_cache', 10);
+add_action('publish_page', 'flush_projectos_cache', 10);
+add_action('delete_post', 'flush_projectos_cache', 10);
+
+
+
+
+
+
+
+
 
 
 

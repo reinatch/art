@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense, useCallback } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { Projecto, Material, Artista } from "@/utils/types"; 
 import React from "react";
 import Loading from "@/components/Loading";
@@ -89,21 +89,6 @@ const ProjectList: React.FC = ({
       window.removeEventListener("scroll", handleScroll);
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-  // Intersection Observer for Infinite Scroll
-  const observer = useRef<IntersectionObserver | null>(null);
-  const lastProjectRef = useCallback(
-    (node) => {
-      if (isFetchingNextPage) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasNextPage) {
-          fetchNextPage();
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [isFetchingNextPage, hasNextPage, fetchNextPage]
-  );
 
   const getRandomInRange = (min: number, max: number) =>
     Math.random() * (max - min) + min;
@@ -148,7 +133,7 @@ const ProjectList: React.FC = ({
 
   const groupByYear = (projects: Projecto[]) => {
     const grouped = projects.reduce((acc, projecto) => {
-      const year = projecto?.acf.year.trim(); 
+      const year = projecto.acf.year.trim(); 
       if (!acc[year]) {
         acc[year] = [];
       }
@@ -167,7 +152,7 @@ const ProjectList: React.FC = ({
     ? projectos
         .filter((projecto) => {
           if (selectedFilter === "ano" && years) {
-            return years.includes(parseInt(projecto?.acf.year, 10));
+            return years.includes(parseInt(projecto.acf.year, 10));
           }
           return true; 
         })
@@ -230,7 +215,6 @@ const ProjectList: React.FC = ({
         <Suspense fallback={<Loading />}>
           {viewMode === "gallery" ? (
             <GalleryView
-      
               selectedFilter={selectedFilter || ""}
               filteredProjects={filteredProjects}
               filteredMaterialProjects={filteredMaterialProjects}
@@ -241,7 +225,6 @@ const ProjectList: React.FC = ({
               setSelectedMaterial={setSelectedMaterial}
               shimmer={shimmer} // Replace with actual shimmer function
               toBase64={toBase64} // Replace with actual toBase64 function
-              lastProjectRef={lastProjectRef}
             />
           ) : (
             <ListView
@@ -263,7 +246,6 @@ const ProjectList: React.FC = ({
               handleMouseLeave={handleMouseLeave}
               hoveredProjectId={hoveredProjectId}
               containerRef={containerRef as React.RefObject<HTMLUListElement>}
-              lastProjectRef={lastProjectRef}
             />
           )}
         </Suspense>
