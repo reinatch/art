@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import Image from "next/image";
 import { useToggleContact } from '@/lib/useToggleContact';
 import SubscribeForm from "@/components/SubscribeForm";
 import Footer from "@/components/Footer";
-import {useTranslations} from 'next-intl';
+import { useTranslations } from 'next-intl';
 import TransitionLink from "./TransitionLink";
+import { gsap } from "gsap";
 
 const sitemap = [
   {
@@ -31,17 +31,23 @@ const Sitemap = () => {
   const sitemapRef = useRef<HTMLDivElement>(null);
   const { isContactOpen } = useToggleContact();
   const t = useTranslations("Sitemap");
+
+  useEffect(() => {
+    if (sitemapRef.current) {
+      gsap.to(sitemapRef.current, {
+        y: isContactOpen ? "0%" : "100%",
+        opacity: 1,
+        duration: 0.5,
+        ease: "easeInOut"
+      });
+    }
+  }, [isContactOpen]);
+
   return (
-    <motion.div
+    <div
       ref={sitemapRef}
       id="sitemap"
       className=" pt-4 md:pt-10 px-4 md:px-10 flex flex-col items-start fixed h-[100dvh] md:max-h-[60vh] z-[100] md:pb-[12vh] bottom-0 w-full  bg-white border-t-2 border-black gap-y-10 "
-      initial={{ y: "100%", opacity: 0 }} // Start fully hidden
-      animate={{
-        y: isContactOpen ? "0%" : "100%", // Slide in/out based on state
-        opacity: isContactOpen ? 1 : 1, // Fade in/out based on state
-      }}
-      transition={{ duration: 0.5, ease: "easeInOut" }} // Animation duration and easing
     >
              <TransitionLink className={` mt-4 flex md:hidden w-full h-auto justify-center`} href={`/`} passHref>
                   <div
@@ -105,7 +111,7 @@ const Sitemap = () => {
         </div>
       ))}
       <Footer />
-    </motion.div>
+    </div>
   );
 };
 

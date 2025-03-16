@@ -5,6 +5,7 @@ import Loading from "@/components/Loading";
 import CustomRadioMaterial from "@/components/CustomRadioMaterial";
 import { Projecto, Material } from "@/utils/types";
 import { v4 as uuidv4 } from "uuid";
+// import { useProjectos } from "@/utils/useProjectos";
 
 interface GalleryViewProps {
   selectedFilter: string | null;
@@ -17,6 +18,7 @@ interface GalleryViewProps {
   setSelectedMaterial: (value: number | null) => void;
   shimmer: (w: number, h: number) => string;
   toBase64: (str: string) => string;
+  // locale: string;
 }
 
 const GalleryView: React.FC<GalleryViewProps> = ({
@@ -30,9 +32,31 @@ const GalleryView: React.FC<GalleryViewProps> = ({
   setSelectedMaterial,
   shimmer,
   toBase64,
+  // locale,
 }) => {
+
+
+
+    // const { data, fetchNextPage, hasNextPage, isFetchingNextPage} = useProjectos(locale); 
+  // 
+    // useEffect(() => {
+    //   const handleScroll = () => {
+    //     // alert("oi")
+    //     if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 2) {
+    //       if (data && hasNextPage && !isFetchingNextPage) {
+    //         fetchNextPage();
+    //       }
+    //     }
+    //   };
+  
+    //   window.addEventListener("scroll", handleScroll);
+    //   return () => {
+    //     window.removeEventListener("scroll", handleScroll);
+    //   };
+    // }, [hasNextPage, isFetchingNextPage, fetchNextPage, data]);
   return (
-    <>
+    <React.Fragment>
+
       {selectedFilter === "artistas" && (
         <ul className="grid grid-cols-2 md:grid-cols-6 gap-4 overflow-y-scroll pb-[12vh]">
           {filteredProjects.map((projecto) => (
@@ -138,7 +162,7 @@ const GalleryView: React.FC<GalleryViewProps> = ({
       )}
 
       {selectedFilter === "ano" && (
-                      <div className="overflow-y-scroll pb-[12vh]">
+                      <div className="">
                         {groupedYearsProjects.map((group) => (
                           <div key={uuidv4()}>
                             <h2 className="text-xl py-4">{group.year}</h2>
@@ -179,7 +203,7 @@ const GalleryView: React.FC<GalleryViewProps> = ({
                         ))}
                       </div>
        )}
-    </>
+    </React.Fragment>
   );
 };
 

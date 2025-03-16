@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense, useMemo } from "react";
 import { Projecto, Material, Artista } from "@/utils/types"; 
 import React from "react";
 import Loading from "@/components/Loading";
@@ -24,15 +24,15 @@ const ProjectList: React.FC = ({
 }) => {
   const locale = useLocale();
   const t = useTranslations("ProjectList");
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useProjectos(locale); 
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage} = useProjectos(locale); 
   const { mat, art, ano} = useProjectosData(locale);
 
   
-  const projectos = data?.pages.flatMap(page => page.data) || []; // Flatten the pages
+  const projectos = useMemo(() => data?.pages.flatMap(page => page.projects) || [], [data]); // Flatten the pages
 
 // console.log(mat, art, ano)
 
-
+  const ref = useRef<HTMLDivElement>(null);
   const [viewMode, setViewMode] = useState("gallery"); 
   const [selectedFilter, setSelectedFilter] = useState<string | null>("ano"); 
   const [materials, setMaterials] = useState<Material[]>(mat); 
@@ -51,7 +51,13 @@ const ProjectList: React.FC = ({
   gsap.registerPlugin(useGSAP);
   const { contextSafe } = useGSAP({ scope: containerRef });
   const { isContactOpen, closeContact } = useToggleContact();
+useEffect(() => {
+  if (selectedFilter) {
+    console.log(projectos, "test")
+  }
+    
 
+}, [projectos, selectedFilter]);
   useEffect(() => {
     const sitempa = document.querySelector("#sitemap");
     const handleClickOutside = (event: MouseEvent) => {
@@ -77,18 +83,20 @@ const ProjectList: React.FC = ({
 
   useEffect(() => {
     const handleScroll = () => {
+      // alert("oi")
       if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 2) {
-        if (hasNextPage && !isFetchingNextPage) {
+        if (data && hasNextPage && !isFetchingNextPage) {
           fetchNextPage();
         }
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    const currentRef = ref.current;
+    currentRef?.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      currentRef?.removeEventListener("scroll", handleScroll);
     };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage, data]);
 
   const getRandomInRange = (min: number, max: number) =>
     Math.random() * (max - min) + min;
@@ -211,8 +219,10 @@ const ProjectList: React.FC = ({
           setViewMode={setViewMode}
           t={t}
         />
-  </div>
+      </div>
+      
         <Suspense fallback={<Loading />}>
+      <div ref={ref} className="ref_container w-full h-full overflow-y-scroll pb-[12vh]">
           {viewMode === "gallery" ? (
             <GalleryView
               selectedFilter={selectedFilter || ""}
@@ -248,6 +258,7 @@ const ProjectList: React.FC = ({
               containerRef={containerRef as React.RefObject<HTMLUListElement>}
             />
           )}
+      </div>
         </Suspense>
       </div>
     </div>

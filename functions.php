@@ -244,33 +244,20 @@ function get_homepage_content($request) {
 
 
 function get_projectos(WP_REST_Request $request) {
-    $lang = $request->get_param('lang'); // Get the 'lang' query param
-    $search = $request->get_param('search'); // Get search query
+    $lang = $request->get_param('lang');
+    $page = $request->get_param('page') ? intval($request->get_param('page')) : 1;
+    $per_page = $request->get_param('per_page') ? intval($request->get_param('per_page')) : 10;
 
-    // // Set a unique transient name based on the language
-    // $transient_key = 'projectos_' . $lang;
-    
-    // // Check if the transient exists
-    // $cached_projects = get_transient($transient_key);
-    
-    // if ($cached_projects) {
-    //     // Return cached projects if available
-    //     return rest_ensure_response($cached_projects);
-    // }
-
-    // If no cached data, proceed to fetch from the database
     if ($lang) {
-        do_action('wpml_switch_language', $lang); // Switch WPML language
+        do_action('wpml_switch_language', $lang);
     }
 
     $args = array(
         'post_type'      => 'projectos',
-        'posts_per_page' => -1, // Change this as needed
+        'posts_per_page' => $per_page,
+        'paged'          => $page,
     );
-    // If search query is provided, add it to the query
-    if (!empty($search)) {
-        $args['s'] = $search;
-    }
+
     $query = new WP_Query($args);
     $projects = [];
 
@@ -278,58 +265,55 @@ function get_projectos(WP_REST_Request $request) {
         while ($query->have_posts()) {
             $query->the_post();
             
-            // Get the featured image ID and its size
             $featured_image_id = get_post_thumbnail_id();
             $featured_image = wp_get_attachment_image_src($featured_image_id, 'thumbnail');
-            
-            // Check if the image exists and get its URL, width, and height
+
             if ($featured_image) {
-                $featured_image_url = $featured_image[0]; // URL
-                $featured_image_width = $featured_image[1]; // Width
-                $featured_image_height = $featured_image[2]; // Height
+                $featured_image_url = $featured_image[0];
+                $featured_image_width = $featured_image[1];
+                $featured_image_height = $featured_image[2];
             } else {
                 $featured_image_url = '';
                 $featured_image_width = 0;
                 $featured_image_height = 0;
             }
 
-            // Get custom taxonomies
             $artistas = wp_get_post_terms(get_the_ID(), 'artistas', array('fields' => 'ids'));
             $materiais = wp_get_post_terms(get_the_ID(), 'materiais', array('fields' => 'ids'));
-    
+
             $projects[] = array(
                 'id' => get_the_ID(),
-                'title' => array(
-                    'rendered' => get_the_title()
-                ),
+                'title' => array('rendered' => get_the_title()),
                 'slug' => get_post_field('post_name', get_the_ID()),
                 'content' => get_the_content(),
-                'featured_media' => $featured_image_id, // Get the featured image ID
+                'featured_media' => $featured_image_id,
                 'featured_image' => array(
-                    'url' => $featured_image_url, // URL of the featured image
-                    'width' => $featured_image_width, // Width of the image
-                    'height' => $featured_image_height, // Height of the image
+                    'url' => $featured_image_url,
+                    'width' => $featured_image_width,
+                    'height' => $featured_image_height,
                 ),
                 'acf' => array(
-                    'page_title' => get_field('page_title'), // Example ACF field
-                    'year' => get_field('year'), // Example ACF field
-                    'location' => get_field('location'), // Example ACF field
-                    'right_field' => get_field('right_field'), // Example ACF field
+                    'page_title' => get_field('page_title'),
+                    'year' => get_field('year'),
+                    'location' => get_field('location'),
+                    'right_field' => get_field('right_field'),
                 ),
-                'artistas' => $artistas, // Custom taxonomy for artistas
-                'materiais' => $materiais, // Custom taxonomy for materiais
-                'modified' => get_the_modified_time('c'), // Get the modified date
+                'artistas' => $artistas,
+                'materiais' => $materiais,
+                'modified' => get_the_modified_time('c'),
             );
         }
     }
 
     wp_reset_postdata();
 
-    // Cache the result in a transient for 1 hour (3600 seconds)
-    // set_transient($transient_key, $projects, 3600); // Adjust the cache expiration time as needed
-
-    return rest_ensure_response($projects);
+    return rest_ensure_response([
+        'projects' => $projects,
+        'total' => (int) $query->found_posts,
+        'total_pages' => (int) $query->max_num_pages,
+    ]);
 }
+
 function search_projectos(WP_REST_Request $request) {
     $lang = $request->get_param('lang');
     $search = $request->get_param('search');
@@ -421,8 +405,20 @@ add_action('rest_api_init', function () {
         'args' => array(
             'lang' => array(
                 'required' => false,
-                'validate_callback' => function ($param, $request, $key) {
-                    return in_array($param, ['pt', 'en']); // Allow only 'pt' or 'en'
+                'validate_callback' => function ($param) {
+                    return in_array($param, ['pt', 'en']);
+                }
+            ),
+            'page' => array(
+                'required' => false,
+                'validate_callback' => function ($param) {
+                    return is_numeric($param) && $param > 0;
+                }
+            ),
+            'per_page' => array(
+                'required' => false,
+                'validate_callback' => function ($param) {
+                    return is_numeric($param) && $param > 0;
                 }
             )
         )
