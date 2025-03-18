@@ -1,7 +1,7 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import querystring from 'querystring';
 import { Projecto } from "./types";
-
+import { fetchData } from '@/utils/fetch';
 
 const perPage = 30;
 const baseUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
@@ -10,6 +10,7 @@ function getUrl(path: string, query?: Record<string, unknown>) {
   return `${baseUrl}${path}${params ? `?${params}` : ""}`;
 }
 interface props {
+  slug: string;
   projects : Projecto[];
   totalPages: number;
   maxProject:number;
@@ -46,3 +47,30 @@ export function useProjectos(locale: string) {
     },
   });
 }
+import { queryOptions } from '@tanstack/react-query'
+
+export const projectosOptions = queryOptions({
+  queryKey: ['projectos'],
+  queryFn: async () => {
+    const response = await fetch('https://backend.reinatch.website/wp-json/wp/v2/projectos_cache?acf_format=standard&lang=en&per_page=20&page=1&locale=en')
+
+    return response.json()
+  },
+})
+
+
+const fetchProjectDetails = async (slug: string, locale: string) => {
+  return await fetchData(
+    `/projectos?acf_format=standard&_fields=id,title,slug,acf&slug=${slug}&lang=${locale}`
+  );
+};
+
+
+
+export const useProjectDetails = (slug: string, locale: string) => {
+  return useQuery<Projecto>({
+    queryKey: ['project', slug, locale],
+    queryFn: () => fetchProjectDetails(slug, locale),
+    staleTime: 1000 * 60 * 60, // Cache for 1 hour
+  });
+};

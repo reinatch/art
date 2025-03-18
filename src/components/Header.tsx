@@ -1,7 +1,6 @@
 "use client";
 
 import Navbar from "./Navbar";
-// import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 

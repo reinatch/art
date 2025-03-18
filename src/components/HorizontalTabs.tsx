@@ -2,7 +2,6 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { useTabsContext } from "@/lib/TabsContext";
-// import { motion } from "framer-motion";
 // import useVerticalScrollSnap from "@/utils/useVerticalSnap"; // Import the hook
 import {
   AboutTabData,
