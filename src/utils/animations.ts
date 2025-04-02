@@ -19,7 +19,9 @@ export const animatePageIn = (
   pathname: string | undefined,
   isFirstVisit: boolean,
   locale: string,
-  isMobile: boolean
+  isMobile: boolean,
+  from?: string ,
+  to?: string,
 ): Promise<void> => {
   return new Promise((resolve) => {
     if (!pathname) {
@@ -32,6 +34,11 @@ export const animatePageIn = (
       pathname === "/about" ||
       pathname === "/residencias" ||
       pathname.startsWith("/projects/");
+    const isHome = pathname === "/";
+
+    if (isHome) {
+      console.log('ai', from, to);
+    }
     debug(`Is matching path: ${isMatchingPath}, current path: ${pathname}`);
     const bannerWrapper = document.getElementById("banner-1");
     const footerLuva = document.querySelector(".footer_luva");
@@ -62,12 +69,12 @@ export const animatePageIn = (
         },
         onUpdate: () => debug("Enter animation progress: " + tl.progress()),
       });
-      const scalemobile = "30vh";
-      const luvaOfsset = isMobile ? "-50vh" : "-40vh";
+      const scalemobile = "10vh";
+      const luvaOfsset = isMobile ? "-50vh" : "0vh";
       const bannerBack = bannerWrapper.querySelector(".back");
       debug("Banner back element found:", !!bannerBack);
       debug(`Animation params: scalemobile=${scalemobile}, luvaOfsset=${luvaOfsset}`);
-      gsap.set(bannerBack, { scale: 1, autoAlpha: 1 });
+      // gsap.set(bannerBack, { scale: 1, autoAlpha: 1 });
       gsap.set(bannerWrapper, {
         transformOrigin: "50% 100%",
         scale: 1,
@@ -105,11 +112,11 @@ export const animatePageIn = (
             },
             "s"
           )
-          .to(
-            bannerBack,
-            { scale: 1, autoAlpha: 0, duration: 0.1, ease: "none" },
-            "f"
-          )
+          // .to(
+          //   bannerBack,
+          //   { scale: 1, autoAlpha: 0, duration: 0.1, ease: "none" },
+          //   "f"
+          // )
           .to(bannerWrapper, { scale: 0, duration: 0.1, ease: "none" }, "a")
           .set(toMail, { display: "flex" })
           .fromTo(
@@ -120,11 +127,11 @@ export const animatePageIn = (
           .set(luvaWrapper, { display: "none" });
       } else {
         debug("Running default enter animation");
-        tl.set(bannerBack, { zIndex: 59 })
-          .to([header], { zIndex: 62, duration: 1 }, "redo")
+        // tl.set(bannerBack, { zIndex: 59 })
+        tl.to(footerLuva, { autoAlpha: 1, duration: 0.5 })
+        .to([header], { zIndex: 62, duration: 1 }, "redo")
           .to([footer], { zIndex: 61, duration: 1 }, "redo")
           .set(bannerLuva, { opacity: 0 }, "+=1")
-          .set(footerLuva, { autoAlpha: 1 }, "<")
           .to(
             footerLuva,
             {
@@ -136,11 +143,11 @@ export const animatePageIn = (
             },
             "<"
           )
-          .to(
-            bannerBack,
-            { scale: 1, autoAlpha: 0, duration: 0.1, ease: "none" },
-            "f"
-          )
+          // .to(
+          //   bannerBack,
+          //   { scale: 1, autoAlpha: 0, duration: 0.1, ease: "none" },
+          //   "f"
+          // )
           .to(bannerWrapper, { scale: 0, duration: 0.1, ease: "none" }, "a")
           .set(toMail, { display: "flex" })
           .to(
@@ -172,15 +179,18 @@ export const animatePageIn = (
 };
 export const animatePageOut = (
   pathname: string,
-  isMobile: boolean
+  isMobile: boolean,
+  from?: string ,
+  to?: string,
 ): Promise<void> => {
   return new Promise((resolve) => {
+    console.log(`AAAAAAAAAAAAAAAAAAAAAAAAAAAAfrom path: ${from}, to path: ${to}`);
     const isMatchingPath =
       pathname === "/production" ||
       pathname === "/about" ||
       pathname === "/residencias" ||
       pathname.startsWith("/projects/");
-    debug(`Is matching path: ${isMatchingPath}, current path: ${pathname}`);
+      console.log(`Is matching path: ${isMatchingPath}, current path: ${pathname}`);
     const bannerWrapper = document.getElementById("banner-1");
     const footerLuva = document.querySelector(".footer_luva");
     const luvaWrapper = document.getElementById("wrapper_footer_luva");
@@ -210,8 +220,8 @@ export const animatePageOut = (
         },
         onUpdate: () => debug("Leave animation progress: " + tl.progress()),
       });
-      const scalemobile = "30vh";
-      const luvaOfsset = isMobile ? "-50vh" : "-40vh";
+      const scalemobile = "10vh";
+      const luvaOfsset = isMobile ? "-50vh" : "0vh";
       debug(`Animation params: scalemobile=${scalemobile}, luvaOfsset=${luvaOfsset}`);
       gsap.set(bannerWrapper, {
         display: "flex",
@@ -233,7 +243,7 @@ export const animatePageOut = (
             { scale: 1, duration: 0.1, ease: "power3.inOut" },
             "A"
           )
-          .to(back, { scale: 1, autoAlpha: 1, duration: 0.1, ease: "none" }, "c")
+          // .to(back, { scale: 1, autoAlpha: 1, duration: 0.1, ease: "none" }, "c")
           .set(footerLuva, {
             display: "flex",
             transformOrigin: "50% 100%",
@@ -267,7 +277,7 @@ export const animatePageOut = (
             { scale: 1, duration: 0.1, ease: "power3.inOut" },
             "a"
           )
-          .to(back, { scale: 1, autoAlpha: 1, duration: 0.1, ease: "none" }, "c")
+          // .to(back, { scale: 1, autoAlpha: 1, duration: 0.1, ease: "none" }, "c")
           .to(
             footerLuva,
             {

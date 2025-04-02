@@ -1,32 +1,32 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { TransitionRouter } from "next-transition-router";
-import Image from "next/image";
+// import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { animatePageIn, animatePageOut } from "@/utils/animations";
 import { isMobile as detectMobile } from "react-device-detect";
 import { useLocale } from "next-intl";
 import { useWindowSize } from "@custom-react-hooks/use-window-size";
-// import gsap from "gsap";
+import gsap from "gsap";
 
-const DEBUG = true;
-const debug = (message: string, data?: unknown) => {
-  if (DEBUG) {
-    if (data) {
-      console.log(`[DEBUG] ${message}`, data);
-    } else {
-      console.log(`[DEBUG] ${message}`);
-    }
-  }
-};
+
 
 export function TemplateTransition({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const firstLayer = useRef<HTMLDivElement | null>(null);
+  const secondLayer = useRef<HTMLDivElement | null>(null);
+
+  // Initialize layer positions only once on component mount
+  useEffect(() => {
+    if (firstLayer.current && secondLayer.current) {
+      gsap.set([firstLayer.current, secondLayer.current], { x: "-100%" });
+    }
+  }, []);
   const pathname = usePathname();
 
   const [isMobile, setIsMobile] = useState(false);
@@ -44,19 +44,47 @@ export function TemplateTransition({
     <TransitionRouter
       auto={true}
       leave={(next, from, to) => {
-        if (from === to) {
-          next();
-          return;
-          
-        }
-        animatePageOut(pathname, isMobile)?.then(next);
-        debug(`Leave transition started: from ${from} to ${to}`);
+        const tl = gsap.timeline({
+          onComplete: next,
+        });
+
+        // Simplified animation without redundant checks and settings
+        tl.to(firstLayer.current, {
+          x: 0,
+          duration: 0.5,
+          ease: "circ.inOut",
+        }).to(secondLayer.current, {
+          x: 0,
+          duration: 0.5,
+          ease: "circ.inOut",
+        }, "<50%");
+
+        animatePageOut(pathname, isMobile, from, to)?.then(next);
+        // debug(`Leave transition started: from ${from} to ${to}`);
+        return () => {
+          tl.kill();
+        };
         // console.log(from, to, next);
      
     }}
       enter={(next, from, to) => {
-        animatePageIn(pathname, true, locale, isMobile)?.then(next);
-        debug(`Enter transition started: from ${from} to ${to}`);
+        const tl = gsap.timeline();
+
+        tl.to(secondLayer.current, {
+          x: "-100%",
+          duration: 0.5,
+          ease: "circ.inOut",
+        }).to(firstLayer.current, {
+          x: "-100%",
+          duration: 0.5,
+          ease: "circ.inOut",
+        }, "<50%").call(next, undefined, "<50%");
+        animatePageIn(pathname, true, locale, isMobile, from, to)?.then(next);
+        // debug(`Enter transition started: from ${from} to ${to}`);
+
+        return () => {
+          tl.kill();
+        };
 
       }}
     >
@@ -66,8 +94,8 @@ export function TemplateTransition({
           isAbout ? "bg-transparent" : "bg-transparent"
         } opacity-100  fixed top-0 flex items-center justify-center origin-bottom`}
       >
-        <div id="banner_luva" className="z-[60] h-[10vh]">
-          <Image
+        <div id="banner_luva" className="z-[60] h-20">
+          {/* <Image
             src="/videos/luva/output.gif"
             alt="Logo Text"
             width={100}
@@ -75,13 +103,22 @@ export function TemplateTransition({
             className="relative w-auto h-full transition-opacity duration-300 ease-in-out will-change-transform"
             priority
             data-flip-id="img"
-          />
-          {/* <video src=" /videos/luva/output.webp" autoPlay loop muted className="relative w-auto h-full transition-opacity duration-300 ease-in-out will-change-transform" data-flip-id="img" poster=""></video> */}
+          /> */}
         </div>
-        <div className="back bg-white w-full h-full absolute z-[65]"></div>
+        <div className="back bg-white w-full h-full absolute z-[45]"></div>
       </div>
    
       {children}
+      <div
+        ref={firstLayer}
+        className="fixed inset-0 z-[5000] w-screen h-screen bg-white"
+        // style={{ backgroundColor: "#991b1b" }}
+      ></div>
+      <div
+        ref={secondLayer}
+        className="fixed inset-0 z-[5000] w-screen h-screen bg-white"
+        // style={{ backgroundColor: "#3b82f6" }}
+      ></div>
     </TransitionRouter>
   );
 }

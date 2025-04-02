@@ -42,8 +42,9 @@ const HomePageContent: React.FC = () => {
     setLocaleCookie();
   }, [locale]);
   useEffect(() => {
+    if (!data) return;
     setSections(data);
-  }, [data, sections]);
+  }, [data]);
   useEffect(() => {
     const videoElement = videoRef.current;
     const handleVideoCanPlay = () => {
@@ -86,7 +87,8 @@ const HomePageContent: React.FC = () => {
     Flip
   );
   useGSAP(() => {
-    const sections = sectionRefs.current;
+    if (!sections || sections.length === 0) return;
+    const sectionElements = sectionRefs.current;
     const movableArray: HTMLDivElement[] = gsap.utils.toArray(".movable");
     const scrolll = gsap.utils.toArray(".scroll-indicator");
     const snapPoints: number[] = [];
@@ -130,13 +132,13 @@ const HomePageContent: React.FC = () => {
         ease: "none",
       });
       function scrollToSection(index: number) {
-        const target = sections[index];
+        const target = sectionElements[index];
         if (target) {
           smoother.scrollTo(target, true);
         }
       }
-      sections.forEach((panel, index) => {
-        const h = gsap.getProperty(panel, "height");
+      sectionElements.forEach((panel, index) => {
+        // const h = gsap.getProperty(panel, "height");
         ScrollTrigger.create({
           id: "fisrt",
           trigger: panel,
