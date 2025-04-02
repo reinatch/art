@@ -1,6 +1,4 @@
-// CustomRadioMaterial.jsx
 import React from "react";
-
 interface CustomRadioMaterialProps {
   id: string;
   label: string;
@@ -9,7 +7,6 @@ interface CustomRadioMaterialProps {
   checked: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
-
 const CustomRadioMaterial: React.FC<CustomRadioMaterialProps> = ({
   id,
   label,
@@ -18,8 +15,6 @@ const CustomRadioMaterial: React.FC<CustomRadioMaterialProps> = ({
   name,
   onChange,
 }) => {
-  // console.log("Rendering CustomRadioMaterial - Checked:", checked, id, value); // Check if the checked status updates correctly
-
   return (
     <div className="flex items-center mr-2 ">
       <input
@@ -49,5 +44,4 @@ const CustomRadioMaterial: React.FC<CustomRadioMaterialProps> = ({
     </div>
   );
 };
-
 export default CustomRadioMaterial;

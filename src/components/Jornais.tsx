@@ -6,7 +6,6 @@ import { useWindowSize } from "@custom-react-hooks/use-window-size";
 import Link from "next/link";
 import { ImageMedia } from "@/utils/types";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 interface Jornais {
   capa: ImageMedia;
   contra: ImageMedia;
@@ -20,7 +19,6 @@ interface ShowcaseProps {
   jornaisData: Jornais[] | undefined;
   cardWidth: number;
 }
-
 const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
   const [, setHoveredCardId] = useState<number | null>(null);
   const [flippedCardId, setFlippedCardId] = useState<number | null>(1946);
@@ -31,54 +29,39 @@ const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
   const mm = gsap.matchMedia();
   const showcaseCount = jornaisData ? jornaisData.length : 0;
   const centerIndex = Math.floor(showcaseCount / 2);
-  const depthFactor = 1; // Adjust this to control the depth effect
-
+  const depthFactor = 1;
   useGSAP(() => {
     mm.add("(max-width: 899px)", () => {
       const showcaseCards = document.querySelectorAll(".jornais--cards .card");
       showcaseCards.forEach((card, index) => {
         const offset = 30 * index;
-        // console.log(offset, "offfffffffffffffffffffffffffffffff")
         card.setAttribute("style", `left: ${offset}vw;`);
       });
     });
   }, [showcaseCount, windowSize.width]);
-
   const handleMEnter = contextSafe((id: number, index: number) => {
-    // console.log(windowSize,"ssssssssssssssssssssssssssssssssssssssssssss")
     setHoveredCardId(id);
     const showcaseCards: HTMLElement[] = gsap.utils.toArray(
       ".jornais--cards .card"
     );
-    // const { cardWidth, cardGap } = calculateDimensions();
-
     mm.add("(min-width: 900px)", () => {
       showcaseCards.forEach((card, i) => {
         let zOffset = 0;
-
         if (i === index) {
           zOffset = 0;
-          // xOffset = 0;
         } else if (i < index) {
-          // xOffset = -((index - i) * (cardGap + cardWidth));
           zOffset = -(depthFactor * (index - i));
         } else {
-          // xOffset = (i - index) * (cardGap + cardWidth);
           zOffset = -(depthFactor * (i - index));
         }
-
         gsap.to(card, {
-          // x: xOffset / 1000,
           zIndex: zOffset,
           translateZ: `${zOffset}px`,
           duration: 0.1,
-          // ease: 'none',
         });
-        // console.log(`${index} ${hoveredCardId}Card ${i}: xOffset = ${xOffset}, zOffset = ${zOffset}`);
       });
     });
   });
-
   const handleMouseLeave = contextSafe((id: number) => {
     setHoveredCardId(null);
     if (flippedCardId === id) {
@@ -87,7 +70,6 @@ const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
       setFlippedCardId(null);
     }
   });
-
   const handleCardClick = contextSafe((id: number) => {
     const cardInner = document.querySelector(`.card-${id} .card-inner`);
     if (flippedCardId === id) {
@@ -98,13 +80,10 @@ const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
       gsap.to(cardInner, { rotateY: 180, duration: 0.2 });
     }
   });
-
   useEffect(() => {
     const showcaseCards = gsap.utils.toArray(".jornais--cards .card");
-
     showcaseCards.forEach((card, index) => {
       const zIndex = index < centerIndex ? index + 1 : showcaseCount - index;
-
       gsap.set(card as HTMLElement, { zIndex });
     });
   }, [cardWidth, centerIndex, showcaseCount]);
@@ -113,7 +92,6 @@ const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
     const trigger = document.getElementById("jornais");
     const cards = showcaseRef.current?.querySelectorAll(".card");
     const totalCards = cards?.length;
-
     mm.add("(min-width: 900px)", () => {
       if (totalCards) {
         cards.forEach((card, index) => {
@@ -128,7 +106,6 @@ const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
           } else {
             y = -100;
           }
-
           gsap.from(card, {
             x: x,
             y: y,
@@ -143,20 +120,17 @@ const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
               end: () => `+=${windowSize.height}`,
               scrub: 0.1,
               id: `${index}`,
-              // markers:true
             },
           });
         });
       }
     });
   }, [containerRef]);
-
   return (
     <div ref={containerRef} className="jornais">
       <div ref={showcaseRef} className="jornais--cards h-auto py-8">
         {jornaisData &&
           jornaisData.map((card, index) => {
-            //  console.log(`Card ${index} data:`, card.capa);
             return (
               <div
                 key={card.capa.ID}
@@ -173,6 +147,7 @@ const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
                       src={card.capa.url}
                       alt={card.capa.alt}
                       className="w-full h-auto object-contain block"
+                      loading="lazy"
                     />
                   </div>
                   <div className="card-back ">
@@ -184,6 +159,7 @@ const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
                           src={card.contra.url}
                           alt={card.contra.alt}
                           className="w-full h-auto object-cover block"
+                          loading="lazy"
                         />
                       </div>
                     </div>
@@ -209,5 +185,4 @@ const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
     </div>
   );
 };
-
 export default Jornais;

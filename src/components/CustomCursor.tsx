@@ -8,21 +8,15 @@ export default function CustomCursor() {
   const cursorShapeRef = useRef<HTMLDivElement>(null);
   const xTo = useRef<(value: number) => void>(() => {});
   const yTo = useRef<(value: number) => void>(() => {});
-
   const [isClient, setIsClient] = useState(false);
-
   useEffect(() => {
     setIsClient(true);
     gsap.registerPlugin(ScrollTrigger, useGSAP);
   }, []);
-
   useGSAP(() => {
     if (!isClient) return;
-
     const cursor = cursorRef.current;
-
     if (!cursor) return;
-
     gsap.set(cursor, { xPercent: -50, yPercent: -50 });
     xTo.current = gsap.quickTo(cursor, "x", {
       duration: 0.016,
@@ -42,14 +36,11 @@ export default function CustomCursor() {
         }
       },
     });
-
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, [isClient]);
-
   if (!isClient) return null;
-
   return (
     <div
       ref={cursorRef}

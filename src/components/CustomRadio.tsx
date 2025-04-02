@@ -1,6 +1,4 @@
-// CustomRadio.jsx
 import React from "react";
-
 interface CustomRadioProps {
   id: string;
   label: string;
@@ -9,7 +7,6 @@ interface CustomRadioProps {
   checked: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
-
 const CustomRadio: React.FC<CustomRadioProps> = ({
   id,
   label,
@@ -18,8 +15,6 @@ const CustomRadio: React.FC<CustomRadioProps> = ({
   name,
   onChange,
 }) => {
-  // console.log("Rendering CustomRadio - Checked:", checked, id, value); // Check if the checked status updates correctly
-
   return (
     <div className="flex items-end mr-2">
       <input
@@ -46,5 +41,4 @@ const CustomRadio: React.FC<CustomRadioProps> = ({
     </div>
   );
 };
-
 export default CustomRadio;

@@ -5,20 +5,17 @@ import Image from "next/image";
 import { useWindowSize } from "@custom-react-hooks/use-window-size";
 import { ImageMedia } from "@/utils/types";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 interface Card {
   title: string;
   lista: string;
   capa: ImageMedia;
   thumbnail: ImageMedia;
 }
-
 interface ShowcaseProps {
   cardData: Card[] | undefined;
   cardWidth: number;
   sectionID: string;
 }
-
 const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
   const [, setHoveredCardId] = useState<number | null>(null);
   const [flippedCardId, setFlippedCardId] = useState<number | null>(408);
@@ -29,25 +26,21 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
   const showcaseCount = cardData ? cardData.length : 0;
   const centerIndex = Math.floor(showcaseCount / 2);
   const depthFactor = 1;
-
   const mm = gsap.matchMedia();
   useGSAP(() => {
     mm.add("(max-width: 899px)", () => {
       const showcaseCards = document.querySelectorAll(".showcase--cards .card");
       showcaseCards.forEach((card, index) => {
         const offset = 80 * (showcaseCount - 1 - index);
-        // console.log(offset, "offfffffffffffffffffffffffffffffff")
         card.setAttribute("style", `left: ${offset}vw;`);
       });
     });
   }, [showcaseCount, windowSize.width]);
-
   const handleMEnter = contextSafe((id: number, index: number) => {
     setHoveredCardId(id);
     const showcaseCards: HTMLElement[] = gsap.utils.toArray(
       ".showcase--cards .card"
     );
-
     mm.add("(min-width: 900px)", () => {
       showcaseCards.forEach((card, i) => {
         let zOffset = 0;
@@ -66,7 +59,6 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
       });
     });
   });
-
   const handleMouseLeave = contextSafe((id: number) => {
     setHoveredCardId(null);
     if (flippedCardId === id) {
@@ -75,7 +67,6 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
       setFlippedCardId(null);
     }
   });
-
   const handleCardClick = contextSafe((id: number, index: number) => {
     const cardInner = document.querySelector(`.card-${id} .card-inner`);
     if (flippedCardId === id) {
@@ -85,7 +76,6 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
       setFlippedCardId(id);
       gsap.to(cardInner, { rotateY: 180, duration: 0.2 });
     }
-
     mm.add("(max-width: 899px)", () => {
       const showcaseCards: HTMLElement[] = gsap.utils.toArray(
         ".showcase--cards .card"
@@ -104,7 +94,6 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
       });
     });
   });
-
   useGSAP(() => {
     gsap.registerPlugin(ScrollTrigger);
     const trigger = document.getElementById("servicos");
@@ -145,7 +134,6 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
       }
     });
   }, [containerRef]);
-
   useGSAP(() => {
     const mm = gsap.matchMedia();
     const showcaseCards = gsap.utils.toArray(".showcase--cards .card");
@@ -162,7 +150,6 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
       });
     });
   }, [cardWidth, centerIndex, showcaseCount]);
-
   return (
     <div ref={containerRef} className="showcase w-full md:w-auto">
       <div
@@ -186,9 +173,12 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
                     src={card.capa.url}
                     alt={card.capa.alt}
                     className="w-full h-auto object-contain block"
+                    loading="lazy"
                   />
                   <div className="card--text text-center">
-                    <span className="text-xl md:text-4xl relative bottom-4">{card.title}</span>
+                    <span className="text-xl md:text-4xl relative bottom-4">
+                      {card.title}
+                    </span>
                   </div>
                 </div>
                 <div className="card-back bg-red-500">
@@ -209,6 +199,7 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
                     src={card.thumbnail.url}
                     alt={card.thumbnail.alt}
                     className="absolute bottom-8 right-8 w-[10vh] h-auto object-contain block"
+                    loading="lazy"
                   />
                 </div>
               </div>
@@ -218,5 +209,4 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
     </div>
   );
 };
-
 export default Showcase;

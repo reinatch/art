@@ -2,14 +2,12 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
-
 interface VideoComponentProps {
   src?: string;
   poster: string;
   overlay?: boolean;
   position?: "left" | "right" | "random";
 }
-
 const VideoComponent: React.FC<VideoComponentProps> = ({
   poster,
   overlay = false,
@@ -19,7 +17,6 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
     top: string;
     left: string;
   }>({ top: "0%", left: "0%" });
-
   useEffect(() => {
     if (position === "random") {
       const top = `${Math.random() * 80}%`;
@@ -27,7 +24,6 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
       setRandomPosition({ top, left });
     }
   }, [position]);
-
   const handleMouseEnter = () => {
     if (position === "random") {
       const top = `${Math.random() * 80}%`;
@@ -38,7 +34,6 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
   const getRandomDuration = (min: number, max: number) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
-
   useEffect(() => {
     const movableElements = gsap.utils.toArray(".movable");
     movableElements.forEach((value) => {
@@ -52,10 +47,8 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
       });
     });
   }, []);
-
   const positionClass =
     position === "left" ? "left-0" : position === "right" ? "right-0" : "";
-
   return (
     <div
       className={`w-40 absolute ${positionClass} movable `}
@@ -73,6 +66,7 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
         alt="Thumbnail"
         width={200}
         height={200}
+        loading="lazy"
         className={`object-contain rounded-lg floating ${
           overlay ? "mix-blend-multiply" : "mix-blend-normal"
         }`}
@@ -80,5 +74,4 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
     </div>
   );
 };
-
 export default VideoComponent;

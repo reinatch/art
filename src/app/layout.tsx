@@ -1,11 +1,11 @@
 // app/layout.tsx
-
 import localFont from "next/font/local";
 import type { Metadata } from "next";
 import "./globals.scss";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Template from "@/components/transitionTemplate";
+// import Template from "@/components/transitionTemplate";
+import { TemplateTransition } from "@/providers/animationTransition";
 import { TabsProvider } from "@/lib/TabsContext";
 import ReactQueryProvider from "@/providers/react-query-provider";
 import Sitemap from "@/components/Sitemap";
@@ -18,7 +18,6 @@ import { DataFetchProvider } from "@/lib/DataFetchContext";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { getLocale } from "next-intl/server";
-
 const suisse_mono = localFont({
   src: "./fonts/SuisseIntlMono-Regular.ttf",
   variable: "--suisse_mono",
@@ -37,14 +36,11 @@ const suisse_works = localFont({
   weight: "100 900",
   display: "swap",
 });
-
 export const metadata: Metadata = {
   title: "ARTWORKS",
   description: "art works",
 };
-
 export const revalidate = 3600;
-
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -53,38 +49,37 @@ export default async function RootLayout({
   const locale = (await getLocale()) as "en" | "pt";
   setRequestLocale(locale);
   const messages = await getMessages({ locale });
-
   return (
     <html
       lang={locale}
-      className="snap-y snap-proximity "
+      className="snap-y snap-proximity"
       suppressHydrationWarning
     >
       <body
         className={`${suisse_mono.variable} ${suisse_intl.variable} ${suisse_works.variable} !cursor-none overflow-x-hidden font-intl`}
       >
         <NextIntlClientProvider messages={messages}>
+                <TemplateTransition>
           <DataFetchProvider>
-          <ReactQueryProvider>
-            <CursorContextProvider>
-              <ToggleSearchProvider>
-                <ToggleContactProvider>
-                  <TabsProvider>
-                    <ThumbnailsProvider>
-                      <CustomCursor />
-                      <Template>
-                        <Header />
-                        {children}
-                        <Footer />
-                      </Template>
-                      <Sitemap />
-                    </ThumbnailsProvider>
-                  </TabsProvider>
-                </ToggleContactProvider>
-              </ToggleSearchProvider>
-            </CursorContextProvider>
+            <ReactQueryProvider>
+              <CursorContextProvider>
+                <CustomCursor />
+                  <ToggleSearchProvider>
+                    <ToggleContactProvider>
+                      <TabsProvider>
+                        <ThumbnailsProvider>
+                          <Header />
+                          {children}
+                          <Footer />
+                          <Sitemap />
+                        </ThumbnailsProvider>
+                      </TabsProvider>
+                    </ToggleContactProvider>
+                  </ToggleSearchProvider>
+              </CursorContextProvider>
             </ReactQueryProvider>
           </DataFetchProvider>
+                </TemplateTransition>
         </NextIntlClientProvider>
       </body>
     </html>

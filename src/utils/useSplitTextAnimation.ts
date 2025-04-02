@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import SplitType from 'split-type';
-
 interface SplitTextAnimationProps {
   trigger: string | HTMLElement;
   splitType?: 'lines' | 'words' | 'chars';
@@ -17,7 +16,6 @@ interface SplitTextAnimationProps {
   markers?: boolean;
   scroller?: string | HTMLElement,
 }
-
 const useSplitTextAnimation = ({
   trigger,
   scroller,
@@ -34,20 +32,14 @@ const useSplitTextAnimation = ({
   markers = false,
 }: SplitTextAnimationProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
     if (!containerRef.current) return;
-
     const splitText = new SplitType(containerRef.current, {
       types: splitType,
     });
-
     const animation = gsap.fromTo(
       splitText[splitType],
       { x, y, scale:1, opacity: 1,
-        // clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 100%)" 
-       
-        // skewY: 5,
       },
       {
         x: 0,
@@ -57,14 +49,10 @@ const useSplitTextAnimation = ({
         duration,
         stagger,
         ease,
-       
-        // skewY: 0,
-        // clipPath:"polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
         scrollTrigger: {
           scroller,
           id: "splitTextAnimation",
           trigger,
-          
           start,
           end,
           scrub,
@@ -72,19 +60,15 @@ const useSplitTextAnimation = ({
         },
       }
     );
-
     const handleResize = () => {
-      splitText.split();  // Re-split text on resize
+      splitText.split({ types: splitType });  
     };
-
     const debouncedResize = () => {
       clearTimeout(debounceTimeout);
       debounceTimeout = setTimeout(handleResize, 500);
     };
-
     let debounceTimeout: NodeJS.Timeout;
     window.addEventListener('resize', debouncedResize);
-
     return () => {
       splitText.revert();
       animation.kill();
@@ -92,8 +76,6 @@ const useSplitTextAnimation = ({
       clearTimeout(debounceTimeout);
     };
   }, [trigger, splitType, x, y, duration, stagger, ease, start, end, scrub, scroller, markers, scale]);
-
   return containerRef;
 };
-
 export default useSplitTextAnimation;

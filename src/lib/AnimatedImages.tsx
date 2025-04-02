@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import useImageAnimation from '@/utils/useImageAnimation';
-
 interface AnimatedImageProps {
   children: ReactNode; // Accepts any children elements
   trigger: string | HTMLElement;
@@ -16,7 +15,6 @@ interface AnimatedImageProps {
   scrub?: boolean;
   scroller?: string | HTMLElement,
 }
-
 const AnimatedImages: React.FC<AnimatedImageProps> = ({
   children,
   trigger,
@@ -46,7 +44,6 @@ const AnimatedImages: React.FC<AnimatedImageProps> = ({
     scrub,
      scroller
   });
-
   return (
     <>
       {React.Children.map(children, (child, index) =>
@@ -59,5 +56,4 @@ const AnimatedImages: React.FC<AnimatedImageProps> = ({
     </>
   );
 };
-
 export default AnimatedImages;

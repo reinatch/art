@@ -1,40 +1,46 @@
-'use client';
-import { usePathname, useRouter } from 'next/navigation';
-import TransitionLink from './TransitionLink';
-import { useLocale } from 'next-intl';
-import {setUserLocale} from '@/services/locale';
-import {Locale} from '@/i18n/config';
+"use client";
+
+import { useState } from "react";
+import { useLocale } from "next-intl";
+import { setUserLocale } from "@/services/locale";
+import { Locale } from "@/i18n/config";
+import { Link as TransitionLink } from "next-transition-router";
+import { usePathname } from "next/navigation";
 
 export default function LocaleSwitcher() {
   const pathname = usePathname();
-  const router = useRouter();
   const activeLocale = useLocale();
+  const [currentLocale, setCurrentLocale] = useState<Locale>(activeLocale as Locale);
 
   const handleClick = async (locale: Locale) => {
     await setUserLocale(locale);
-    router.refresh();
+    setCurrentLocale(locale); // Update the local state
+    window.location.reload(); // Reload the page to apply the new locale
   };
+
   return (
-      <div className="flex gap-1 font-mono">
-
-          <div key={"pt"}>
-            <TransitionLink href={pathname}>
-      
-
-                <button className={`${activeLocale === "pt" ? "underline underline-offset-4 md:underline-offset-8 decoration-1" : ""}`} onClick={() => handleClick("pt")}>
-                PT
-              </button>
-            </TransitionLink>
-          </div>
-          \ 
-          <div key={"en"}>
-            <TransitionLink href={pathname}>
-              <button className={`${activeLocale === "en" ? "underline underline-offset-4 md:underline-offset-8 decoration-1" : ""}`} onClick={() => handleClick("en")}>
-                EN
-              </button>
-            </TransitionLink>
-          </div>
- 
-      </div>
+    <div className="flex gap-1 font-mono">
+      <TransitionLink href={pathname}
+        className={`${
+          currentLocale === "pt"
+            ? "underline underline-offset-4 md:underline-offset-8 decoration-1"
+            : ""
+        }`}
+        onClick={() => handleClick("pt")}
+      >
+        PT
+      </TransitionLink>
+      \
+      <TransitionLink href={pathname}
+        className={`${
+          currentLocale === "en"
+            ? "underline underline-offset-4 md:underline-offset-8 decoration-1"
+            : ""
+        }`}
+        onClick={() => handleClick("en")}
+      >
+        EN
+        </TransitionLink>
+    </div>
   );
 }

@@ -266,7 +266,7 @@ function get_projectos(WP_REST_Request $request) {
             $query->the_post();
             
             $featured_image_id = get_post_thumbnail_id();
-            $featured_image = wp_get_attachment_image_src($featured_image_id, 'thumbnail');
+            $featured_image = wp_get_attachment_image_src($featured_image_id, 'full');
 
             if ($featured_image) {
                 $featured_image_url = $featured_image[0];
@@ -525,7 +525,7 @@ function register_rest_images() {
 
 function get_rest_featured_image($object, $field_name, $request) {
     if (!empty($object['featured_media'])) {
-        $img = wp_get_attachment_image_src($object['featured_media'], 'app-thumb');
+        $img = wp_get_attachment_image_src($object['featured_media'], 'full'); // Get the full image size
         if ($img) {
             return array(
                 'url' => $img[0], // The URL of the image

@@ -1,5 +1,3 @@
-// // app/lib/HorizontalSnapSlider.tsx
-
 "use client";
 import { useRef, useEffect } from "react";
 import { useThumbnailsContext } from "@/lib/useThumbnailsContext";
@@ -8,22 +6,18 @@ import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useWindowSize } from "@custom-react-hooks/use-window-size";
 import { Observer } from "gsap/Observer";
-
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
-
 import { useGSAP } from "@gsap/react";
 interface GaleriaImage {
   ID: number;
   url: string;
   alt: string;
 }
-
 interface HorizontalSnapSliderProps {
   galeria: GaleriaImage[];
   video: string;
 }
-
 const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
   galeria,
   video,
@@ -37,7 +31,6 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
   } = useThumbnailsContext();
   const windowSize = useWindowSize();
   useEffect(() => {}, [selectedThumbnail]);
-
   useEffect(() => {
     const thumbnails = video
       ? [
@@ -48,32 +41,6 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
     setThumbnails(thumbnails);
     setSelectedThumbnail(video ? 0 : galeria[0].ID);
   }, [galeria, video, setSelectedThumbnail, setThumbnails]);
-  // useEffect(() => {
-  //   const handleKeyDown = (event: KeyboardEvent) => {
-  //     if (event.key === "ArrowRight") {
-  //       // console.log(`Key pressed: ${event.key}`);
-  //       if (scrollContainerRef.current) {
-  //         gsap.to(scrollContainerRef.current, { scrollTo: { x: "+=" + window.innerWidth }, duration: 0.5 });
-  //       }
-  //     } else if (event.key === "ArrowLeft") {
-  //       // console.log(`Key pressed: ${event.key}`);
-  //       if (scrollContainerRef.current) {
-  //         gsap.to(scrollContainerRef.current, { scrollTo: { x: "-=" + window.innerWidth }, duration: 0.5 });
-  //       }
-  //     }
-  //   };
-
-  //   // const handleClick = (index: number) => {
-  //   //   console.log(`Thumbnail clicked: ${index}`);
-  //   // };
-
-  //   window.addEventListener("keydown", handleKeyDown);
-
-  //   return () => {
-  //     window.removeEventListener("keydown", handleKeyDown);
-  //   };
-  // }, []);
-
   useGSAP(() => {
     gsap.registerPlugin(
       ScrollTrigger,
@@ -84,13 +51,9 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
     );
     const mm = gsap.matchMedia();
     mm.add("(min-width: 700px)", () => {
-      // const panelsContainer = scrollContainerRef.current;
       const projectDetail = document.getElementById("projectDetail");
-      // const sectionEls = thumbRefs.current;
       const sectionEls = thumbRefs.current.filter(Boolean);
-      // console.log(sectionEls, panelsContainer)
       const totalWidth = (sectionEls.length - 1) * windowSize.height;
-
       if (sectionEls.length > 0) {
         gsap
           .timeline({
@@ -98,7 +61,6 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
               trigger: projectDetail,
               pin: true,
               pinSpacing: true,
-              // markers: true,
               snap: {
                 snapTo: 1 / (sectionEls.length - 1),
                 duration: { min: 0.1, max: 0.3 },
@@ -123,15 +85,11 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
       }
     });
   }, [galeria, video]);
-
   const extractSrc = (str: string): string | null => {
     const match = str.match(/src="([^"]+)"/);
     return match ? match[1] : null;
   };
-
   const videoSrc = extractSrc(video);
-  // console.log(videoSrc + "?autoplay=1")
-
   return (
     <div
       className="flex  flex-col md:flex-row gap-8 md:gap-0 h-full md:h-[65vh] pb-[40vh] md:pb-0 w-screen overflow-y-scroll md:overflow-y-hidden"
@@ -182,7 +140,6 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
           ref={(el: HTMLDivElement | null) => {
             thumbRefs.current[videoSrc ? index + 1 : index] = el;
           }}
-          // onClick={() => handleClick(index)}
           className="h-auto md:h-full w-[100vw] snap-start px-4 md:px-0"
         >
           <div className="w-full md:w-screen h-full m-auto flex justify-center items-center">
@@ -192,6 +149,7 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
               width={500}
               height={600}
               className=" w-auto h-full object-contain rounded-md bg-gray-50"
+              loading="lazy"
             />
           </div>
         </div>
@@ -199,5 +157,4 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
     </div>
   );
 };
-
 export default HorizontalSnapSlider;

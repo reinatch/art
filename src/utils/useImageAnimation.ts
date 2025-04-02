@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 
-// Custom Hook to animate images with configurable properties
 interface ImageAnimationProps {
   trigger: string | HTMLElement;
   x?: number;
@@ -15,9 +14,7 @@ interface ImageAnimationProps {
   end?: string;
   scrub?: boolean;
   scroller?: string | HTMLElement,
-
 }
-
 const useImageAnimation = ({
   trigger,
   scroller,
@@ -33,12 +30,11 @@ const useImageAnimation = ({
   scrub = false,
 }: ImageAnimationProps) => {
   const imageRefs = useRef<HTMLDivElement[]>([]);
-
   useEffect(() => {
     if (!imageRefs.current.length) return;
     const proxy = { skew: 0 };
-    const skewSetter = gsap.quickSetter(imageRefs.current, "skewY", "deg"); // fast
-    const clamp = gsap.utils.clamp(-20, 20); // don't let the skew go beyond 20 degrees. 
+    const skewSetter = gsap.quickSetter(imageRefs.current, "skewY", "deg"); 
+    const clamp = gsap.utils.clamp(-20, 20); 
     gsap.fromTo(
       imageRefs.current,
       { x, y, scale, opacity: 1 },
@@ -57,10 +53,10 @@ const useImageAnimation = ({
           start,
           end,
           scrub,
-          // markers: true,
+          
           onUpdate: (self) => {
             const skew = clamp(self.getVelocity() / -300);
-            // only do something if the skew is MORE severe. Remember, we're always tweening back to 0, so if the user slows their scrolling quickly, it's more natural to just let the tween handle that smoothly rather than jumping to the smaller skew.
+            
             if (Math.abs(skew) > Math.abs(proxy.skew)) {
               proxy.skew = skew;
               gsap.to(proxy, {skew: 0, duration: 0.4, ease: "power3", overwrite: true, onUpdate: () => skewSetter(proxy.skew)});
@@ -71,8 +67,6 @@ const useImageAnimation = ({
     );
     gsap.set(imageRefs.current, {transformOrigin: "right center", force3D: true});
   }, [trigger, x, y, scale, opacity, duration, stagger, ease, start, end, scrub, scroller]);
-
   return imageRefs;
 };
-
 export default useImageAnimation;

@@ -1,7 +1,6 @@
-// src/components/CustomCursorContext.tsx
+
 "use client"
 import { createContext, useState, useContext, ReactNode } from 'react';
-
 interface CursorContextType {
   initialCursorVariant: string;
   setInitialCursorVariant: (variant: string) => void;
@@ -9,9 +8,7 @@ interface CursorContextType {
   setAnimateCursorVariant: (variant: string) => void;
   animateCursor: (variant: string) => void;
 }
-
 const CursorContext = createContext<CursorContextType | undefined>(undefined);
-
 export const useCursorContext = () => {
   const context = useContext(CursorContext);
   if (!context) {
@@ -19,20 +16,16 @@ export const useCursorContext = () => {
   }
   return context;
 };
-
 interface CursorContextProviderProps {
   children: ReactNode;
 }
-
 export const CursorContextProvider = ({ children }: CursorContextProviderProps) => {
   const [initialCursorVariant, setInitialCursorVariant] = useState('');
   const [animateCursorVariant, setAnimateCursorVariant] = useState('');
-
   const animateCursor = (variant: string) => {
     setInitialCursorVariant(animateCursorVariant);
     setAnimateCursorVariant(variant);
   };
-
   return (
     <CursorContext.Provider
       value={{

@@ -1,21 +1,19 @@
 "use client";
-
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useToggleContact } from "@/lib/useToggleContact";
-import TransitionLink from "./TransitionLink";
+// import { Link as TransitionLink } from "next-transition-router";
+import { Link as TransitionLink } from "next-transition-router";
 import { useTranslations } from "next-intl";
 import { useTabsContext } from "@/lib/TabsContext";
 import gsap from "gsap";
 import { useWindowSize } from "@custom-react-hooks/use-window-size";
 import { isMobile as detectMobile } from "react-device-detect";
-
 interface NavbarProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
 export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
   const windowSize = useWindowSize();
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
@@ -27,7 +25,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
   const p = useTranslations("ProjectDetailPage");
   const { isContactOpen, closeContact, openContact } = useToggleContact();
   const [isMobile, setIsMobile] = useState(false);
-
   useEffect(() => {
     setIsMobile(detectMobile);
   }, [windowSize]);
@@ -43,7 +40,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
     }
     setIsOpen(true);
   };
-
   const handleMouseLeave = () => {
     const id = setTimeout(() => {
       setIsOpen(false);
@@ -56,20 +52,18 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
     }, 3000);
     setTimeoutId(id);
   }, [setIsOpen]);
-
   const handleContactClick = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     e.preventDefault();
     // console.log(e)
-    // console.log("Contact clicked");  // Debug: Check if this is logged
+    console.log("Contact clicked");  // Debug: Check if this is logged
     if (isContactOpen) {
       closeContact();
     } else {
       openContact();
     }
   };
-
   //mobile
   const {
     selectedTab,
@@ -89,20 +83,16 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
   ) => {
     e.preventDefault();
     setSelectedTab(slug);
-
     if (scrollSmootherInstanceRef.current) {
       const sectionsOffsetTop = sectionRefs.current.map((section) => ({
         id: section?.id,
         offsetTop: section?.offsetTop ?? 0,
       }));
-
       const targetSection = sectionsOffsetTop.find(
         (section) => section.id === slug
       );
-
       if (targetSection) {
         let targetOffsetTop = targetSection.offsetTop;
-
         if (slug === "teams") {
           const targetIndex = sectionsOffsetTop.findIndex(
             (section) => section.id === slug
@@ -114,9 +104,7 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
             targetOffsetTop = windowSize.height;
           }
         }
-
-        console.log(`Scrolling to ${slug} at offset ${targetOffsetTop}`);
-
+        // console.log(`Scrolling to ${slug} at offset ${targetOffsetTop}`);
         gsap.to(window, {
           scrollTo: {
             y: targetOffsetTop,
@@ -127,7 +115,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
       }
     }
   };
-
   return (
     <div
       className={`fixed left-0 top-0 w-screen md:py-10 md:w-full mx-auto z-[1000]  ${
@@ -158,6 +145,7 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                 alt="Logo Closed"
                 width={300}
                 height={50}
+                loading="lazy"
                 className={`relative w-auto h-[5dvh] left-0 transition-opacity duration-100 ease-in-out ${
                   isHovered || isOpen || !isHomePage
                     ? "opacity-0"
@@ -169,6 +157,7 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                 alt="Logo Open"
                 width={300}
                 height={50}
+                loading="lazy"
                 className={`absolute hidden md:block w-auto h-[5dvh] left-0 transition-opacity duration-100 ease-in-out ${
                   isHovered || isOpen || !isHomePage
                     ? "opacity-100"
@@ -177,7 +166,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
               />
             </div>
           </TransitionLink>
-
           {/* //mobile */}
           <TransitionLink
             className={`${
@@ -196,16 +184,17 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                 alt="Logo Closed"
                 width={300}
                 height={50}
+                loading="lazy"
                 className={`relative w-auto h-full left-0 transition-opacity duration-100 ease-in-out ${
                   isHomePage ? "opacity-100" : "opacity-0"
                 } `}
               />
-
               <Image
                 src={"/logo.svg"}
                 alt="Logo Open"
                 width={300}
                 height={50}
+                loading="lazy"
                 className={`absolute md:hidden w-auto h-[4.5dvh] transition-opacity duration-100 ease-in-out ${
                   isHomePage ? "opacity-0" : "opacity-100"
                 }`}
@@ -213,7 +202,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
             </div>
           </TransitionLink>
         </>
-
         {isProjectPage ? (
           <div className="flex items-start h-full projectoBack ">
             <TransitionLink href={`/projects/`}>
@@ -245,7 +233,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                 <path strokeWidth="1" d="M0 15h30M15 0v30" />
               </svg>
             </button>
-
             <nav
               ref={menuRef}
               className={` pb-1 text-xl absolute uppercase items-end right-full leading-3 mr-8 bottom-0 space-x-8 flex z-50 transform transition-all duration-200 ease-in-out ${
@@ -261,7 +248,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                 <span className={`icon ${isProPage ? "" : "hidden"}`}>→</span>{" "}
                 {t("projects")}
               </TransitionLink>
-
               <TransitionLink
                 href={`/production`}
                 className={`flex gap-2 pt-1 whitespace-nowrap text-black`}
@@ -271,7 +257,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                 </span>{" "}
                 {t("production")}
               </TransitionLink>
-
               <TransitionLink
                 href={`/residencias`}
                 className={`flex gap-2 pt-1 whitespace-nowrap text-black`}
@@ -288,7 +273,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                 <span className={`icon ${isAboutPage ? "" : "hidden"}`}>→</span>{" "}
                 {t("about")}
               </TransitionLink>
-
               <div
                 className={`block pt-1 whitespace-nowrap text-black`}
                 onClick={handleContactClick}
@@ -301,7 +285,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
             </nav>
           </div>
         )}
-
         <div
           className={`cenas_essencials ${
             tabsFooter ? "" : "hidden"
@@ -333,6 +316,7 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                   alt={""}
                   width={100}
                   height={100}
+                  loading="lazy"
                 />
               ) : null}
             </a>

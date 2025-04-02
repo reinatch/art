@@ -1,12 +1,12 @@
 import gsap from 'gsap';
 
 interface HorizontalLoopConfig {
-  speed?: number; // Speed factor (default: 1)
-  paused?: boolean; // Start in paused state
-  repeat?: number; // Number of repeats (default: -1 for infinite)
-  reversed?: boolean; // Start in reversed mode
-  paddingRight?: number; // Right padding for the loop
-  snap?: number | false; // Snap points for smoother motion
+  speed?: number; 
+  paused?: boolean; 
+  repeat?: number; 
+  reversed?: boolean; 
+  paddingRight?: number; 
+  snap?: number | false; 
 }
 
 function horizontalLoop(
@@ -30,7 +30,7 @@ function horizontalLoop(
   const pixelsPerSecond = (config.speed ?? 1) * 100;
   const snap = config.snap === false ? (v: number) => v : gsap.utils.snap(config.snap ?? 1);
 
-  // Set xPercent for each item for responsiveness
+  
   gsap.set(elements, {
     xPercent: (i, el) => {
       const width = (widths[i] = parseFloat(gsap.getProperty(el, "width", "px") as string));
@@ -50,7 +50,7 @@ function horizontalLoop(
     elements[length - 1].offsetWidth * (parseFloat(gsap.getProperty(elements[length - 1], "scaleX") as string) || 1) +
     (config.paddingRight ?? 0);
 
-  // Loop to animate each item
+  
   elements.forEach((item, i) => {
     const curX = (xPercents[i] / 100) * widths[i];
     const distanceToStart = item.offsetLeft + curX - startX;
@@ -96,7 +96,7 @@ function horizontalLoop(
     return tl.tweenTo(time, vars);
   }
 
-  // Add custom methods
+  
   tl.next = (vars: gsap.TweenVars = {}) => toIndex(curIndex + 1, vars);
   tl.previous = (vars: gsap.TweenVars = {}) => toIndex(curIndex - 1, vars);
   tl.current = () => curIndex;

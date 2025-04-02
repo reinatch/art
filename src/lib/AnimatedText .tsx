@@ -1,10 +1,9 @@
-import React, { ReactNode } from 'react';
-import useSplitTextAnimation from '@/utils/useSplitTextAnimation';
-
+import React, { ReactNode } from "react";
+import useSplitTextAnimation from "@/utils/useSplitTextAnimation";
 interface AnimatedTextProps {
   children: ReactNode;
   trigger: string | HTMLElement;
-  splitType?: 'lines' | 'words' | 'chars';
+  splitType?: "lines" | "words" | "chars";
   x?: number;
   y?: number;
   duration?: number;
@@ -15,13 +14,12 @@ interface AnimatedTextProps {
   end?: string;
   scrub?: boolean;
   markers?: boolean;
-  scroller?: string | HTMLElement,
+  scroller?: string | HTMLElement;
 }
-
 const AnimatedText: React.FC<AnimatedTextProps> = ({
   children,
   trigger,
-  splitType = 'chars',
+  splitType = "chars",
   x,
   y,
   duration,
@@ -32,7 +30,7 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
   end,
   scrub,
   scroller,
-  markers
+  markers,
 }) => {
   const textRef = useSplitTextAnimation({
     trigger,
@@ -47,14 +45,12 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
     end,
     scrub,
     scroller,
-    markers
+    markers,
   });
-
   return (
     <div ref={textRef} className="animated-text kerning">
       {children}
     </div>
   );
 };
-
 export default AnimatedText;

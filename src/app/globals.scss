@@ -1,9 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 // @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
-
 // .inter {
 //   font-family: "Inter Tight", sans-serif;
 //   // font-optical-sizing: auto;
@@ -19,7 +17,6 @@
   font-style: normal;
   font-display: swap; // Add font-display: swap
 }
-
 @font-face {
   font-family: 'suisse_intl';
   src: url('/fonts/suisseintl-regular-webfont.woff2') format('woff2'),
@@ -28,7 +25,6 @@
   font-style: normal;
   font-display: swap; // Add font-display: swap
 }
-
 @font-face {
   font-family: 'suisse_works';
   src: url('/fonts/suisseworks-regular-webfont.woff2') format('woff2'),
@@ -37,21 +33,17 @@
   font-style: normal;
   font-display: swap; // Add font-display: swap
 }
-
 /* Tailwind CSS for #footer_luva and #banner_luva */
 // #footer_luva, #footer_luva.flipping {
 //   visibility: visible;
 // }
-
 // #footer_luva.active {
 //   visibility: hidden;
 // }
-
 // #banner_luva {
 //   aspect-ratio: 1/1;
 //   display: none;
 // }
-
 // #banner_luva.active {
 //   display: block;
 //   z-index: 2000;
@@ -59,8 +51,28 @@
 // #banner-1.active {
 //   display: none;
 // }
-
 /* Initial container (thumbnail) */
+// .grid-item {
+//   margin-bottom: 16px; /* Vertical gap */
+// }
+// .grid-container {
+//   display: grid;
+//   grid-gap: 16px; /* Horizontal and vertical gaps */
+// }
+#banner-1, .footer_luva, .scroll-indicator {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+.footer_luva {
+  contain: layout paint style;
+}
+.grid-item {
+  margin-bottom: 16px; /* Vertical gap */
+}
+.grid-container {
+  display: grid;
+  grid-gap: 16px; /* Horizontal and vertical gaps */
+}
 .initial {
   position: relative;
   width: 180px;
@@ -72,16 +84,13 @@
   justify-content: center;
   z-index: 1;
 }
-
 .thumbnail {
   width: 150px;
   height: 150px;
 }
-
 .thumbnail.active {
   visibility: hidden;
 }
-
 .thumbnail,
 .thumbnail.flipping {
   visibility: visible;
@@ -104,7 +113,6 @@
   pointer-events: none;
   z-index: 999;
 }
-
 .full-size {
   position: relative;
   flex-shrink: 0;
@@ -113,16 +121,13 @@
   aspect-ratio: 1/1;
   display: none;
 }
-
 .full-size.active {
   display: block;
   z-index: 2;
 }
-
 svg text {
   will-change: transform;
 }
-
 .kerning {
   /*  */
   font-kerning: none;
@@ -143,7 +148,6 @@ svg text {
     clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 100%);
   }
 }
-
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #ffffff;
@@ -169,7 +173,6 @@ body {
   opacity: 0;
   transition: opacity 0.5s ease-out;
 }
-
 .fade-in {
   opacity: 1;
   transition: opacity 0.5s ease-in;
@@ -185,7 +188,6 @@ body {
   width: 0px;
   height: 0px;
 }
-
 .snap-parent-y-mandatory {
   scroll-snap-type: y mandatory;
   overflow: scroll;
@@ -193,12 +195,10 @@ body {
   width: 100%;
   -webkit-overflow-scrolling: touch;
 }
-
 header {
   position: fixed;
   height: 10dvh;
 }
-
 .snap-parent-y-proximity {
   scroll-snap-type: y proximity;
   overflow: scroll;
@@ -206,25 +206,21 @@ header {
   width: 100%;
   -webkit-overflow-scrolling: touch;
 }
-
 .snap-child-start {
   opacity: 0.5;
   z-index: 10;
   scroll-snap-align: start;
   flex: none;
 }
-
 .snap-child-center {
   opacity: 0.5;
   z-index: 10;
   scroll-snap-align: center;
   flex: none;
 }
-
 .armonica .base {
   background-color: red;
 }
-
 /* Add these styles to your CSS file */
 .scroll-container {
   display: flex; /* Ensure flex display */
@@ -232,7 +228,6 @@ header {
   scroll-snap-type: y mandatory; /* Enable horizontal scroll snapping */
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on touch devices */
 }
-
 .section {
   scroll-snap-align: start; /* Align each section at the start */
   scroll-snap-stop: always; /* Always snap to this section */
@@ -248,15 +243,12 @@ header {
     @media (max-width: 1920px) {
       grid-template-columns: repeat(9, minmax(5dvw, 7.05dvw));
     }
-
     @media (max-width: 1600px) {
       grid-template-columns: repeat(9, minmax(5dvw, 6.75dvw));
     }
-
     @media (max-width: 1440px) {
       grid-template-columns: repeat(9, minmax(4dvw, 6.5dvw));
     }
-
     @media (max-width: 1220px) {
       grid-template-columns: repeat(9, minmax(4.5dvw, 6dvw));
     }
@@ -295,7 +287,6 @@ header {
       height: 100%;
       // transition: transform 0.3s ease;
     }
-
     .card img {
       height: 100%;
     }
@@ -308,7 +299,6 @@ header {
         width: 60dvw;
       }
     }
-
     .card-inner {
       position: relative;
       width: 100%;
@@ -316,7 +306,6 @@ header {
       // transition: transform 0.5s;
       transform-style: preserve-3d;
     }
-
     .card-front,
     .card-back {
       position: relative;
@@ -325,7 +314,6 @@ header {
       /* backface-visibility: hidden; */
       /* background-color: white; */
     }
-
     .card-back {
       position: absolute;
       left: 0;
@@ -337,7 +325,6 @@ header {
       /* background-color: red; */
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-
       img {
         height: 10dvh;
         width: 10dvh;
@@ -349,7 +336,6 @@ header {
         }
       }
     }
-
     .card--text {
       position: relative;
       width: 100%;
@@ -368,7 +354,6 @@ header {
     }
   }
 }
-
 * {
   box-sizing: border-box;
 }
@@ -385,7 +370,6 @@ header {
   height: 100dvh;
   overflow: hidden;
 }
-
 .cardos {
   position: absolute;
   width: 14rem;
@@ -394,7 +378,6 @@ header {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
 .cardos li {
   list-style: none;
   padding: 0;
@@ -410,7 +393,6 @@ header {
   left: 0;
   border-radius: 0.8rem;
 }
-
 .jornais {
   .jornais--cards {
     display: grid;
@@ -423,14 +405,12 @@ header {
         width: calc(500px * 5);  */
     perspective: 1000px;
     // height: 80dvh;
-
     @media (max-width: 768px) {
       display: grid;
       // transform: translateY(-50%);
       // top: 50%;
     }
   }
-
   .card {
     position: relative;
     // top: 50%;
@@ -453,14 +433,12 @@ header {
       // top: 50%;
     }
   }
-
   .card-inner {
     position: relative;
     width: 100%;
     height: 100%;
     // transition: transform 0.3s ease;
   }
-
   .card img {
     // max-height: 61dvh;
     height: auto;
@@ -473,7 +451,6 @@ header {
       // width: 60dvw;
     }
   }
-
   .card-inner {
     position: relative;
     width: 100%;
@@ -481,7 +458,6 @@ header {
     // transition: transform 0.5s;
     transform-style: preserve-3d;
   }
-
   .card-front,
   .card-back {
     position: relative;
@@ -490,7 +466,6 @@ header {
     /* backface-visibility: hidden; */
     /* background-color: white; */
   }
-
   .card-back {
     position: absolute;
     left: 0;
@@ -503,17 +478,14 @@ header {
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
   }
-
   .card--text {
     /* font-family: altehaasgroteskregular, san-serif; */
     // font-size: 30px;
     position: relative;
     width: 100%;
     height: auto;
-
     /* background: blue; */
   }
-
   * {
     box-sizing: border-box;
   }
@@ -530,7 +502,6 @@ header {
     height: 100dvh;
     overflow: hidden;
   }
-
   .cardos {
     position: absolute;
     width: 14rem;
@@ -539,7 +510,6 @@ header {
     left: 50%;
     transform: translate(-50%, -50%);
   }
-
   .cardos li {
     list-style: none;
     padding: 0;
@@ -559,30 +529,24 @@ header {
 button {
   cursor: none;
 }
-
 #about_aw a,
 #support_artists a,
 #no_entulho a {
   text-decoration: underline;
   text-underline-offset: 0.5em;
-
   margin-top: 1em;
 }
-
 @keyframes floating {
   0% {
     transform: translate(-50%, -50%);
   }
-
   50% {
     transform: translate(-30%, -60%);
   }
-
   100% {
     transform: translate(-50%, -50%);
   }
 }
-
 @keyframes ping {
   0% {
     transform: scale(0.75);
@@ -608,7 +572,6 @@ button {
     transform: translateY(10px);
   }
 }
-
 #no_entulho .rodapeLink p:last-of-type {
   margin-top: 1em;
   // animation: bounceess 1s infinite;
@@ -625,11 +588,9 @@ button {
 #target .line {
   overflow: hidden;
 }
-
 .floating {
   animation: floating 10s infinite;
 }
-
 /* CSS for the always-blinking dash */
 .blinking-dash::after {
   /* content: '|'; Content to display (the blinking dash) */
@@ -638,7 +599,6 @@ button {
 .caret_container {
   position: relative;
 }
-
 .caret_container i {
   position: absolute;
   width: 1px; /* Width of the blinking cursor */
@@ -648,12 +608,10 @@ button {
   animation: blink 800ms step-end infinite; /* Blinking animation */
   opacity: 1; /* Default visible state */
 }
-
 /* Ensures the cursor disappears when the input is focused */
 .caret_container input:focus + i {
   display: none; /* Hide the blinking cursor when the input is focused */
 }
-
 /* The blinking animation */
 @keyframes blink {
   0% {
@@ -666,14 +624,12 @@ button {
     opacity: 1;
   } /* Fully visible at the end */
 }
-
 .search-input-hidden {
   visibility: hidden;
 }
 .search-input-visible {
   visibility: visible;
 }
-
 #residency0 {
   will-change: transform;
   div {
@@ -683,12 +639,10 @@ button {
     will-change: transform;
   }
 }
-
 .footer_luva img {
   transform: initial !important;
   -webkit-transform: initial !important;
 }
-
 #projectDetail {
   .video_wrapper {
     iframe {
@@ -697,7 +651,6 @@ button {
   }
   // border-radius: 10em !important;
 }
-
 #projectDetail iframe {
   height: 65dvh;
   width: 100%;
@@ -709,13 +662,11 @@ button {
       .vp-controls {
         // display: none;
       }
-
       .vp-title {
         // display: none;
       }
     }
   }
-
   @media (max-width: 768px) {
     height: 30dvh;
     width: 100vw;
@@ -729,7 +680,6 @@ button {
   grid-template-areas:
     "title image"
     "subtitle link";
-
   @media (max-width: 768px) {
     grid-template-areas:
       "image"
@@ -742,7 +692,6 @@ button {
   grid-template-areas:
     "image title"
     "subtitle link";
-
   @media (max-width: 768px) {
     grid-template-areas:
       "subtitle"
@@ -751,11 +700,9 @@ button {
       "link";
   }
 }
-
 .capital::first-letter {
   text-transform: uppercase;
 }
-
 #container1::before,
 #container2::before {
   position: absolute;

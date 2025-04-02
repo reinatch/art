@@ -1,6 +1,5 @@
 // Footer.tsx
 "use client";
-
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -10,14 +9,12 @@ import { useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import Search from "@/components/Search";
-import TransitionLink from "./TransitionLink";
+import { Link as TransitionLink } from "next-transition-router";
 import { useLocale, useTranslations } from "next-intl";
 import { useWindowSize } from "@custom-react-hooks/use-window-size";
-
 import LocaleSwitcher from "./Switcher";
 import { useToggleContact } from "@/lib/useToggleContact";
 import { useToggleSearch } from "@/lib/useToggleSearch";
-
 export default function Footer() {
   const pathname = usePathname();
   const locale = useLocale();
@@ -25,7 +22,6 @@ export default function Footer() {
   const t = useTranslations("NavbarLinks");
   const p = useTranslations("ProjectDetailPage");
   const f = useTranslations("Footer");
-
   const {
     selectedTab,
     setSelectedTab,
@@ -44,31 +40,26 @@ export default function Footer() {
   } = useThumbnailsContext();
   const [toMailHovered, setToMailHovered] = useState(false);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
-
   const tabsFooter =
     pathname === `/production` ||
     pathname === `/about` ||
     pathname === `/residencias`;
   const isHome = pathname === `/`;
   const isProjectPage = pathname.startsWith(`/projects/`);
-
   const isMatchingPath =
     pathname === `/production` ||
     pathname === `/about` ||
     pathname === `/residencias` ||
     pathname.startsWith(`/projects/`);
-
   //mobile
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const { isSearchOpen, openSearch, closeSearch } = useToggleSearch();
   const { isContactOpen, openContact, closeContact } = useToggleContact();
-
   const handleContactClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       e.preventDefault();
-
       if (isContactOpen) {
         closeContact();
       } else {
@@ -77,22 +68,18 @@ export default function Footer() {
     },
     [closeContact, isContactOpen, openContact]
   );
-
   const handleTabsClick = useCallback(
     (slug: string, e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
       setSelectedTab(slug);
-
       if (scrollSmootherInstanceRef.current) {
         const sectionsOffsetTop = sectionRefs.current.map((section) => ({
           id: section?.id,
           offsetTop: section?.offsetTop ?? 0,
         }));
-
         const targetSection = sectionsOffsetTop.find(
           (section) => section.id === slug
         );
-
         if (targetSection) {
           let targetOffsetTop = targetSection.offsetTop;
           if (slug === "jornais") {
@@ -113,7 +100,6 @@ export default function Footer() {
               targetOffsetTop = windowSize.height;
             }
           }
-
           gsap.to(window, {
             scrollTo: {
               y: targetOffsetTop,
@@ -126,29 +112,23 @@ export default function Footer() {
     },
     [scrollSmootherInstanceRef, sectionRefs, setSelectedTab, windowSize.height]
   );
-
   const handleThumbailsClick = useCallback(
     (slug: number, e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
       setSelectedThumbnail(slug);
-
       const targetElement = thumbRefs.current.find(
         (thumb) => thumb?.id === `${slug}`
       );
-
       if (targetElement) {
         const sectionsHeights = thumbRefs.current.map((thumb, index) => ({
           id: thumb?.id,
           height: windowSize.height * index,
         }));
-
         const targetSection = sectionsHeights.find(
           (section) => section.id === `${slug}`
         );
-
         if (targetSection) {
           const targetHeight = targetSection.height;
-
           gsap.to(window, {
             scrollTo: {
               y: targetHeight,
@@ -161,15 +141,13 @@ export default function Footer() {
     },
     [thumbRefs, setSelectedThumbnail, windowSize.height]
   );
-
   useGSAP(() => {
     const footer_essencials = document.querySelector("#footer_essencials");
     const footer_wrapper = document.querySelector("#wrapper_footer_luva");
-    console.log(isSearchOpen , "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
+    // console.log(isSearchOpen , "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
     const scrollIndicator = gsap.utils.toArray(".scroll-indicator");
     // if (searchInputRef.current) {
       if (isSearchOpen) {
-        
         gsap.set(scrollIndicator, { autoAlpha: 0 });
         gsap.set(footer_wrapper, { display: "none" });
         gsap.set(footer_essencials, {
@@ -186,15 +164,11 @@ export default function Footer() {
       }else
       {
         gsap.set(footer_wrapper, { display:  "flex" });
-
       // }
-    
   }}, [isSearchOpen]);
-
   const [aspectRatios, setAspectRatios] = useState<{ [key: string]: string }>(
     {}
   );
-
   const handleImageLoad = (
     thumbnailId: string,
     width: number,
@@ -206,7 +180,6 @@ export default function Footer() {
       [thumbnailId]: aspectRatio > 1 ? "landscape" : "portrait",
     }));
   };
-
   // Modular rendering logic for thumbnails
   const renderThumbnails = () => (
     <div
@@ -226,6 +199,7 @@ export default function Footer() {
             alt="Thumbnail"
             width={60}
             height={60}
+            loading="lazy"
             className={`object-cover rounded-[0.2em]  ${
               selectedThumbnail === thumbnail.id ? "opacity-100" : "opacity-20"
             } ${
@@ -245,7 +219,6 @@ export default function Footer() {
       ))}
     </div>
   );
-
   const renderTabs = () => (
     <div
       className={` w-full hidden   md:relative md:-bottom-[1.25dvh] absolute md:flex-nowrap cenas_essencials md:flex justify-center items-center space-x-4 font-mono text-md"`}
@@ -276,13 +249,13 @@ export default function Footer() {
               alt={""}
               width={100}
               height={100}
+              loading="lazy"
             />
           ) : null}
         </a>
       ))}
     </div>
   );
-
   const renderSearchInput = () => (
     <div
       ref={searchInputRef}
@@ -291,7 +264,6 @@ export default function Footer() {
       <Search />
     </div>
   );
-
   return (
     <footer
       id="footer"
@@ -314,7 +286,6 @@ export default function Footer() {
         >
           {t("search")}
         </div>
-
         {isHome && (
           <div
             className={`seta   hidden md:flex text-rodape justify-end scroll-indicator w-full ${
@@ -326,7 +297,6 @@ export default function Footer() {
             </div>
           </div>
         )}
-
         <div
           id="footer_essencials"
           className={`absolute left-0 w-full ${
@@ -341,7 +311,6 @@ export default function Footer() {
             ? renderTabs()
             : null}
         </div>
-
         <div
           id="wrapper_footer_luva"
           className={`absolute hidden left-1/2 -translate-x-1/2 translate-y-1/4 m-auto md:flex w-auto text-2xl bottom-0 h-full z-40 ${
@@ -364,18 +333,20 @@ export default function Footer() {
             </span>
             <div
               id="footer_luva"
-              className="relative w-auto h-24 opacity-0 footer_luva top-2 will-change-transform"
+              className="relative w-auto h-[10vh] opacity-0 footer_luva top-2 will-change-transform"
               data-flip-id=""
             >
               <Image
                 src="/videos/luva/output.gif"
                 alt="Logo Text"
-                width={1000}
-                height={1000}
+                width={100}
+                height={100}
                 className="relative w-auto h-full transition-opacity duration-300 ease-in-out will-change-transform kerning"
-                unoptimized={true}
+                priority
                 data-flip-id="img"
               />
+                        {/* <video src=" /videos/luva/output.gif" autoPlay loop muted className="relative w-auto h-full transition-opacity duration-300 ease-in-out will-change-transform" data-flip-id="img" poster=""></video> */}
+
             </div>
             <span
               className={`toMail relative top-2 text-rodape pl-4 ${
@@ -386,8 +357,6 @@ export default function Footer() {
             </span>
           </Link>
         </div>
-
-
         {isHome && (
           <div
             className={`seta hidden md:flex text-rodape justify-start  scroll-indicator  w-full ${
@@ -399,7 +368,6 @@ export default function Footer() {
             </div>
           </div>
         )}
-
         {isProjectPage ? (
           <div className="absolute flex flex-col font-mono w-max md:flex-row right-4 md:right-10 bottom-4 md:bottom-10">
             <span className="flex gap-2 leading-3 md:flex-row">
@@ -437,8 +405,6 @@ export default function Footer() {
             <LocaleSwitcher />
           </div>
         )}
-
-
         {/* Right - Hamburger Menu  MOBILE*/}
         <div className="absolute flex items-center justify-center w-full bottom-4 lg:hidden">
           <button
@@ -460,7 +426,6 @@ export default function Footer() {
               <path strokeWidth="1" d="M0 15h30M15 0v30" />
             </svg>
           </button>
-
           {isOpen && (
             <>
               <nav
@@ -474,14 +439,12 @@ export default function Footer() {
                 >
                   {t("projects")}
                 </TransitionLink>
-
                 <TransitionLink
                   href={`/production`}
                   className={`block pt-1 whitespace-nowrap text-black hover:text-[#6b6a6a]`}
                 >
                   {t("production")}
                 </TransitionLink>
-
                 <TransitionLink
                   href={`/residencias`}
                   className={`block pt-1 whitespace-nowrap text-black hover:text-[#6b6a6a]`}
@@ -494,7 +457,6 @@ export default function Footer() {
                 >
                   {t("about")}
                 </TransitionLink>
-
                 <Link
                   href="/about"
                   className={`block pt-1 whitespace-nowrap text-black hover:text-[#6b6a6a]`}

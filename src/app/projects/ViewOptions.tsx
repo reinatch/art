@@ -1,12 +1,10 @@
 import React from "react";
 import CustomRadio from "@/components/CustomRadio";
-
 interface ViewOptionsProps {
   viewMode: string;
   setViewMode: (value: string) => void;
   t: (key: string) => string;
 }
-
 const ViewOptions: React.FC<ViewOptionsProps> = ({
   viewMode,
   setViewMode,
@@ -16,7 +14,6 @@ const ViewOptions: React.FC<ViewOptionsProps> = ({
     { id: "lista", label: t("list"), value: "list" },
     { id: "galeria", label: t("gallery"), value: "gallery" },
   ];
-
   return (
     <form
       id="view-options"
@@ -40,5 +37,4 @@ const ViewOptions: React.FC<ViewOptionsProps> = ({
     </form>
   );
 };
-
-export default ViewOptions;
+export default React.memo(ViewOptions);

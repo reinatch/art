@@ -1,15 +1,11 @@
+"use client";
 import { Projecto } from "@/utils/types";
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import TransitionLink from "./TransitionLink";
+import { Link as TransitionLink } from "next-transition-router";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useToggleSearch } from "@/lib/useToggleSearch";
-import { toBase64, shimmer } from "@/utils/imageUtils";
-
-
-
 const baseUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
-
 const Search: React.FC = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Projecto[]>([]);
@@ -21,21 +17,15 @@ const Search: React.FC = () => {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("Search");
-
-
-
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
-
     if (value.length < 3) {
       setResults([]);
       return;
     }
-
     setLoading(true);
     setIsModalOpen(true);
-
     try {
       const response = await fetch(
         `${baseUrl}/projectos_search?lang=${locale}&search=${value}`
@@ -48,18 +38,15 @@ const Search: React.FC = () => {
       setLoading(false);
     }
   };
-
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
     setQuery("");
     setResults([]);
     setFilteredResults([]);
-
     if (isSearchOpen) {
       closeSearch();
     }
   }, [isSearchOpen, closeSearch]);
-
   const handleOutsideClick = useCallback(
     (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
@@ -68,31 +55,23 @@ const Search: React.FC = () => {
     },
     [closeModal, modalRef]
   );
-
   useEffect(() => {
     document.addEventListener("click", handleOutsideClick);
-
     return () => {
       document.removeEventListener("click", handleOutsideClick);
     };
   }, [handleOutsideClick]);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-
     handleSearch({ target: { value: query } } as React.ChangeEvent<HTMLInputElement>);
     setLoading(false);
   };
-  useEffect(() => {
-    console.log(results);
-  }, [results]);
   useEffect(() => {
     if (!query || query.length < 3) {
       setFilteredResults([]);
       return;
     }
-
     const lowerCaseQuery = query.toLowerCase();
     const filtered = results.filter((projecto: Projecto) =>
       projecto.title.rendered.toLowerCase().includes(lowerCaseQuery) ||
@@ -102,10 +81,8 @@ const Search: React.FC = () => {
       projecto.acf.year?.toLowerCase().includes(lowerCaseQuery) ||
       projecto.acf.page_title?.toLowerCase().includes(lowerCaseQuery)
     );
-
     setFilteredResults(filtered);
   }, [query, results]);
-
   useEffect(() => {
     const closeSearchAfterTimeout = () => {
       timeoutRef.current = setTimeout(() => {
@@ -116,23 +93,18 @@ const Search: React.FC = () => {
         }
       }, 30000);
     };
-
     if (isModalOpen) {
       if (timeoutRef.current) {
         closeSearchAfterTimeout();
       }
       return;
     }
-
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
     };
   }, [isSearchOpen, isModalOpen, closeSearch, openSearch]);
-
-
-
   return (
     <div className="relative mx-auto w-[50vw]">
       <div className="flex flex-col gap-4">
@@ -152,7 +124,6 @@ const Search: React.FC = () => {
           </button>
         </div>
       </div>
-
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-50">
           <div
@@ -174,15 +145,21 @@ const Search: React.FC = () => {
               <ul className="grid grid-cols-2 md:grid-cols-6 gap-4">
                 {filteredResults.map((projecto: Projecto) => (
                   <li key={projecto.id} className="relative w-full">
-                    <TransitionLink href={`/projects/${projecto.slug}`} className="flex flex-col gap-4">
+                    <TransitionLink 
+                      href={`/projects/${projecto.slug}`} 
+                      className="flex flex-col gap-4"
+                      onClick={closeModal}
+                    >
                       {projecto.featured_image && (
                         <Image
                           src={projecto.featured_image.url}
                           alt={projecto.title.rendered}
                           width={projecto.featured_image.width / 4}
                           height={projecto.featured_image.height / 4}
-                          placeholder={`data:image/svg+xml;base64,${toBase64(shimmer(700, 475))}`}
+                          placeholder="blur"
+                          blurDataURL={projecto.featured_image.blurDataURL}
                           className="w-full h-auto rounded-md"
+                          loading="lazy"
                         />
                       )}
                       <div className="flex flex-col">
@@ -206,5 +183,4 @@ const Search: React.FC = () => {
     </div>
   );
 };
-
 export default Search;
