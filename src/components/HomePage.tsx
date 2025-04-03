@@ -298,6 +298,7 @@ const HomePageContent: React.FC = () => {
         {sections &&
           sections[0]?.acf &&
           Object.entries(sections[0].acf).map(([key, value], index) => {
+            // console.log(value)
             return (
               <div
                 key={key}
@@ -456,7 +457,7 @@ const HomePageContent: React.FC = () => {
                             src={value.image}
                             alt={key}
                             className="w-full h-auto image md:w-10/12 rounded-xl"
-                            loading="lazy"
+                            priority
                             unoptimized
                           />
                         </AnimatedImages>
@@ -604,13 +605,15 @@ const HomePageContent: React.FC = () => {
                         className="grid justify-around w-full grid-cols-1 gap-10 flex-nowrap sm:grid-cols-3 md:w-full"
                       >
                         {value.items &&
-                          value.items.map((item: homeProjecto, idx: number) => (
+                          value.items.map((item: homeProjecto, idx: number) => {
+                            // console.log("Item Slug:", item.slug);
+                            return(
                             <div
                               key={idx}
                               className="flex flex-col items-center h-full md:h-[20dvh] w-auto gap-4"
                             >
                               <TransitionLink
-                                href={`/projects/${item.slug}`}
+                                href={`/projects/${item.slug}`} 
                                 className="flex flex-col items-center h-auto md:h-[20dvh] w-auto gap-4"
                               >
                                 <Image
@@ -618,7 +621,7 @@ const HomePageContent: React.FC = () => {
                                   height={1000}
                                   src={item.thumbnail}
                                   alt={item.title}
-                                  loading="lazy"
+                                  priority
                                   className="object-contain w-full h-auto rounded-md md:w-auto md:h-full"
                                 />
                                 <div className="w-8/12 text-sm">
@@ -631,7 +634,7 @@ const HomePageContent: React.FC = () => {
                                 </div>
                               </TransitionLink>
                             </div>
-                          ))}
+                          )})}
                       </div>
                       <div
                         id="pro-row2"
@@ -639,7 +642,9 @@ const HomePageContent: React.FC = () => {
                       >
                         {value.items0 &&
                           value.items0.map(
-                            (item: homeProjecto, idx: number) => (
+                            (item: homeProjecto, idx: number) => {
+                              // console.log("Item Slug:", item.slug);
+                              return(
                               <div
                                 key={idx}
                                 className="flex flex-col items-center h-full md:h-[20dvh] md:w-auto gap-4"
@@ -653,7 +658,7 @@ const HomePageContent: React.FC = () => {
                                     height={1000}
                                     src={item.thumbnail}
                                     alt={item.title}
-                                    loading="lazy"
+                                    priority
                                     className="object-contain w-full h-auto rounded-md md:w-auto md:h-full"
                                   />
                                   <div className="w-8/12 text-sm">
@@ -666,7 +671,7 @@ const HomePageContent: React.FC = () => {
                                   </div>
                                 </TransitionLink>
                               </div>
-                            )
+                            )}
                           )}
                       </div>
                       <div id="pro-link" className="py-10 md:py-0">
@@ -783,6 +788,7 @@ const HomePageContent: React.FC = () => {
                     >
                       {value?.link.title}
                     </TransitionLink>
+
                   </div>
                 )}
               </div>

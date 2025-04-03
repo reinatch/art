@@ -1,4 +1,4 @@
-export interface Media {
+export type Media = {
   ID: number;
   id: number;
   title: string;
@@ -42,6 +42,7 @@ export interface Media {
     "2048x2048-width": number;
     "2048x2048-height": number;
   };
+  base64: string;
 }
 export interface Link {
   title: string;
@@ -225,6 +226,7 @@ export type ImageMedia = {
         source_url: string;
       };
     };
+    base64: string;
 };
 type FilterBarProps = {
   authors: Author[];
@@ -318,6 +320,7 @@ export type Projecto = {
     location: string;
     right_field: string;
     galeria: {
+      base64: string;
       ID: number;
       id: number;
       title: string;
@@ -342,13 +345,24 @@ export type Projecto = {
       width: number;
       height: number;
       sizes: {
-        [key: string]: {
-          file: string;
-          width: number;
-          height: number;
-          mime_type: string;
-          source_url: string;
-        };
+        thumbnail: string;
+        "thumbnail-width": number;
+        "thumbnail-height": number;
+        medium: string;
+        "medium-width": number;
+        "medium-height": number;
+        medium_large: string;
+        "medium_large-width": number;
+        "medium_large-height": number;
+        large: string;
+        "large-width": number;
+        "large-height": number;
+        "1536x1536": string;
+        "1536x1536-width": number;
+        "1536x1536-height": number;
+        "2048x2048": string;
+        "2048x2048-width": number;
+        "2048x2048-height": number;
       };
     }[];
   };

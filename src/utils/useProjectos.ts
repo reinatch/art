@@ -39,13 +39,16 @@ export function useProjectos(locale: string) {
   });
 }
 const fetchProjectDetails = async (slug: string, locale: string) => {
-  const data = await fetchData(
-    `/projectos?acf_format=standard&_fields=id,title,slug,acf&slug=${slug}&lang=${locale}`
-  );
-  if (Array.isArray(data) && data.length > 0) {
-    return data[0];
+  const url = `${baseUrl}/projectos_cache/${slug}?lang=${locale}`;
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch project with slug "${slug}"`);
   }
-  throw new Error(`Project with slug "${slug}" not found`);
+
+  const data = await response.json();
+  return data;
 };
 export const useProjectDetails = (slug: string, locale: string) => {
   return useQuery<Projecto>({

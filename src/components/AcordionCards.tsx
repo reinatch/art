@@ -173,7 +173,7 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
                     src={card.capa.url}
                     alt={card.capa.alt}
                     className="w-full h-auto object-contain block"
-                    loading="lazy"
+                    priority
                   />
                   <div className="card--text text-center">
                     <span className="text-xl md:text-4xl relative bottom-4">
@@ -199,7 +199,7 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
                     src={card.thumbnail.url}
                     alt={card.thumbnail.alt}
                     className="absolute bottom-8 right-8 w-[10vh] h-auto object-contain block"
-                    loading="lazy"
+                    priority
                   />
                 </div>
               </div>

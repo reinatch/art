@@ -30,6 +30,7 @@ const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
   const showcaseCount = jornaisData ? jornaisData.length : 0;
   const centerIndex = Math.floor(showcaseCount / 2);
   const depthFactor = 1;
+  // console.log(jornaisData)
   useGSAP(() => {
     mm.add("(max-width: 899px)", () => {
       const showcaseCards = document.querySelectorAll(".jornais--cards .card");
@@ -147,7 +148,7 @@ const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
                       src={card.capa.url}
                       alt={card.capa.alt}
                       className="w-full h-auto object-contain block"
-                      loading="lazy"
+                      priority
                     />
                   </div>
                   <div className="card-back ">
@@ -159,7 +160,7 @@ const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
                           src={card.contra.url}
                           alt={card.contra.alt}
                           className="w-full h-auto object-cover block"
-                          loading="lazy"
+                          priority
                         />
                       </div>
                     </div>

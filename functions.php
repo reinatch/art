@@ -1,129 +1,153 @@
 <?php
 /**
- * UnderStrap functions and definitions
+ * ARTWORKS HEADLESS
  *
- * @package UnderStrap
+ * 
  */
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-$understrap_includes = array(
-	'/theme-settings.php',                  // Initialize theme default settings.
-	'/setup.php',                           // Theme setup and custom theme supports.
-	'/widgets.php',                         // Register widget area.
-	'/enqueue.php',                         // Enqueue scripts and styles.
-	'/template-tags.php',                   // Custom template tags for this theme.
-	'/pagination.php',                      // Custom pagination for this theme.
-	'/hooks.php',                           // Custom hooks.
-	'/extras.php',                          // Custom functions that act independently of the theme templates.
-	'/customizer.php',                      // Customizer additions.
-	// '/custom-comments.php',                 // Custom Comments file.
-	'/jetpack.php',                         // Load Jetpack compatibility file.
-	'/class-wp-bootstrap-navwalker.php',    // Load custom WordPress nav walker. Trying to get deeper navigation? Check out: https://github.com/understrap/understrap/issues/567.
-	// '/woocommerce.php',                     // Load WooCommerce functions.
-	'/editor.php',                          // Load Editor functions.
-	'/deprecated.php',                      // Load deprecated functions.
 
 
-	'/scripts.php',                           // Theme setup and custom theme supports.
-	'/ajax/test.php',                           // Theme setup and custom theme supports.
-
-);
-
-// foreach ( $understrap_includes as $file ) {
-// 	require_once get_template_directory() . '/inc' . $file;
-// }
-
-function register_menu_dois() {
-	register_nav_menu('menu-dois',__( 'Menu secundario' ));
-  }
-  add_action( 'init', 'register_menu_dois' );
-
-  function load_my_script(){
-
-	wp_register_style('CustomScrollbar_css', get_template_directory_uri() . '/css/jquery.mCustomScrollbar.min.css');
-	wp_enqueue_style('CustomScrollbar_css');
-	// wp_register_script('CustomScrollbar_js', get_template_directory_uri() . '/js/jquery.mCustomScrollbar.min.js', null, true);
-	// wp_enqueue_script('CustomScrollbar_js');
-
-	
-	wp_enqueue_script( 'gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js', array(), false, true );
-	wp_enqueue_script( 'ScrollTrigger', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/ScrollTrigger.min.js', array(), false, true );
-	wp_enqueue_script( 'Scrollbar', 'https://unpkg.com/smooth-scrollbar@latest/dist/smooth-scrollbar.js', array(), false, true );
-	wp_enqueue_script( 'smoothstate', 'https://cdnjs.cloudflare.com/ajax/libs/smoothState.js/0.7.2/jquery.smoothState.min.js', array(), false, true );
-	wp_enqueue_script( 'mCustomScrollbar_js_cdn', "https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.4/jquery.mCustomScrollbar.min.js", array('jquery'), false, true );
-  // wp_enqueue_style('mCustomScrollbar_css', 'https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.4/jquery.mCustomScrollbar.min.css');
-  wp_register_script('transit', get_template_directory_uri() . '/js/jquery.transit.js', array('jquery') , null, true);
-	wp_enqueue_script('transit');
-	// wp_enqueue_style('Splitting_cells_css', 'https://unpkg.com/splitting/dist/splitting-cells.css');
-	
-
-	
-}
-add_action('wp_enqueue_scripts', 'load_my_script');
 
 add_filter( 'acf/settings/rest_api_format', function () {
     return 'standard';
 } );
 
-add_filter( 'wp_nav_menu_items', 'custom_menu_item', 10, 2 );
-function custom_menu_item ( $items, $args ) {
-    if ($args->theme_location == 'primary') {
-        $items .= '<li  itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement" id="menu-item-4000000" class=" socialmedia menu-item menu-item-type-post_type menu-item-object-page menu-item-4000000 nav-item">
-		<a title="insta" target="_blank" rel="noopener noreferrer" href="https://instagram.com/aw_artworks?igshid=3rs6xir7bxf5" class="nav-link">insta</a>
-		<span class=""> &nbsp; &nbsp; </span>
-		<a title="fb" target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/artworks.art.production/" class="nav-link">fb</a>
-		<span class=""> &nbsp; &nbsp; </span>
-		<a title="vimeo" target="_blank" rel="noopener noreferrer" href="https://vimeo.com/user79925672" class="nav-link" >vimeo</a>
 
-		</li>';
+
+
+/**
+ * Generate a small blur data URL for image placeholders
+ * 
+ * @param int $attachment_id The image attachment ID
+ * @param string $size The image size to use
+ * @return string Base64 encoded image data URL
+ */
+function generate_blur_data_url_small($attachment_id, $size = 'thumbnail') {
+    // Get image source
+    $image = wp_get_attachment_image_src($attachment_id, $size);
+    
+    if (!$image) {
+        return '';
     }
-    return $items;
-}
-add_action( 'rest_api_init', function () {
-
-	register_rest_route( 'artworks/', 'get-by-slug', array(
-		  'methods' => 'GET',
-		  'callback' => 'my_theme_get_content_by_slug',
-		  'args' => array(
-			  'slug' => array (
-				  'required' => false
-			  )
-		  )
-	  ) );
-
-  } );
-
-
-  function my_theme_get_content_by_slug( WP_REST_Request $request ) {
     
-    // get slug from request
-    $slug = $request['slug']; 
-
-    // get content by slug
-    $return['content'] = get_page_by_path( $slug, ARRAY_A ); 
+    // Get the image path from URL
+    $image_url = $image[0];
+    $upload_dir = wp_upload_dir();
+    $image_path = str_replace($upload_dir['baseurl'], $upload_dir['basedir'], $image_url);
     
-    // // add comments to our content
-    // $return['content']['comments'] = get_comments( array( 'ID' => $return['content']['ID'] ) );
-     
-
-    $response = new WP_REST_Response( $return );
-    return $response;
-
+    // Check if file exists
+    if (!file_exists($image_path)) {
+        return '';
+    }
+    
+    // Create a tiny version for the blur effect
+    $width = 10; // Very small width
+    $mime_type = get_post_mime_type($attachment_id);
+    
+    // Load image based on mime type
+    switch ($mime_type) {
+        case 'image/jpeg':
+            $src_img = imagecreatefromjpeg($image_path);
+            break;
+        case 'image/png':
+            $src_img = imagecreatefrompng($image_path);
+            break;
+        case 'image/gif':
+            $src_img = imagecreatefromgif($image_path);
+            break;
+        default:
+            return '';
+    }
+    
+    if (!$src_img) {
+        return '';
+    }
+    
+    // Get original dimensions
+    $orig_width = imagesx($src_img);
+    $orig_height = imagesy($src_img);
+    
+    // Calculate new height while maintaining aspect ratio
+    $height = floor($orig_height * ($width / $orig_width));
+    
+    // Create new image
+    $new_img = imagecreatetruecolor($width, $height);
+    
+    // Handle transparency for PNG
+    if ($mime_type === 'image/png') {
+        imagealphablending($new_img, false);
+        imagesavealpha($new_img, true);
+        $transparent = imagecolorallocatealpha($new_img, 255, 255, 255, 127);
+        imagefilledrectangle($new_img, 0, 0, $width, $height, $transparent);
+    }
+    
+    // Resize the image
+    imagecopyresampled($new_img, $src_img, 0, 0, 0, 0, $width, $height, $orig_width, $orig_height);
+    
+    // Start output buffering
+    ob_start();
+    
+    // Output image to buffer
+    switch ($mime_type) {
+        case 'image/jpeg':
+            imagejpeg($new_img, null, 50);
+            break;
+        case 'image/png':
+            imagepng($new_img, null, 7);
+            break;
+        case 'image/gif':
+            imagegif($new_img);
+            break;
+    }
+    
+    // Get image data from buffer
+    $image_data = ob_get_clean();
+    
+    // Free memory
+    imagedestroy($src_img);
+    imagedestroy($new_img);
+    
+    // Return base64 encoded data URL
+    return 'data:' . $mime_type . ';base64,' . base64_encode($image_data);
 }
 
-// add_action('init','my_func');
+// Generate on media upload
+add_action('add_attachment', function($attachment_id) {
+    if (strpos(get_post_mime_type($attachment_id), 'image') !== false) {
+        generate_blur_data_url_small($attachment_id);
+    }
+});
 
-// function my_func() {
-//     global $wp_query;
-//     // var_dump($wp_query);
-//      var_dump($GLOBALS['wp_query']);
-// }
+//--------------------------------------------------
+// REST API Enhancements
+//--------------------------------------------------
 
+// Register core media field
+add_action('rest_api_init', function() {
+    register_rest_field('attachment', 'base64', [
+        'get_callback' => fn($obj) => generate_blur_data_url_small($obj['id']),
+        'schema' => null
+    ]);
+});
 
-
-
+// Modified ACF Gallery Filter
+add_filter('acf/format_value/type=gallery', function($value, $post_id, $field) {
+    if (is_array($value)) {
+      foreach ($value as &$image) {
+        if (!empty($image['ID'])) {
+          // Use lowercase 'id' if needed (ACF sometimes varies)
+          $attachment_id = $image['ID'] ?? $image['id'] ?? 0;
+          if ($attachment_id) {
+            $image['base64'] = generate_blur_data_url_small($attachment_id);
+          }
+        }
+      }
+    }
+    return $value;
+  }, 20, 3); // Higher priority to override other filters
 
 /**
  * Register the /wp-json/wp/v2/projectos_cache endpoint so it will be cached.
@@ -272,10 +296,12 @@ function get_projectos(WP_REST_Request $request) {
                 $featured_image_url = $featured_image[0];
                 $featured_image_width = $featured_image[1];
                 $featured_image_height = $featured_image[2];
+				$blurDataURL = generate_blur_data_url_small($featured_image_id, 'thumbnail');
             } else {
                 $featured_image_url = '';
                 $featured_image_width = 0;
                 $featured_image_height = 0;
+				$blurDataURL = '';
             }
 
             $artistas = wp_get_post_terms(get_the_ID(), 'artistas', array('fields' => 'ids'));
@@ -283,7 +309,7 @@ function get_projectos(WP_REST_Request $request) {
 
             $projects[] = array(
                 'id' => get_the_ID(),
-                'title' => array('rendered' => get_the_title()),
+                'title' => array('rendered' => html_entity_decode(get_the_title(), ENT_QUOTES, 'UTF-8')),
                 'slug' => get_post_field('post_name', get_the_ID()),
                 'content' => get_the_content(),
                 'featured_media' => $featured_image_id,
@@ -291,6 +317,7 @@ function get_projectos(WP_REST_Request $request) {
                     'url' => $featured_image_url,
                     'width' => $featured_image_width,
                     'height' => $featured_image_height,
+					'blurDataURL' => $blurDataURL, 
                 ),
                 'acf' => array(
                     'page_title' => get_field('page_title'),
@@ -357,17 +384,19 @@ function search_projectos(WP_REST_Request $request) {
         while ($query->have_posts()) {
             $query->the_post();
             $featured_image_id = get_post_thumbnail_id();
-            $featured_image = wp_get_attachment_image_src($featured_image_id, 'thumbnail');
+            $featured_image = wp_get_attachment_image_src($featured_image_id, 'full');
             
             // Check if the image exists and get its URL, width, and height
             if ($featured_image) {
                 $featured_image_url = $featured_image[0]; // URL
                 $featured_image_width = $featured_image[1]; // Width
                 $featured_image_height = $featured_image[2]; // Height
+				$blurDataURL = generate_blur_data_url_small($featured_image_id, 'thumbnail');
             } else {
                 $featured_image_url = '';
                 $featured_image_width = 0;
                 $featured_image_height = 0;
+				$blurDataURL = '';
             }
             $projects[] = array(
                 'id' => get_the_ID(),
@@ -378,6 +407,7 @@ function search_projectos(WP_REST_Request $request) {
                     'url' => $featured_image_url, // URL of the featured image
                     'width' => $featured_image_width, // Width of the image
                     'height' => $featured_image_height, // Height of the image
+					'blurDataURL' => $blurDataURL, 
                 ),
                 'acf' => array(
                     'page_title' => get_field('page_title'),
@@ -393,6 +423,101 @@ function search_projectos(WP_REST_Request $request) {
     wp_reset_postdata();
 
     return rest_ensure_response($projects);
+}
+
+
+
+
+/**
+ * Get a project by its slug
+ */
+function get_project_by_slug(WP_REST_Request $request) {
+    $slug = $request->get_param('slug');
+    $lang = $request->get_param('lang');
+
+    if ($lang) {
+        do_action('wpml_switch_language', $lang);
+    }
+
+    $args = array(
+        'post_type' => 'projectos',
+        'posts_per_page' => 1,
+        'name' => $slug,
+    );
+
+    $query = new WP_Query($args);
+
+    if (!$query->have_posts()) {
+        return new WP_Error('no_project', __('Project not found'), ['status' => 404]);
+    }
+
+    $project = $query->posts[0];
+
+    $featured_image_id = get_post_thumbnail_id($project->ID);
+    $featured_image = wp_get_attachment_image_src($featured_image_id, 'full');
+
+    if ($featured_image) {
+        $featured_image_url = $featured_image[0];
+        $featured_image_width = $featured_image[1];
+        $featured_image_height = $featured_image[2];
+        $blurDataURL = generate_blur_data_url_small($featured_image_id, 'thumbnail');
+    } else {
+        $featured_image_url = '';
+        $featured_image_width = 0;
+        $featured_image_height = 0;
+        $blurDataURL = '';
+    }
+
+    // Fetch gallery field
+    $gallery = get_field('galeria', $project->ID);
+
+    $project_data = array(
+        'id' => $project->ID,
+        'title' => array('rendered' => html_entity_decode($project->post_title, ENT_QUOTES, 'UTF-8')),
+        'slug' => $project->post_name,
+        'content' => $project->post_content,
+        'featured_media' => $featured_image_id,
+        'featured_image' => array(
+            'url' => $featured_image_url,
+            'width' => $featured_image_width,
+            'height' => $featured_image_height,
+            'blurDataURL' => $blurDataURL,
+        ),
+        'acf' => array(
+            'page_title' => get_field('page_title', $project->ID),
+            'year' => get_field('year', $project->ID),
+            'location' => get_field('location', $project->ID),
+            'right_field' => get_field('right_field', $project->ID),
+            'galeria' => $gallery, // Include gallery field
+        ),
+    );
+
+    if ($gallery) {
+        $project_data['acf']['galeria'] = array_map(function ($image) {
+            $attachment = wp_get_attachment_metadata($image['ID']);
+            $image_url = $image['url'];
+            $image_name = $image['filename'];
+            $image_slug = $image['name'];
+            $image_id = $image['ID'];
+            $image_width = $image['width'];
+            $image_height = $image['height'];
+            $image_sizes = $image['sizes'];
+            $base64 = $image['base64'];
+
+            return [
+                'url' => $image_url,
+                'name' => $image_name,
+                'slug' => $image_slug,
+                'id' => $image_id,
+                'width' => $image_width,
+                'height' => $image_height,
+                'sizes' => $image_sizes,
+                'base64' => $base64,
+            ];
+        }, $gallery);
+    }
+
+    return rest_ensure_response($project_data);
 }
 
 
@@ -423,7 +548,16 @@ add_action('rest_api_init', function () {
             )
         )
     ));
-
+ // Register the cached project list endpoint
+ register_rest_route('wp/v2', '/projectos_cache/(?P<slug>[a-zA-Z0-9-]+)', array(
+    'methods' => 'GET',
+    'callback' => 'get_project_by_slug',
+    'args' => array(
+        'slug' => array(
+            'required' => true,
+        ),
+    ),
+    ));
     // Register the search-specific endpoint
     register_rest_route('wp/v2', '/projectos_search', array(
         'methods' => 'GET',
@@ -475,6 +609,7 @@ function flush_projectos_cache() {
             '/wp-json/wp/v2/home_cache',
             '/wp-json/wp/v2/pages',
             '/wp-json/wp/v2/projectos_search',
+            '/wp-json/wp/v2/projectos',
    
         ];
 
@@ -525,7 +660,7 @@ function register_rest_images() {
 
 function get_rest_featured_image($object, $field_name, $request) {
     if (!empty($object['featured_media'])) {
-        $img = wp_get_attachment_image_src($object['featured_media'], 'full'); // Get the full image size
+        $img = wp_get_attachment_image_src($object['featured_media'], 'full');
         if ($img) {
             return array(
                 'url' => $img[0], // The URL of the image
@@ -612,4 +747,3 @@ add_action('delete_post', 'clear_projectos_cache');
 
 
 ?>
-

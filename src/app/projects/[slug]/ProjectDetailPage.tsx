@@ -76,8 +76,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({
             </div>
           </div>
           <HorizontalSnapSlider
-            galeria={project.acf.galeria}
-            video={project.acf.video}
+            project={project}
           />
         </div>
       </div>

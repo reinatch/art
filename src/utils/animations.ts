@@ -37,7 +37,7 @@ export const animatePageIn = (
     const isHome = pathname === "/";
 
     if (isHome) {
-      console.log('ai', from, to);
+      // console.log('ai', from, to);
     }
     debug(`Is matching path: ${isMatchingPath}, current path: ${pathname}`);
     const bannerWrapper = document.getElementById("banner-1");
@@ -74,7 +74,7 @@ export const animatePageIn = (
       const bannerBack = bannerWrapper.querySelector(".back");
       debug("Banner back element found:", !!bannerBack);
       debug(`Animation params: scalemobile=${scalemobile}, luvaOfsset=${luvaOfsset}`);
-      // gsap.set(bannerBack, { scale: 1, autoAlpha: 1 });
+      gsap.set(bannerBack, { scale: 1, autoAlpha: 1 });
       gsap.set(bannerWrapper, {
         transformOrigin: "50% 100%",
         scale: 1,
@@ -112,11 +112,11 @@ export const animatePageIn = (
             },
             "s"
           )
-          // .to(
-          //   bannerBack,
-          //   { scale: 1, autoAlpha: 0, duration: 0.1, ease: "none" },
-          //   "f"
-          // )
+          .to(
+            bannerBack,
+            { scale: 0, autoAlpha: 0, duration: 0.1, ease: "none" },
+            "f"
+          )
           .to(bannerWrapper, { scale: 0, duration: 0.1, ease: "none" }, "a")
           .set(toMail, { display: "flex" })
           .fromTo(
@@ -127,8 +127,8 @@ export const animatePageIn = (
           .set(luvaWrapper, { display: "none" });
       } else {
         debug("Running default enter animation");
-        // tl.set(bannerBack, { zIndex: 59 })
-        tl.to(footerLuva, { autoAlpha: 1, duration: 0.5 })
+        tl.set(bannerBack, { zIndex: 59 })
+        .to(footerLuva, { autoAlpha: 1, duration: 0.5 })
         .to([header], { zIndex: 62, duration: 1 }, "redo")
           .to([footer], { zIndex: 61, duration: 1 }, "redo")
           .set(bannerLuva, { opacity: 0 }, "+=1")
@@ -143,11 +143,11 @@ export const animatePageIn = (
             },
             "<"
           )
-          // .to(
-          //   bannerBack,
-          //   { scale: 1, autoAlpha: 0, duration: 0.1, ease: "none" },
-          //   "f"
-          // )
+          .to(
+            bannerBack,
+            { scale: 0, autoAlpha: 0, duration: 0.1, ease: "none" },
+            "f"
+          )
           .to(bannerWrapper, { scale: 0, duration: 0.1, ease: "none" }, "a")
           .set(toMail, { display: "flex" })
           .to(
@@ -156,6 +156,10 @@ export const animatePageIn = (
           );
       }
       debug("Timeline created and started");
+      return () => {
+        debug("Fallback enter animation cleanup called");
+        tl.kill();
+      };
     } else {
       debug("Fallback animation running - elements not found");
       const tween = gsap.fromTo(
@@ -173,6 +177,7 @@ export const animatePageIn = (
       return () => {
         debug("Fallback enter animation cleanup called");
         tween.kill();
+        tween.kill();
       };
     }
   });
@@ -184,13 +189,13 @@ export const animatePageOut = (
   to?: string,
 ): Promise<void> => {
   return new Promise((resolve) => {
-    console.log(`AAAAAAAAAAAAAAAAAAAAAAAAAAAAfrom path: ${from}, to path: ${to}`);
+    // console.log(`AAAAAAAAAAAAAAAAAAAAAAAAAAAAfrom path: ${from}, to path: ${to}`);
     const isMatchingPath =
       pathname === "/production" ||
       pathname === "/about" ||
       pathname === "/residencias" ||
       pathname.startsWith("/projects/");
-      console.log(`Is matching path: ${isMatchingPath}, current path: ${pathname}`);
+      // console.log(`Is matching path: ${isMatchingPath}, current path: ${pathname}`);
     const bannerWrapper = document.getElementById("banner-1");
     const footerLuva = document.querySelector(".footer_luva");
     const luvaWrapper = document.getElementById("wrapper_footer_luva");
@@ -243,7 +248,7 @@ export const animatePageOut = (
             { scale: 1, duration: 0.1, ease: "power3.inOut" },
             "A"
           )
-          // .to(back, { scale: 1, autoAlpha: 1, duration: 0.1, ease: "none" }, "c")
+          .to(back, { scale: 1, autoAlpha: 1, duration: 0.1, ease: "none" }, "c")
           .set(footerLuva, {
             display: "flex",
             transformOrigin: "50% 100%",
@@ -277,7 +282,7 @@ export const animatePageOut = (
             { scale: 1, duration: 0.1, ease: "power3.inOut" },
             "a"
           )
-          // .to(back, { scale: 1, autoAlpha: 1, duration: 0.1, ease: "none" }, "c")
+          .to(back, { scale: 1, autoAlpha: 1, duration: 0.1, ease: "none" }, "c")
           .to(
             footerLuva,
             {
@@ -295,6 +300,10 @@ export const animatePageOut = (
           );
       }
       debug("Timeline created and started");
+      return () => {
+        debug("Fallback enter animation cleanup called");
+        tl.kill();
+      };
     } else {
       debug("Fallback animation running - elements not found");
       const tween = gsap.fromTo(
