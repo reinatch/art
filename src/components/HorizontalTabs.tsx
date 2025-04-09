@@ -107,9 +107,9 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
   useGSAP(() => {
     gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
     gsap.registerPlugin(ScrollSmoother);
-    sectionRefs.current.forEach((section, i) => {
-      // console.log(`Section ${i} offsetTop: ${section?.offsetTop}`);
-    });
+    // sectionRefs.current.forEach((section, i) => {
+    //   // console.log(`Section ${i} offsetTop: ${section?.offsetTop}`);
+    // });
   }, []);
   useGSAP(() => {
     const mm = gsap.matchMedia();

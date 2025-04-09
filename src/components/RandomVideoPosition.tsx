@@ -16,7 +16,7 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
   const [randomPosition, setRandomPosition] = useState<{
     top: string;
     left: string;
-  }>({ top: "0%", left: "0%" });
+  }>({ top: "200%", left: "200%" });
   useEffect(() => {
     if (position === "random") {
       const top = `${Math.random() * 80}%`;
@@ -47,6 +47,7 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
       });
     });
   }, []);
+  
   const positionClass =
     position === "left" ? "left-0" : position === "right" ? "right-0" : "";
   return (
