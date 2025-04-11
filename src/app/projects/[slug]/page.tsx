@@ -1,7 +1,6 @@
 import ProjectDetailPage from "./ProjectDetailPage";
 import { getLocale } from "next-intl/server";
 export const revalidate = 3600;
-export const dynamic = 'force-static';
 export async function generateStaticParams() {
   const locales = ["en", "pt"];
   return locales.map((locale) => ({ locale }));

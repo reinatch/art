@@ -32,15 +32,16 @@ const HomePageContent: React.FC = () => {
   const windowSize = useWindowSize();
   const { setIsVideoReady } = useDataFetchContext();
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  useEffect(() => {
-    const setLocaleCookie = async () => {
-      const userLocale = await getUserLocale();
-      if (userLocale !== locale) {
-        await setUserLocale(locale as "en" | "pt");
-      }
-    };
-    setLocaleCookie();
-  }, [locale]);
+
+  // useEffect(() => {
+  //   const setLocaleCookie = async () => {
+  //     const userLocale = await getUserLocale();
+  //     if (userLocale !== locale) {
+  //       await setUserLocale(locale as "en" | "pt");
+  //     }
+  //   };
+  //   setLocaleCookie();
+  // }, [locale]);
   useEffect(() => {
     if (!data) return;
     setSections(data);

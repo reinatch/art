@@ -3,7 +3,7 @@ import { AboutTabData } from "@/utils/types";
 import { getLocale } from "next-intl/server";
 const baseUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
 export const revalidate = 3600;
-export const dynamic = "force-static";
+// export const dynamic = "force-static";
 
 export async function generateStaticParams() {
   const locales = ["en", "pt"];
