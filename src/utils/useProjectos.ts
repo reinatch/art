@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import querystring from 'querystring';
 import { Projecto } from "./types";
-import { fetchData } from '@/utils/fetch';
+// import { fetchData } from '@/utils/fetch';
 const perPage = 1000;
 const baseUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
 function getUrl(path: string, query?: Record<string, unknown>) {

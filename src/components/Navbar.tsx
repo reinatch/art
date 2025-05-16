@@ -34,6 +34,13 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
   const isResidenciesPage = pathname === "/residencias";
   const isProPage = pathname === "/projects";
   const isProjectPage = pathname.startsWith(`/projects/`);
+
+  const navLinks = [
+    { href: "/projects", label: t("projects"), isActive: isProPage },
+    { href: "/production", label: t("production"), isActive: isProductionPage },
+    { href: "/residencias", label: t("residencies"), isActive: isResidenciesPage },
+    { href: "/about", label: t("about"), isActive: isAboutPage },
+  ];
   const handleMouseEnter = () => {
     if (timeoutId) {
       clearTimeout(timeoutId);
@@ -241,40 +248,18 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                   : "translate-x-[60%] opacity-0 scale-0"
               } `}
             >
-              <TransitionLink
-                href={`/projects`}
-                className={`flex gap-2 pt-1 whitespace-nowrap text-black`}
-              >
-                <span className={`icon ${isProPage ? "" : "hidden"}`}>→</span>{" "}
-                {t("projects")}
-              </TransitionLink>
-              <TransitionLink
-                href={`/production`}
-                className={`flex gap-2 pt-1 whitespace-nowrap text-black`}
-              >
-                <span className={`icon ${isProductionPage ? "" : "hidden"}`}>
-                  →
-                </span>{" "}
-                {t("production")}
-              </TransitionLink>
-              <TransitionLink
-                href={`/residencias`}
-                className={`flex gap-2 pt-1 whitespace-nowrap text-black`}
-              >
-                <span className={`icon ${isResidenciesPage ? "" : "hidden"}`}>
-                  →
-                </span>{" "}
-                {t("residencies")}
-              </TransitionLink>
-              <TransitionLink
-                href={`/about`}
-                className={`flex gap-2 pt-1 whitespace-nowrap text-black`}
-              >
-                <span className={`icon ${isAboutPage ? "" : "hidden"}`}>→</span>{" "}
-                {t("about")}
-              </TransitionLink>
+              {navLinks.map((link) => (
+                <TransitionLink
+                  key={link.href}
+                  href={link.href}
+                  className={`flex gap-2 whitespace-nowrap text-black`}
+                >
+                  <span className={`icon ${link.isActive ? "" : "hidden"}`}>→</span>{" "}
+                  {link.label}
+                </TransitionLink>
+              ))}
               <div
-                className={`block pt-1 whitespace-nowrap text-black`}
+                className={`block whitespace-nowrap text-black`}
                 onClick={handleContactClick}
               >
                 {t("contact")}

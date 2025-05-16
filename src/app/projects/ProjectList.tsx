@@ -46,9 +46,9 @@ const ProjectList: React.FC = () => {
     selectedMaterial: null,
     selectedYear: null,
   });
-  const [materials, setMaterials] = useState<Material[]>(mat);
+  const [materials, setMaterials] = useState<Material[]>(mat || []);
   const [years, setYears] = useState<number[]>(ano);
-  const [artists, setArtists] = useState<Artista[]>(art);
+  const [artists, setArtists] = useState<Artista[]>(art || []);
   const containerRef = useRef<FixedSizeList<Projecto[]> | null>(null);
   const [hoveredProjectId, setHoveredProjectId] = useState<number | null>(null);
   gsap.registerPlugin(useGSAP);

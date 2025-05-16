@@ -1,25 +1,55 @@
 import { useQuery } from "@tanstack/react-query";
 import querystring from 'querystring';
+import { Artista, Material } from "./types";
 const baseUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
 function getUrl(path: string, query?: Record<string, unknown>) {
   const params = query ? querystring.stringify(query as Record<string, string | number | boolean | readonly string[] | readonly number[] | readonly boolean[] | null>) : null;
   return `${baseUrl}${path}${params ? `?${params}` : ""}`;
 }
 async function fetchMateriais(locale: string) {
-  const url = getUrl(`/materiais?acf_format=standard&lang=${locale}&per_page=100&_fields=id,title,slug,name`);
-  const res = await fetch(url, { cache: "force-cache", next: { revalidate: 3600 } });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch data from ${url}`);
+  const allData: Material[] = [];
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const url = getUrl(`/materiais?acf_format=standard&lang=${locale}&per_page=100&page=${page}&_fields=id,title,slug,name`);
+    const res = await fetch(url, { cache: "force-cache", next: { revalidate: 3600 } });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch data from ${url}`);
+    }
+
+    const data = await res.json();
+    allData.push(...data);
+
+    hasMore = data.length === 100;
+    page++;
   }
-  return res.json();
+  // console.log(allData);	
+
+  return allData;
 }
 async function fetchArtistas(locale: string) {
-  const url = getUrl(`/artistas?acf_format=standard&lang=${locale}&per_page=100&_fields=id,title,slug,name`);
-  const res = await fetch(url, { cache: "force-cache", next: { revalidate: 3600 } });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch data from ${url}`);
+  const allData: Artista[] = [];
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const url = getUrl(`/artistas?acf_format=standard&lang=${locale}&per_page=100&page=${page}&_fields=id,title,slug,name`);
+    const res = await fetch(url, { cache: "force-cache", next: { revalidate: 3600 } });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch data from ${url}`);
+    }
+
+    const data = await res.json();
+    allData.push(...data);
+
+    hasMore = data.length === 100;
+    page++;
   }
-  return res.json();
+  // console.log(allData);	
+  return allData;
 }
 async function fetchAno(locale: string) {
   const url = getUrl(`/project_years?lang=${locale}&per_page=100`);

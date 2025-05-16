@@ -10,7 +10,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Projecto } from "@/utils/types";
-
+import ReactPlayer from 'react-player'
 interface HorizontalSnapSliderProps {
   project: Projecto;
 }
@@ -26,6 +26,7 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
     thumbRefs,
   } = useThumbnailsContext();
   const windowSize = useWindowSize();
+  const videoPlayerRef = useRef<ReactPlayer | null>(null);
   const galeria= project.acf.galeria;
   const video= project.acf.video;
   useEffect(() => {}, [selectedThumbnail]);
@@ -64,10 +65,24 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
                 duration: { min: 0.1, max: 0.3 },
               },
               onSnapComplete: ({ progress }) => {
+
                 const index = Math.round(progress * (sectionEls.length - 1));
                 const activeSection = sectionEls[index];
                 if (activeSection) {
                   setSelectedThumbnail(Number(activeSection.id));
+                }
+     
+                if (activeSection?.id === "0") {
+                  if (videoPlayerRef.current) {
+                    videoPlayerRef.current.getInternalPlayer()?.play();
+                    console.log("Video paused");
+                  }
+                } else {
+                  // Play the video if the active section is the video
+                  if (videoPlayerRef.current) {
+                    videoPlayerRef.current.getInternalPlayer()?.pause();
+                    console.log("Video playing");
+                  }
                 }
               },
               scrub: 1,
@@ -93,7 +108,7 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
     return match ? match[1] : null;
   };
   const videoSrc = extractSrc(video);
-  return (
+  return (  
     <div
       className="flex  flex-col md:flex-row gap-8 md:gap-0 h-full md:h-[65vh] pb-[40vh] md:pb-0 w-screen overflow-y-scroll md:overflow-y-hidden"
       ref={scrollContainerRef}
@@ -117,20 +132,29 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
             title="Embedded Video"
           ></iframe> */}
         <div className="video_wrapper ">
-          <div className="relative pt-[56.25%] md:h-[65vh] w-[65vw]">
-          <iframe
-            className="absolute top-0 md:left-[17.5vw] w-full h-full"
-            src={
-            videoSrc +
-              "&autoplay=1&controls=0&title=0&byline=0&portrait=0&muted=1&loop=1" ||
-            ""
-            }
-            allow="autoplay"
-            allowFullScreen
-            title="Embedded"
-          >
-            {" "}
-          </iframe>
+          <div className="relative md:h-[65vh] w-[65vw]">
+          <ReactPlayer ref={videoPlayerRef}
+                  id="videoIframe"
+                  className="absolute top-0 md:left-[17.5vw] w-full h-full"
+                  width='100%'
+                  height='100%'
+                  muted={false}
+                  volume={1}
+                  controls={true}
+                  preload="true"
+                  onReady={() => {
+                    console.log("Video is ready");
+                  }}
+                  url={
+                    videoSrc +
+                      "&autoplay=1&controls=1&title=0&byline=0&portrait=0&muted=1&loop=1" ||
+                    ""
+                    } 
+                  playing={true}
+                  config={{
+                    vimeo: {  playerOptions: { autoplay: 1, responsive : true, unmute_button: false} },
+                  }}  
+            />
           </div>
         </div>
         </div>
@@ -138,7 +162,7 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
       )}
 
       {galeria.map((image, index) => {
-      console.log(image)
+      // console.log(image)
       return(
       <div
         key={image.id}
