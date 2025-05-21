@@ -208,5 +208,5 @@ export const useGSAPAnimations = (
       scrollSmootherInstance.kill();
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, [scrollContainerRef, sectionRefs, scrollSmootherInstanceRef, setSelectedTab]);
+  }, [scrollContainerRef, sectionRefs, scrollSmootherInstanceRef, setSelectedTab, isReady]);
 };

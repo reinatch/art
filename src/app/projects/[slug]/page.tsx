@@ -10,7 +10,7 @@ export default async function Project({
 }: {
   params: { slug: string };
 }) {
-  const { slug } = await params;
+  const { slug } = params; 
   const locale = await getLocale();
   return <ProjectDetailPage slug={slug} locale={locale} />;
 }

@@ -12,8 +12,9 @@ export async function generateStaticParams() {
 export default async function AboutPage() {
   const locale = await getLocale();
   const fetchData = async (): Promise<AboutTabData[]> => {
-    const url = `${baseUrl}/pages?acf_format=standard&per_page=100&slug=residencias-${locale}&_fields=id,title,slug,acf&lang=${locale}`;
+    const url = `${baseUrl}/pages?acf_format=standard&per_page=1&slug=residencias-${locale}&_fields=id,title,slug,acf&lang=${locale}`;
     const response = await fetch(url);
+    console.log(url, response);
     if (!response.ok) {
       throw new Error("Failed to fetch tab data");
     }

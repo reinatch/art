@@ -27,8 +27,8 @@ const GalleryView: React.FC<GalleryViewProps> = ({
   materials,
   selectedMaterial,
   setSelectedMaterial,
-  shimmer,
-  toBase64,
+  // shimmer,
+  // toBase64,
 }) => {
   const renderGrid = useCallback(
     (items: Projecto[]) => (

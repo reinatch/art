@@ -20,7 +20,7 @@ import AnimatedImages from "@/lib/AnimatedImages";
 import Marquee from "@/components/Marquee";
 import Image from "next/image";
 import { HomePageData, homeProjecto } from "@/utils/types";
-import { getUserLocale, setUserLocale } from "@/services/locale";
+// import { getUserLocale, setUserLocale } from "@/services/locale";
 import { useHome } from "@/utils/useHome";
 const HomePageContent: React.FC = () => {
   const locale = useLocale();
