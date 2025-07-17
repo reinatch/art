@@ -440,7 +440,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
           return (
             <div
               id="svgimage"
-              className="svgimage relative w-full text-4xl flex flex-col gap-10 h-[80dvh] py-8 pt-[10dvh] "
+              className="svgimage relative w-full text-4xl flex flex-col gap-10 h-[60dvh] md:h-[80dvh]  py-8 pt-[10dvh] "
             >
               <div className="flex flex-col w-full gap-10 md:w-[60vw] md:mx-auto items-center">
                 {tabContent.heading && (
@@ -529,7 +529,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
             {/* Example rendering for direccao */}
             {tabContent.chefia && tabContent.chefia.cargos && tabContent.chefia.cargos.length > 0 && (
               <div className="pb-4">
-                <strong className="uppercase">{tabContent.chefia.titulo}</strong>
+                <h3 className="uppercase">{tabContent.chefia.titulo}</h3>
                 <ul>
                   {tabContent.chefia.cargos.map((member, idx) => (
                     <li key={idx}>
@@ -553,13 +553,13 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                 {tabContent.producao.map((prod, idx) => (
                   <div key={idx}>
                   
-                <strong className="uppercase">{prod.titulo} <sup className="font-mono">{prod.id_name}</sup></strong>
+                <h3 className="uppercase">{prod.titulo} <sup className="font-mono text-teams">{prod.id_name}</sup></h3>
                   <div >
                     {prod.equipas && prod.equipas.length > 0 && (
                       <ul>
                         {prod.equipas.map((e, eidx) => (
                           <li key={eidx} className="pb-4">
-                            <strong>{e.titulo } <sup className="font-mono">{e.id_name}</sup> </strong>
+                            <h3>{e.titulo } <sup className="font-mono text-teams">{e.id_name}</sup> </h3>
                             <ul>
                               {e.trabalhador.map((t, tidx) => (
                                 <li key={tidx}>
@@ -589,13 +589,13 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
               <div className="pb-4">
                 {tabContent.projecto.map((proj, idx) => (
                   <div key={idx}>
-                  <strong className="uppercase">{proj.titulo} <sup className="font-mono">{proj.id_name}</sup></strong>
+                  <h3 className="uppercase">{proj.titulo} <sup className="font-mono text-teams">{proj.id_name}</sup></h3>
                   <div key={proj.id_name + idx}>
                     {proj.equipas && proj.equipas.length > 0 && (
                       <ul >
                         {proj.equipas.map((e, eidx) => (
                           <li key={eidx} className="pb-4">
-                            <strong>{e.titulo}  <sup className="font-mono">{e.id_name}</sup></strong>
+                            <h3>{e.titulo}  <sup className="font-mono text-teams">{e.id_name}</sup></h3>
                             <ul>
                               {e.trabalhador.map((t, tidx) => (
                                 <li key={tidx}>
@@ -834,8 +834,8 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
           <Image
             src={hoveredImage.url}
             alt={hoveredImage.url}
-            width={200}
-            height={200}
+            width={120}
+            height={120}
             className="object-cover rounded-md"
             unoptimized
           />
