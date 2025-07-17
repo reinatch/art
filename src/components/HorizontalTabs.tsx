@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTabsContext } from "@/lib/TabsContext";
 import {
   AboutTabData,
@@ -21,6 +21,7 @@ import ScrollToPlugin from "gsap/ScrollToPlugin";
 import { useDataFetchContext } from "@/lib/DataFetchContext";
 import { useToggleContact } from "@/lib/useToggleContact";
 import { usePathname } from "next/navigation";
+// import { isMobile } from "react-device-detect";
 // import { useLocale } from "next-intl";
 interface JornaisType {
   capa: ImageMedia;
@@ -49,11 +50,10 @@ interface TabContent {
   content?: string;
   jornais?: JornaisType[] | undefined;
   services?: Card[] | undefined;
-  grafico?: GalleryImage; // or a more specific type if known
-  legenda?: string[];               // or a more specific type if known
-  direccao?: { nome: string; cargo: string }[];              // or a more specific type if known
-  producao?: { equipas: {id_name: string; titulo: string; trabalhador : {nome: string; cargo: string; image: GalleryImage}[]}[] }[]; // or a more specific type if known
-  projecto?: { equipas: {id_name: string; titulo: string; trabalhador : {nome: string; cargo: string; image: GalleryImage}[]}[] }[];             // or a more specific type if known
+  grafico?: GalleryImage;
+  chefia?:{titulo:string, cargos: { name: string; cargo: string; image?: GalleryImage }[]};
+  producao?: { equipas: {id_name: string; titulo: string; trabalhador : {nome: string; cargo: string; image: GalleryImage}[]}[], id_name: string, titulo: string }[];
+  projecto?: { equipas: {id_name: string; titulo: string; trabalhador : {nome: string; cargo: string; image: GalleryImage}[]}[], id_name: string, titulo: string }[];
 }
 interface HorizontalTabsProps {
   tabData: AboutTabData[];
@@ -71,6 +71,39 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const { isContactOpen, closeContact } = useToggleContact();
   const pathname = usePathname();
+  
+  // Hover image state
+  const [hoveredImage, setHoveredImage] = useState<{ url: string; alt: string; x: number; y: number } | null>(null);
+  
+  // Handle mouse enter for team member with image
+  const handleMouseEnter = (image: GalleryImage, nome: string, event: React.MouseEvent) => {
+    if (image?.url) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      setHoveredImage({
+        url: image.url,
+        alt: nome,
+        x: rect.right + 10, // Position to the right of the hovered element
+        y: rect.top
+      });
+    }
+  };
+
+  // Handle mouse leave
+  const handleMouseLeave = () => {
+    setHoveredImage(null);
+  };
+
+  // Handle mouse move to update position
+  const handleMouseMove = (event: React.MouseEvent) => {
+    if (hoveredImage) {
+      setHoveredImage(prev => prev ? {
+        ...prev,
+        x: event.clientX + 15,
+        y: event.clientY - 50
+      } : null);
+    }
+  };
+  
   // const locale = useLocale();
   const isProduction = pathname === `/production`;
   const isAbout = pathname === `/about`;
@@ -307,7 +340,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
     };
   }, [setIsVideoReady]);
   const renderContent = (key: string, tabContent: TabContent) => {
-    console.log(tabContent);
+    // console.log(tabContent);
     switch (key) {
       case "splash":
         if (tabContent.video?.url) {
@@ -407,18 +440,18 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
           return (
             <div
               id="svgimage"
-              className="svgimage relative w-full text-4xl flex flex-col gap-10 h-[80dvh] py-8 pt-[10dvh] md:pt-0"
+              className="svgimage relative w-full text-4xl flex flex-col gap-10 h-[80dvh] py-8 pt-[10dvh] "
             >
-              <div className="flex flex-col w-full gap-10 md:w-[65vw] md:mx-auto">
+              <div className="flex flex-col w-full gap-10 md:w-[60vw] md:mx-auto items-center">
                 {tabContent.heading && (
                   <div
-                    className="w-2/3 gap-10 m-auto text-center text-destaque md:w-full md:text-start md:m-0"
+                    className="w-2/3 gap-10 m-auto text-center text-destaque  md:w-2/3 md:m-0"
                     dangerouslySetInnerHTML={{ __html: tabContent.heading }}
                   />
                 )}
                 {tabContent.description && (
                   <div
-                    className=" gap-10 text-corpo-b leading-[1.25]"
+                    className=" gap-10 text-center text-corpo-b leading-[1.25]"
                     dangerouslySetInnerHTML={{ __html: tabContent.description }}
                   />
                 )}
@@ -429,13 +462,17 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
         
       case "team":
         return (
-          <div className="relative w-full  gap-10  h-[75dvh] py-4 mt-[10dvh] md:mt-0 columns-1 md:columns-3  justify-start" style={{ columnFill: "auto" }}>
+          <div className="relative w-full 
+      2xl:text-teams-1400
+       3xl:text-teams-1600
+       4xl:text-teams-1920
+          leading-snug gap-10 h-full  md:h-[75dvh] py-4 mt-[10dvh] md:mt-0 columns-1 md:columns-3  justify-start" style={{ columnFill: "auto" }}>
 
 
      
             {/* Render grafico as an image if present */}
             {tabContent.grafico && tabContent.grafico.url && (
-              <div className="w-1/2 pb-4">
+              <div className="w-1/2 pb-8 hidden md:block">
                 {/* <h3>Gráfico</h3> */}
                 <Image
                   src={tabContent.grafico.url}
@@ -449,7 +486,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
 
             {/* Example rendering for legenda */}
             {tabContent.producao && tabContent.producao.length > 0 && (
-              <div className="pb-4">
+              <div className="pb-8 hidden md:block text-rodape leading-tight">
                 {/* <h3>Legenda</h3> */}
                 <ul>
 
@@ -457,11 +494,11 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                   <div key={idx}>
                     {prod.equipas && prod.equipas.length > 0 && (
                       <ul>
-                        <li key={"idx"} className="gap-4 flex"><span> PD</span><span>[produçao]</span>  </li>
+                        <li key={"idx"} className="gap-4 flex"><span className="w-[1em] font-mono"> {prod.id_name}</span><span className="lowercase font-mono">{"[" + prod.titulo + "]"}</span>  </li>
                         {prod.equipas.map((e, eidx) => (
                           <li key={eidx} className="gap-4 flex">
-                            <span>{e.id_name}</span>
-                            <span className="lowercase">{"[" + e.titulo + "]"}</span>
+                            <span className="w-[1em ] font-mono">{e.id_name}</span>
+                            <span className="lowercase  font-mono">{"[" + e.titulo + "]"}</span>
  
                           </li>
                         ))}
@@ -473,11 +510,11 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                   <div key={idx}>
                     {prod.equipas && prod.equipas.length > 0 && (
                       <ul>
-                        <li key={"idx"} className="gap-4 flex"><span> PR</span><span>[projectos]</span>  </li>
+                        <li key={"idx"} className="gap-4 flex"><span className="w-[1em] font-mono"> {prod.id_name}</span><span className="lowercase font-mono">{"[" + prod.titulo + "]"}</span>  </li>
                         {prod.equipas.map((e, eidx) => (
                           <li key={eidx} className="gap-4 flex">
-                            <span>{e.id_name}</span>
-                            <span className="lowercase">{"[" + e.titulo + "]"}</span>
+                            <span className="w-[1em] font-mono">{e.id_name}</span>
+                            <span className="lowercase font-mono font-bold">{"[" + e.titulo + "]"}</span>
  
                           </li>
                         ))}
@@ -490,13 +527,20 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
             )}
 
             {/* Example rendering for direccao */}
-            {tabContent.direccao && tabContent.direccao.length > 0 && (
+            {tabContent.chefia && tabContent.chefia.cargos && tabContent.chefia.cargos.length > 0 && (
               <div className="pb-4">
-                <h3>Direcção</h3>
+                <strong className="uppercase">{tabContent.chefia.titulo}</strong>
                 <ul>
-                  {tabContent.direccao.map((member, idx) => (
+                  {tabContent.chefia.cargos.map((member, idx) => (
                     <li key={idx}>
-                      {member.nome} {member.cargo && `- ${member.cargo}`}
+                      <span
+                        className={`${member.image?.url ? 'cursor-pointer' : ''}`}
+                        onMouseEnter={member.image?.url ? (e) => handleMouseEnter(member.image!, member.name, e) : undefined}
+                        onMouseLeave={member.image?.url ? handleMouseLeave : undefined}
+                        onMouseMove={member.image?.url ? handleMouseMove : undefined}
+                      >
+                       <span className="font-works">{member.name}</span>{member.cargo && `, ${member.cargo}`}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -505,29 +549,28 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
 
             {/* Example rendering for producao */}
             {tabContent.producao && tabContent.producao.length > 0 && (
-              <div  className="pb-4">
-                <h3>Produção</h3>
+              <div  className="">
                 {tabContent.producao.map((prod, idx) => (
                   <div key={idx}>
+                  
+                <strong className="uppercase">{prod.titulo} <sup className="font-mono">{prod.id_name}</sup></strong>
+                  <div >
                     {prod.equipas && prod.equipas.length > 0 && (
                       <ul>
                         {prod.equipas.map((e, eidx) => (
                           <li key={eidx} className="pb-4">
-                            <strong>{e.titulo}</strong>
+                            <strong>{e.titulo } <sup className="font-mono">{e.id_name}</sup> </strong>
                             <ul>
                               {e.trabalhador.map((t, tidx) => (
                                 <li key={tidx}>
-                                  {t.nome} {t.cargo && `- ${t.cargo}`}
-                                  {/* Render image with Next.js Image */}
-                                  {t.image && t.image.url && (
-                                    <Image
-                                      src={t.image.url}
-                                      alt={t.nome}
-                                      width={40}
-                                      height={40}
-                                      className="inline-block align-middle ml-2"
-                                    />
-                                  )}
+                                  <span
+                                    className={`${t.image?.url ? 'cursor-pointer transition-colors' : ''}`}
+                                    onMouseEnter={t.image?.url ? (e) => handleMouseEnter(t.image!, t.nome, e) : undefined}
+                                    onMouseLeave={t.image?.url ? handleMouseLeave : undefined}
+                                    onMouseMove={t.image?.url ? handleMouseMove : undefined}
+                                  >
+                                    {t.nome}<span className="font-works">{t.cargo && `, ${t.cargo}`}</span>
+                                  </span>
                                 </li>
                               ))}
                             </ul>
@@ -535,6 +578,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                         ))}
                       </ul>
                     )}
+                  </div>
                   </div>
                 ))}
               </div>
@@ -543,27 +587,26 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
             {/* Example rendering for projecto */}
             {tabContent.projecto && tabContent.projecto.length > 0 && (
               <div className="pb-4">
-                <h3>Projectos</h3>
                 {tabContent.projecto.map((proj, idx) => (
                   <div key={idx}>
+                  <strong className="uppercase">{proj.titulo} <sup className="font-mono">{proj.id_name}</sup></strong>
+                  <div key={proj.id_name + idx}>
                     {proj.equipas && proj.equipas.length > 0 && (
                       <ul >
                         {proj.equipas.map((e, eidx) => (
                           <li key={eidx} className="pb-4">
-                            <strong>{e.titulo}</strong>
+                            <strong>{e.titulo}  <sup className="font-mono">{e.id_name}</sup></strong>
                             <ul>
                               {e.trabalhador.map((t, tidx) => (
                                 <li key={tidx}>
-                                  {t.nome} {t.cargo && `- ${t.cargo}`}
-                                  {t.image && t.image.url && (
-                                    <Image
-                                      src={t.image.url}
-                                      alt={t.nome}
-                                      width={40}
-                                      height={40}
-                                      className="inline-block align-middle ml-2"
-                                    />
-                                  )}
+                                  <span
+                                    className={`${t.image?.url ? 'cursor-pointer transition-colors' : ''}`}
+                                    onMouseEnter={t.image?.url ? (e) => handleMouseEnter(t.image!, t.nome, e) : undefined}
+                                    onMouseLeave={t.image?.url ? handleMouseLeave : undefined}
+                                    onMouseMove={t.image?.url ? handleMouseMove : undefined}
+                                  >
+                                    {t.nome}<span className="font-works">{t.cargo && `, ${t.cargo}`}</span>
+                                  </span>
                                 </li>
                               ))}
                             </ul>
@@ -572,6 +615,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                       </ul>
                     )}
                   </div>
+                  </div>
                 ))}
               </div>
             )}
@@ -579,7 +623,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
             {/* Render content if it exists */}
             {tabContent.content && (
               <div
-                className="flex flex-col w-full max-h-full gap-1 font-mono leading-tight text-rodape md:w-full"
+                className="flex flex-col w-full max-h-full leading-tight font-works  md:w-full"
                 dangerouslySetInnerHTML={{ __html: tabContent.content }}
               />
             )}
@@ -723,11 +767,12 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
     }
   };
   return (
-    <div id="smooth-wrapper">
+    <div id="smooth-wrapper" className="
+    ">
       <div
         id="smooth-container"
         className={`${isProduction ? "h-[230dvh] md:h-[300dvh]" : ""} ${
-          isAbout ? "h-[1100dvh] md:h-[1180dvh] " : ""
+          isAbout ? "h-[600dvh] md:h-[680dvh] " : ""
         } ${isResidencias ? "h-[125dvh] md:h-[100dvh]" : ""}   `}
         ref={scrollContainerRef}
       >
@@ -742,9 +787,11 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                   sectionRefs.current[index] = el;
                 }}
                 className={`   relative md:pt-[12dvh]
-                  ${key === "no_entulho" ? "md:overflow-hidden" : ""} 
-                  ${key === "mission" ? "h-fit md:h-screen" : ""}
-                  ${key === "teams" ? "h-screen pt-[20dvh]" : ""}
+                  ${key === "no_entulho" ? "md:overflow-hidden  md:px-32 " : ""} 
+                  ${key === "mission" ? "h-fit md:h-screen  md:px-32 " : ""}
+                  ${key === "teams" ? "h-screen pt-[20dvh]  md:px-32 " : ""}
+                  ${key === "about_aw" ? "md:px-32 " : ""}
+                  ${key === "support_artists" ? "md:px-32 " : ""}
                   ${
                     key === "jornais"
                       ? "pt-[20dvh] w-full overflow-x-scroll px-20 md:w-screen h-screen"
@@ -752,14 +799,21 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                   }
                   ${
                     key === "servicos"
-                      ? "w-full overflow-x-scroll px-20 md:w-screen h-screen"
+                      ? "w-full overflow-x-scroll px-20 md:w-screen h-screen  md:px-32 "
                       : "w-screen"
                   }
                   ${
                     key === "splash"
                       ? "px-4 h-[30dvh] md:px-40 md:h-screen  mt-[22dvh] md:mt-0 mb-8 md:pb-0"
-                      : "px-4 md:px-32 "
-                  }`}
+                      : "px-4 "
+                  }
+                  ${
+                    key === "team"
+                      ? "px-4 md:px-12"
+                      : ""
+                  }
+                  
+                  `}
               >
                 {renderContent(key, tabContent)}
               </div>
@@ -767,6 +821,26 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
           }
         )}
       </div>
+      
+      {/* Floating hover image */}
+      {hoveredImage && (
+        <div
+          className="fixed pointer-events-none z-50 transition-opacity duration-200"
+          style={{
+            left: hoveredImage.x,
+            top: hoveredImage.y,
+          }}
+        >
+          <Image
+            src={hoveredImage.url}
+            alt={hoveredImage.url}
+            width={200}
+            height={200}
+            className="object-cover rounded-md"
+            unoptimized
+          />
+        </div>
+      )}
     </div>
   );
 };

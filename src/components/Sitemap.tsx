@@ -18,6 +18,7 @@ const sitemap = [
       social_media: {
         instagram: "https://www.instagram.com/aw_artworks/?igshid=3rs6xir7bxf5",
         vimeo: "https://vimeo.com/user79925672",
+        youtube: "http://www.youtube.com/@aw_artworks",
         linkedin:
           "https://www.linkedin.com/company/aw-artworks/posts/?feedView=all",
       },
@@ -108,6 +109,13 @@ const Sitemap = () => {
                   href={section.content.social_media.linkedin}
                 >
                   LinkedIn
+                </Link>
+                <Link
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={section.content.social_media.youtube}
+                >
+                  Youtube
                 </Link>
               </div>
               <a

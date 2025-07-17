@@ -333,7 +333,7 @@ export default function Footer() {
             </span>
             <div
               id="footer_luva"
-              className="relative w-auto h-[10vh] opacity-0 footer_luva top-2 will-change-transform"
+              className="relative w-auto h-[10vh] opacity-0 footer_luva top-2 will-change-transform "
               data-flip-id=""
             >
               <Image
@@ -341,7 +341,7 @@ export default function Footer() {
                 alt="Logo Text"
                 width={100}
                 height={100}
-                className="relative w-auto h-full transition-opacity duration-300 ease-in-out will-change-transform kerning"
+                className="relative hidden md:flex  w-auto h-full transition-opacity duration-300 ease-in-out will-change-transform kerning"
                 priority
                 data-flip-id="img"
               />
