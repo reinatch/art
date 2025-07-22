@@ -386,7 +386,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
       case "about_aw":
         return (
           <div
-            className="relative w-full  gap-10  flex flex-col md:flex-row h-[80dvh] py-4 "
+            className="relative w-full  gap-10  flex flex-col md:flex-row h-fit  md:h-[80dvh] py-4 "
             style={{ columnFill: "auto" }}
           >
             <div className="w-full md:w-1/2">
@@ -440,7 +440,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
           return (
             <div
               id="svgimage"
-              className="svgimage relative w-full text-4xl flex flex-col gap-10 h-[60dvh] md:h-[80dvh]  py-8 pt-[10dvh] "
+              className="svgimage relative w-full text-4xl flex flex-col gap-10 h-fit md:h-[80dvh]  py-8 pt-[10dvh] "
             >
               <div className="flex flex-col w-full gap-10 md:w-[60vw] md:mx-auto items-center">
                 {tabContent.heading && (
@@ -472,7 +472,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
      
             {/* Render grafico as an image if present */}
             {tabContent.grafico && tabContent.grafico.url && (
-              <div className="w-1/2 pb-8 hidden md:block">
+              <div className="w-1/2 pb-8">
                 {/* <h3>Gráfico</h3> */}
                 <Image
                   src={tabContent.grafico.url}
@@ -486,7 +486,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
 
             {/* Example rendering for legenda */}
             {tabContent.producao && tabContent.producao.length > 0 && (
-              <div className="pb-8 hidden md:block text-rodape leading-tight">
+              <div className="pb-8 text-rodape leading-tight">
                 {/* <h3>Legenda</h3> */}
                 <ul>
 
@@ -497,7 +497,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                         <li key={"idx"} className="gap-4 flex"><span className="w-[1em] font-mono"> {prod.id_name}</span><span className="lowercase font-mono">{"[" + prod.titulo + "]"}</span>  </li>
                         {prod.equipas.map((e, eidx) => (
                           <li key={eidx} className="gap-4 flex">
-                            <span className="w-[1em ] font-mono">{e.id_name}</span>
+                            <span className="w-[1em] font-mono">{e.id_name}</span>
                             <span className="lowercase  font-mono">{"[" + e.titulo + "]"}</span>
  
                           </li>
@@ -635,7 +635,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
 
         case "support_artists":
         return (
-          <div className="relative w-full  gap-10 flex flex-col md:flex-row h-[80dvh] py-4">
+          <div className="relative w-full  gap-10 flex flex-col md:flex-row h-fit  md:h-[80dvh] py-4">
             <div className="flex flex-col justify-start w-full gap-10 md:w-1/2">
               {tabContent.heading && (
                 <div
@@ -789,12 +789,12 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                 className={`   relative md:pt-[12dvh]
                   ${key === "no_entulho" ? "md:overflow-hidden  md:px-32 " : ""} 
                   ${key === "mission" ? "h-fit md:h-screen  md:px-32 " : ""}
-                  ${key === "teams" ? "h-screen pt-[20dvh]  md:px-32 " : ""}
-                  ${key === "about_aw" ? "md:px-32 " : ""}
+                  ${key === "teams" ? "h-fit md:h-screen md:pt-[20dvh]  md:px-32 " : ""}
+                  ${key === "about_aw" ? "h-fit md:px-32 " : ""}
                   ${key === "support_artists" ? "md:px-32 " : ""}
                   ${
                     key === "jornais"
-                      ? "pt-[20dvh] w-full overflow-x-scroll px-20 md:w-screen h-screen"
+                      ? " w-full overflow-x-scroll px-20 md:w-screen h-screen"
                       : ""
                   }
                   ${
