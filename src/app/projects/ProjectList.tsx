@@ -34,10 +34,10 @@ const ProjectList: React.FC = () => {
   const t = useTranslations("ProjectList");
   const { data, isFetchingNextPage } = useProjectos(locale);
   const { mat, art, ano } = useProjectosData(locale);
-  const projectos = useMemo(
-    () => data?.pages.flatMap((page) => page.projects) || [],
-    [data]
-  );
+  const projectos = useMemo(() => {
+    if (!data?.pages) return [];
+    return data.pages.flatMap((page) => page.projects || []);
+  }, [data]);
   const ref = useRef<HTMLDivElement>(null);
   const [viewMode, setViewMode] = useState("gallery");
   const [filterState, setFilterState] = useState<FilterState>({
@@ -120,7 +120,7 @@ const ProjectList: React.FC = () => {
   }, [filterState.selectedFilter, mat, ano, art]);
   const groupByYear = useCallback((projects: Projecto[]) => {
     const grouped = projects.reduce((acc, projecto) => {
-      const year = projecto.acf.year.trim();
+      const year = (projecto.acf?.year || "").toString().trim();
       if (!acc[year]) {
         acc[year] = [];
       }
@@ -132,8 +132,8 @@ const ProjectList: React.FC = () => {
       .map(([year, projects]) => ({ year, projects }));
   }, []);
   const filteredProjects = useMemo(() => {
-    if (!filterState.selectedFilter) return projectos;
-    return projectos
+    if (!filterState.selectedFilter) return projectos || [];
+    return (projectos || [])
       .filter((projecto) => {
         if (filterState.selectedFilter === "ano" && years) {
           return years.includes(parseInt(projecto.acf.year, 10));
@@ -175,10 +175,10 @@ const ProjectList: React.FC = () => {
   const filteredArtistProjects = useMemo(
     () =>
       filterState.selectedArtist
-        ? filteredProjects.filter(
+        ? (filteredProjects || []).filter(
             (projecto) =>
               filterState.selectedArtist !== null &&
-              projecto.artistas?.includes(filterState.selectedArtist)
+              (projecto.artistas || []).includes(filterState.selectedArtist)
           )
         : filteredProjects,
     [filterState.selectedArtist, filteredProjects]
@@ -186,8 +186,8 @@ const ProjectList: React.FC = () => {
   const filteredMaterialProjects = useMemo(
     () =>
       filterState.selectedMaterial
-        ? filteredProjects.filter((projecto) =>
-            projecto.materiais?.includes(Number(filterState.selectedMaterial))
+        ? (filteredProjects || []).filter((projecto) =>
+            (projecto.materiais || []).includes(Number(filterState.selectedMaterial))
           )
         : filteredProjects,
     [filterState.selectedMaterial, filteredProjects]

@@ -20,11 +20,17 @@ const debug = (message: string, data?: unknown) => {
 
 export const animatePageIn = (
   pathname: string | undefined,
-  // isFirstVisit: boolean,
-  // locale: string,
-  // isMobile: boolean,
+  // optional params kept for backwards compatibility with callers
+  _isFirstVisit?: boolean,
+  _locale?: string | null,
+  _isMobile?: boolean,
 ): Promise<void> => {
   return new Promise((resolve) => {
+    // avoid unused var TS errors for optional compatibility params
+    void _isFirstVisit;
+    void _locale;
+    void _isMobile;
+
     if (!pathname) {
       debug("No pathname provided for animation");
       resolve();

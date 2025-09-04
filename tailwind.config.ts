@@ -20,6 +20,7 @@ const config: Config = {
             '2xl': '1400px',           // 1400px and up
             '3xl': '1600px',           // 1600px and up
             '4xl': '1920px',           // 1920px and up
+            '5xl': '2000px',           // 2000px and up
         },
         colors: {
             primary: {
@@ -104,6 +105,13 @@ const config: Config = {
           'corpo-a-4xl': ['min(max(4.1vw, 23px), 4.5rem)', { lineHeight: 'min(max(4.5vw, 29px), 4.75rem)' }],
           'destaque-4xl': ['min(max(5.4vw, 26px), 6.25rem)', { lineHeight: 'min(max(5.75vw, 37px), 6.5rem)' }],
           'teams-1920': ['min(max(1.0vw, 14px), 1.5rem)', { lineHeight: 'min(max(1.3vw, 18px), 1.9rem)' }],
+        
+          // 5XL screen adjustments (2000px)
+          'rodape-5xl': ['min(max(2.5vw, 20px), 3rem)', { lineHeight: 'min(max(3vw, 26px), 3.5rem)' }],
+          'corpo-b-5xl': ['min(max(3.8vw, 22px), 4.25rem)', { lineHeight: 'min(max(4.25vw, 28px), 4.5rem)' }],
+          'corpo-a-5xl': ['min(max(4.3vw, 24px), 4.75rem)', { lineHeight: 'min(max(4.75vw, 30px), 5rem)' }],
+          'destaque-5xl': ['min(max(5.5vw, 27px), 6.5rem)', { lineHeight: 'min(max(6vw, 38px), 6.75rem)' }],
+          'teams-2000': ['min(max(0.9vw, 14px), 1.5rem)', { lineHeight: 'min(max(1.15vw, 16px), 1.9rem)' }],
         },
     },
 },

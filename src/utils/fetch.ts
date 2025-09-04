@@ -5,6 +5,10 @@ import {
 } from "./types";
 import querystring from 'querystring';
 const baseUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL;
+if (!baseUrl) {
+  // Fail fast in dev; in production this will surface a clear error rather than obscure .filter crash
+  console.error('NEXT_PUBLIC_WORDPRESS_API_URL is not set. API requests will fail.');
+}
 function getUrl(path: string, query?: Record<string, unknown>) {
   const params = query ? querystring.stringify(query as Record<string, string | number | boolean | readonly string[] | readonly number[] | readonly boolean[] | null>) : null;
   return `${baseUrl}${path}${params ? `?${params}` : ""}`;
@@ -16,6 +20,8 @@ export const fetchData = async (endpoint: string) => {
     throw new Error(`Failed to fetch data from ${url}`); 
   }
   const data = await res.json();
+  // defensive: if backend didn't return expected JSON, log and return null
+  if (data == null) return null as unknown as null;
   return data; 
 };
 export async function getAllProjectoss(locale: string): Promise<Projecto[]> {
@@ -32,6 +38,11 @@ export async function getAllProjectoss(locale: string): Promise<Projecto[]> {
         throw new Error(`Failed to fetch data from ${url}`);
       }
       const data = await res.json();
+      if (!Array.isArray(data)) {
+        console.error('Unexpected projects response for', url, data);
+        console.trace('Trace: unexpected projects response');
+        break;
+      }
       allProjects = [...allProjects, ...data];
       totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '1', 10);
       page++;
@@ -55,6 +66,11 @@ export async function getAllArtists(locale: string): Promise<Artista[]> {
         throw new Error(`Failed to fetch data from ${url}`);
       }
       const data = await res.json();
+      if (!Array.isArray(data)) {
+        console.error('Unexpected artists response for', url, data);
+        console.trace('Trace: unexpected artists response');
+        break;
+      }
       allArtists = [...allArtists, ...data];
       totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '1', 10);
       page++;
@@ -78,6 +94,11 @@ export async function getAllMaterials(locale: string): Promise<Material[]> {
         throw new Error(`Failed to fetch data from ${url}`);
       }
       const data = await res.json();
+      if (!Array.isArray(data)) {
+        console.error('Unexpected materials response for', url, data);
+        console.trace('Trace: unexpected materials response');
+        break;
+      }
       allMaterials = [...allMaterials, ...data];
       totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '1', 10);
       page++;
@@ -94,15 +115,23 @@ export const getAllYears = async (locale: string): Promise<number[]> => {
     throw new Error('Failed to fetch years');
   }
   const data = await res.json();
+  if (!Array.isArray(data)) {
+    console.error('Unexpected project_years response', data);
+    console.trace('Trace: unexpected project_years response in getAllYears');
+    return [];
+  }
   return data.map((year: string) => parseInt(year, 10)).filter((year: number) => !isNaN(year));
 };
 export async function getAno(locale: string): Promise<number[]> {
   const response = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_API_URL}/project_years?lang=${locale}`, { cache: 'force-cache', next: { revalidate: 3600  } });
-  const projectos: string[] = await response.json();
-  const years = projectos.map((projecto: string) => {
-    return parseInt(projecto, 10); 
-  });
-  const uniqueYears = Array.from(new Set(years)).sort((a, b) => b - a); 
+  const projectos = await response.json();
+  if (!Array.isArray(projectos)) {
+    console.error('Unexpected project_years response for getAno', projectos);
+    console.trace('Trace: unexpected project_years response in getAno');
+    return [];
+  }
+  const years = projectos.map((projecto: string) => parseInt(projecto, 10)).filter((y) => !isNaN(y));
+  const uniqueYears = Array.from(new Set(years)).sort((a, b) => b - a);
   return uniqueYears as number[];
 }
 export async function getProjectById(id: number, locale: string): Promise<Projecto> {

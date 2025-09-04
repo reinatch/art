@@ -73,9 +73,9 @@ const Search: React.FC = () => {
       return;
     }
     const lowerCaseQuery = query.toLowerCase();
-    const filtered = results.filter((projecto: Projecto) =>
-      projecto.title.rendered.toLowerCase().includes(lowerCaseQuery) ||
-      projecto.slug.toLowerCase().includes(lowerCaseQuery) ||
+    const filtered = (results || []).filter((projecto: Projecto) =>
+      projecto.title.rendered?.toLowerCase().includes(lowerCaseQuery) ||
+      projecto.slug?.toLowerCase().includes(lowerCaseQuery) ||
       projecto.acf.location?.toLowerCase().includes(lowerCaseQuery) ||
       projecto.acf.right_field?.toLowerCase().includes(lowerCaseQuery) ||
       projecto.acf.year?.toLowerCase().includes(lowerCaseQuery) ||

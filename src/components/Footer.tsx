@@ -163,8 +163,9 @@ export default function Footer() {
         );
       }else
       {
+        if(!isMatchingPath){
         gsap.set(footer_wrapper, { display:  "flex" });
-      // }
+      }
   }}, [isSearchOpen]);
   const [aspectRatios, setAspectRatios] = useState<{ [key: string]: string }>(
     {}

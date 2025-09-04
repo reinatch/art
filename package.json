@@ -19,7 +19,7 @@
     "@tanstack/react-query-devtools": "^5.67.1",
     "@types/imagesloaded": "^4.1.6",
     "babel-runtime": "^6.26.0",
-    "gsap": "npm:@gsap/shockingly@^3.12.7",
+    "gsap": "^3.12.7",
     "imagesloaded": "^5.0.0",
     "next": "^15.2.4",
     "next-intl": "^3.26.5",

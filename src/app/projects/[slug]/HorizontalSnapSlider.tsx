@@ -34,11 +34,11 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
     const thumbnails = video
       ? [
           { id: 0, url: "/images/frames/Video-icon_01.png" },
-          ...galeria.map((image) => ({ id: image.id, url: image.sizes.thumbnail })),
+          ...(galeria || []).map((image) => ({ id: image.id, url: image.sizes.thumbnail })),
         ]
-      : galeria.map((image) => ({ id: image.id, url: image.sizes.thumbnail }));
+      : (galeria || []).map((image) => ({ id: image.id, url: image.sizes.thumbnail }));
     setThumbnails(thumbnails);
-    setSelectedThumbnail(video ? 0 : galeria[0].id);
+    setSelectedThumbnail(video ? 0 : (galeria && galeria[0] ? galeria[0].id : 0));
   }, [galeria, video, setSelectedThumbnail, setThumbnails]);
   useGSAP(() => {
     gsap.registerPlugin(
@@ -51,7 +51,7 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
     const mm = gsap.matchMedia();
     mm.add("(min-width: 700px)", () => {
       const projectDetail = document.getElementById("projectDetail");
-      const sectionEls = thumbRefs.current.filter(Boolean);
+      const sectionEls = (thumbRefs.current || []).filter(Boolean);
       const totalWidth = (sectionEls.length - 1) * windowSize.height;
       if (sectionEls.length > 0) {
         gsap
