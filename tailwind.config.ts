@@ -40,7 +40,7 @@ const config: Config = {
             },
         },
         fontFamily: {
-          intl: ["var(--C)"],
+          intl: ["var(--suisse_intl)"],
           works: ["var(--suisse_works)"],
           mono: ["var(--suisse_mono)"],
         },

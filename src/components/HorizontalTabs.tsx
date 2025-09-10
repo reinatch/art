@@ -425,7 +425,8 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
        2xl:text-teams-1400
         3xl:text-teams-1600
         4xl:text-teams-1920
-        [@media(min-width:2000px)]:text-teams-2000
+        5xl:text-teams-2000
+        
            leading-snug gap-10 h-full  md:h-[75dvh] py-4 mt-[10dvh] md:mt-0 columns-1 md:columns-3  justify-start" style={{ columnFill: "auto" }}>
  
  
