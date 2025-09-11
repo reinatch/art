@@ -157,11 +157,15 @@ svg text {
 // .myText {
 //   @apply translate-y-[500px] transition-all duration-500;
 // }
+html, body {
+  font-synthesis: none; 
+  -webkit-font-smoothing: antialiased;
+}
 body {
   color: #000000;
   background: #ffffff;
   // font-family: Arial, Helvetica, sans-serif;
-  // --wght: 400;
+  // --wght: 900;
 }
 // .animated-text .line {
 //   font-variation-settings: "wght" var(--wght);

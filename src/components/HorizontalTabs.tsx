@@ -776,7 +776,14 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                      key === "team"
                        ? "px-4 md:px-12"
                        : ""
-                   }`}
+                   }
+                   ${
+                     key === "art_production"
+                       ? "px-4 md:px-12"
+                       : ""
+                   }
+                   
+                   `}
                  style={{
                    // Optimize mobile rendering
                    transform: isMobile ? 'translateZ(0)' : undefined,
