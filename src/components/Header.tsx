@@ -2,10 +2,12 @@
 import Navbar from "./Navbar";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { useNavigation } from "@/lib/useNavigation";
 export default function Header() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(true);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const { setIsNavOpen } = useNavigation(); // Access shared mobile nav state
   const isHomePage = pathname === "/";
   const handleMouseEnter = () => {
     if (timeoutId) {
@@ -28,6 +30,13 @@ export default function Header() {
       if (id) clearTimeout(id);
     };
   }, []);
+
+  // Close navbar when pathname changes
+  useEffect(() => {
+    setIsOpen(false);
+    setIsNavOpen(false); // Also close mobile nav when route changes
+  }, [pathname, setIsNavOpen]);
+
   return (
     <header
       id="header"

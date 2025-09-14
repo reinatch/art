@@ -10,6 +10,7 @@ import { useTabsContext } from "@/lib/TabsContext";
 import gsap from "gsap";
 import { useWindowSize } from "@custom-react-hooks/use-window-size";
 import { isMobile as detectMobile } from "react-device-detect";
+import { useNavigation } from "@/lib/useNavigation";
 interface NavbarProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,6 +25,7 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
   const t = useTranslations("NavbarLinks");
   const p = useTranslations("ProjectDetailPage");
   const { isContactOpen, closeContact, openContact } = useToggleContact();
+  const { setIsNavOpen } = useNavigation(); // Access shared mobile nav state
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     setIsMobile(detectMobile);
@@ -53,12 +55,39 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
     }, 4000);
     setTimeoutId(id);
   };
+  
   useEffect(() => {
     const id = setTimeout(() => {
       setIsOpen(false);
     }, 3000);
     setTimeoutId(id);
+    
+    // Cleanup function to clear timeout on unmount
+    return () => {
+      if (id) {
+        clearTimeout(id);
+      }
+    };
   }, [setIsOpen]);
+
+  // Clear all timers and close dropdown when navigation happens
+  const handleNavLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const href = e.currentTarget.href;
+    console.log('🔗 Navigation clicked:', href, 'from:', pathname);
+    console.log('🔗 Dropdown state before:', isOpen);
+    console.log('🔗 Active timeouts before:', timeoutId ? 'YES' : 'NO');
+    
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      setTimeoutId(null);
+      console.log('🔗 Cleared existing timeout');
+    }
+    setIsOpen(false);
+    console.log('🔗 Dropdown closed');
+  };
+
+
+
   const handleContactClick = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
@@ -122,6 +151,8 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
       }
     }
   };
+
+
   return (
     <div
       className={`fixed left-0 top-0 w-screen md:py-10 md:w-full mx-auto z-[1000]  ${
@@ -179,6 +210,11 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
               isProjectPage && isMobile ? "hidden" : ""
             } mt-4 flex md:hidden w-full md:w-[20vw] h-full `}
             href={`/`}
+            onClick={() => {
+              console.log("Mobile logo clicked, closing mobile navbar and navigating");
+              // Close the mobile navigation before navigation
+              setIsNavOpen(false);
+            }}
             passHref
           >
             <div
@@ -211,7 +247,7 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
         </>
         {isProjectPage ? (
           <div className="flex items-start h-full projectoBack ">
-            <TransitionLink href={`/projects/`}>
+            <TransitionLink href={`/projects/`} onClick={handleNavLinkClick}>
               <div className="self-end hidden font-mono leading-3 md:flex text-rodape">
                 <span className="pr-2 font-intl">← </span> {p("goBack")}
               </div>
@@ -253,6 +289,7 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                   key={link.href}
                   href={link.href}
                   className={`flex gap-2 whitespace-nowrap text-black`}
+                  onClick={handleNavLinkClick}
                 >
                   <span className={`icon ${link.isActive ? "" : "hidden"}`}>→</span>{" "}
                   {link.label}

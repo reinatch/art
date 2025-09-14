@@ -167,6 +167,22 @@ body {
   // font-family: Arial, Helvetica, sans-serif;
   // --wght: 900;
 }
+
+// Prevent zoom on mobile when focusing inputs
+input, select, textarea {
+  font-size: 16px; /* Prevents iOS zoom */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+// Additional viewport zoom prevention
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important; /* Force 16px to prevent zoom */
+    transform: scale(1) !important; /* Prevent scaling */
+  }
+}
 // .animated-text .line {
 //   font-variation-settings: "wght" var(--wght);
 // }

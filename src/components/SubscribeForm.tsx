@@ -9,8 +9,24 @@ const SubscribeForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   const t = useTranslations("Sitemap");
+
+  // Prevent event bubbling for form interactions
+  const handleFormClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
+  const handleInputFocus = (e: React.FocusEvent) => {
+    e.stopPropagation();
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, setter: (value: string) => void) => {
+    e.stopPropagation();
+    setter(e.target.value);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    e.stopPropagation(); // Prevent bubbling
     setStatus(null);
     setError(null);
     setButtonDisabled(true);
@@ -38,10 +54,12 @@ const SubscribeForm = () => {
     }
   };
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="font-intl flex text-rodape flex-col gap-2 md:gap-4 mx-auto w-full"
-    >
+    <div onClick={handleFormClick}>
+      <form
+        onSubmit={handleSubmit}
+        onClick={handleFormClick}
+        className="font-intl flex text-rodape flex-col gap-2 md:gap-4 mx-auto w-full"
+      >
       <h2 className="text-rodape">{t("title")}</h2>
       <div>
         <label htmlFor="name" className="block font-medium mb-1">
@@ -52,7 +70,9 @@ const SubscribeForm = () => {
           id="name"
           name="name"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => handleInputChange(e, setName)}
+          onFocus={handleInputFocus}
+          onClick={handleFormClick}
           required
           className="w-full px-2 border border-black rounded-full py-1"
         />
@@ -66,13 +86,16 @@ const SubscribeForm = () => {
           id="email"
           name="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => handleInputChange(e, setEmail)}
+          onFocus={handleInputFocus}
+          onClick={handleFormClick}
           required
           className="w-full px-2 border border-black rounded-full py-1"
         />
       </div>
       <button
         type="submit"
+        onClick={handleFormClick}
         className="w-fit py-1 px-6 rounded-full border border-black hover:bg-black hover:text-white gap-4 flex items-center"
         disabled={buttonDisabled}
       >
@@ -83,6 +106,7 @@ const SubscribeForm = () => {
       {status && <p className="text-green-500 mt-4 text-center">{status}</p>}
       {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
     </form>
+    </div>
   );
 };
 export default SubscribeForm;

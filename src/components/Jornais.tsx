@@ -6,6 +6,7 @@ import { useWindowSize } from "@custom-react-hooks/use-window-size";
 import Link from "next/link";
 import { ImageMedia } from "@/utils/types";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { isMobile as detectMobile } from "react-device-detect";
 interface Jornais {
   capa: ImageMedia;
   contra: ImageMedia;
@@ -22,6 +23,8 @@ interface ShowcaseProps {
 const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
   const [, setHoveredCardId] = useState<number | null>(null);
   const [flippedCardId, setFlippedCardId] = useState<number | null>(1946);
+  const [isMobile, setIsMobile] = useState(false);
+  const [, setContainerHeight] = useState<string>('auto');
   const showcaseRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const windowSize = useWindowSize();
@@ -30,6 +33,49 @@ const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
   const showcaseCount = jornaisData ? jornaisData.length : 0;
   const centerIndex = Math.floor(showcaseCount / 2);
   const depthFactor = 1;
+
+  // Performance: Only update mobile state when necessary
+  useEffect(() => {
+    const mobile = detectMobile || windowSize.width < 900;
+    if (mobile !== isMobile) {
+      setIsMobile(mobile);
+    }
+  }, [windowSize.width, isMobile]);
+
+  // Step 2: Dynamic Height Calculation - Performance Optimized
+  useEffect(() => {
+    if (!showcaseRef.current || !jornaisData?.length) return;
+
+    const calculateOptimalHeight = () => {
+      const cards = showcaseRef.current?.querySelectorAll('.card');
+      if (!cards?.length) return;
+
+      // Base calculations
+      const cardCount = cards.length;
+      const baseCardHeight = isMobile ? 400 : 500; // Estimated card height
+      const spacing = isMobile ? 30 : 50; // Spacing between cards
+      
+      // Calculate height based on layout
+      let calculatedHeight: string;
+      
+      if (isMobile) {
+        // Mobile: Cards are stacked/overlapped horizontally
+        calculatedHeight = `${baseCardHeight + (spacing * 2)}px`;
+      } else {
+        // Desktop: Cards use 3D perspective and animations
+        const animationSpace = cardCount * 100; // Space for animations
+        const perspectiveSpace = 200; // Additional space for 3D effects
+        calculatedHeight = `${baseCardHeight + animationSpace + perspectiveSpace}px`;
+      }
+      
+      setContainerHeight(calculatedHeight);
+    };
+
+    // Debounce calculations for better performance
+    const timeoutId = setTimeout(calculateOptimalHeight, 100);
+    
+    return () => clearTimeout(timeoutId);
+  }, [isMobile, jornaisData, showcaseCount]);
   // console.log(jornaisData)
   useGSAP(() => {
     mm.add("(max-width: 899px)", () => {

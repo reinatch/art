@@ -40,7 +40,23 @@ const HorizontalSnapSlider: React.FC<HorizontalSnapSliderProps> = ({
     setThumbnails(thumbnails);
     setSelectedThumbnail(video ? 0 : (galeria && galeria[0] ? galeria[0].id : 0));
   }, [galeria, video, setSelectedThumbnail, setThumbnails]);
+
+  // Cleanup ScrollTrigger instances when component unmounts or navigation occurs
+  useEffect(() => {
+    return () => {
+      console.log('🎨 HorizontalSnapSlider: Cleaning up ScrollTrigger instances');
+      ScrollTrigger.getAll().forEach(trigger => {
+        if (trigger.trigger?.closest('#projectDetail')) {
+          console.log('🎨 Killing ScrollTrigger for project detail');
+          trigger.kill();
+        }
+      });
+      ScrollTrigger.refresh();
+    };
+  }, []);
+
   useGSAP(() => {
+    console.log('🎨 HorizontalSnapSlider: Setting up GSAP animations');
     gsap.registerPlugin(
       ScrollTrigger,
       ScrollSmoother,

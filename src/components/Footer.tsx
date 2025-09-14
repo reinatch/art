@@ -15,6 +15,7 @@ import { useWindowSize } from "@custom-react-hooks/use-window-size";
 import LocaleSwitcher from "./Switcher";
 import { useToggleContact } from "@/lib/useToggleContact";
 import { useToggleSearch } from "@/lib/useToggleSearch";
+import { useNavigation } from "@/lib/useNavigation";
 export default function Footer() {
   const pathname = usePathname();
   const locale = useLocale();
@@ -54,7 +55,7 @@ export default function Footer() {
   //mobile
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const { isNavOpen, setIsNavOpen } = useNavigation(); // Use shared navigation state
   const { isSearchOpen, openSearch, closeSearch } = useToggleSearch();
   const { isContactOpen, openContact, closeContact } = useToggleContact();
   const handleContactClick = useCallback(
@@ -67,6 +68,17 @@ export default function Footer() {
       }
     },
     [closeContact, isContactOpen, openContact]
+  );
+
+  // For navigation links - only close contact if open, don't open if closed
+  const handleNavClick = useCallback(
+    () => {
+      if (isContactOpen) {
+        closeContact();
+      }
+      // Don't prevent default - allow normal navigation
+    },
+    [closeContact, isContactOpen]
   );
   const handleTabsClick = useCallback(
     (slug: string, e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -269,7 +281,7 @@ export default function Footer() {
     <footer
       id="footer"
       className={`fixed z-[55] w-screen  h-[10dvh] md:h-[12dvh] ${
-        isHome && !isOpen ? "mix-blend-difference md:mix-blend-normal bg-transparent text-white md:text-black md:bg-white"
+        isHome && !isNavOpen ? "mix-blend-difference md:mix-blend-normal bg-transparent text-white md:text-black md:bg-white"
           : "" } ${ isHome ? "bg-transparent md:bg-white" : "bg-white" } font-mono text-rodape text-black left-0 bottom-0 text-center inset-x-0 mx-auto container-full `}
     >
       <div
@@ -410,14 +422,14 @@ export default function Footer() {
         <div className="absolute flex items-center justify-center w-full bottom-4 lg:hidden">
           <button
             ref={buttonRef}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => setIsNavOpen(!isNavOpen)}
             className={`text-2xl ${
               isHome ? "" : "text-black"
             } z-[59]  focus:outline-none relative`}
           >
             <svg
               className={`w-10 h-10  transform ${
-                isOpen ? "-rotate-[135deg]" : "rotate-0"
+                isNavOpen ? "-rotate-[135deg]" : "rotate-0"
               } transition-transform duration-500`}
               fill="none"
               stroke="currentColor"
@@ -427,39 +439,43 @@ export default function Footer() {
               <path strokeWidth="1" d="M0 15h30M15 0v30" />
             </svg>
           </button>
-          {isOpen && (
+          {isNavOpen && (
             <>
               <nav
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => setIsNavOpen(false)} // Close when clicking on nav
                 ref={menuRef}
                 className="fixed inset-0 z-[49] font-intl flex flex-col items-center justify-center space-y-8 text-4xl bg-white bg-opacity-70"
               >
                 <TransitionLink
                   href={`/projects`}
                   className={`block pt-1 whitespace-nowrap text-black hover:text-[#6b6a6a]`}
+                   onClick={handleNavClick}
                 >
                   {t("projects")}
                 </TransitionLink>
                 <TransitionLink
                   href={`/production`}
                   className={`block pt-1 whitespace-nowrap text-black hover:text-[#6b6a6a]`}
+                   onClick={handleNavClick}
                 >
                   {t("production")}
                 </TransitionLink>
                 <TransitionLink
                   href={`/residencias`}
                   className={`block pt-1 whitespace-nowrap text-black hover:text-[#6b6a6a]`}
+                   onClick={handleNavClick}
                 >
                   {t("residencies")}
                 </TransitionLink>
                 <TransitionLink
                   href={`/about`}
                   className={`block pt-1 whitespace-nowrap text-black hover:text-[#6b6a6a]`}
+                   onClick={handleNavClick}
                 >
                   {t("about")}
                 </TransitionLink>
                 <Link
-                  href="/about"
+                  href="#"
                   className={`block pt-1 whitespace-nowrap text-black hover:text-[#6b6a6a]`}
                   onClick={handleContactClick}
                 >

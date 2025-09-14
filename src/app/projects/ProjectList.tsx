@@ -23,6 +23,7 @@ import { shimmer, toBase64 } from "../../utils/imageUtils";
 import { useProjectos } from "@/utils/useProjectos";
 import { useProjectosData } from "@/utils/useProjectosData";
 import { FixedSizeList } from "react-window";
+import { isMobile } from "react-device-detect";
 type FilterState = {
   selectedFilter: string | null;
   selectedArtist: number | null;
@@ -64,19 +65,36 @@ const ProjectList: React.FC = () => {
     []
   );
   useEffect(() => {
+    // Only enable click outside behavior on desktop, not mobile
+    if (isMobile) return;
+    
     const sitempa = document.querySelector("#sitemap");
     const handleClickOutside = (event: MouseEvent) => {
-      if (sitempa && !sitempa.contains(event.target as Node)) {
+      const target = event.target as HTMLElement;
+      
+      // Don't close if clicking on form elements or their children
+      if (target.closest('form') || target.closest('input') || target.closest('button') || target.closest('label')) {
+        return;
+      }
+      
+      // Don't close if clicking within the sitemap area
+      if (sitempa && !sitempa.contains(target)) {
         closeContact();
       }
     };
+    
     const handleScroll = () => {
       if (isContactOpen) {
         closeContact();
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    window.addEventListener("scroll", handleScroll);
+    
+    // Only add listeners when contact is open
+    if (isContactOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      window.addEventListener("scroll", handleScroll);
+    }
+    
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("scroll", handleScroll);

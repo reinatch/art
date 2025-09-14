@@ -151,7 +151,7 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
     });
   }, [cardWidth, centerIndex, showcaseCount]);
   return (
-    <div ref={containerRef} className="showcase w-full md:w-auto">
+    <div ref={containerRef} className="showcase w-full md:w-full">
       <div
         ref={showcaseRef}
         className="showcase--cards h-[60vh] md:h-[76vh] py-8 w-screen md:w-full"

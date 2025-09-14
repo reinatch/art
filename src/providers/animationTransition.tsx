@@ -73,7 +73,8 @@ export function TemplateTransition({
       enter={(next) => {
         const tl = gsap.timeline({
           onComplete: () => {
-            animatePageIn(pathname)?.then(next);
+            // Don't call animatePageIn here - let Template component handle it with correct pathname
+            next();
           },
         });
 
@@ -91,8 +92,7 @@ export function TemplateTransition({
               ease: "circ.inOut",
             },
             "<50%"
-          )
-          .call(next, undefined, "<50%");
+          );
 
         return () => {
           tl.kill();

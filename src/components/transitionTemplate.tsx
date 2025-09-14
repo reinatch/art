@@ -20,12 +20,19 @@ export default function Template({ children }: { children: React.ReactNode }) {
     setIsMobile(detectMobile);
   }, [windowSize]);
   useEffect(() => {
+    console.log('🎬 Template useEffect triggered for pathname:', pathname);
+    console.log('🎬 Search open:', isSearchOpen, 'Contact open:', isContactOpen);
+    
     if (isSearchOpen) {
       closeSearch();
+      console.log('🎬 Closed search');
     }
     if (isContactOpen) {
       closeContact();
+      console.log('🎬 Closed contact');
     }
+    
+    console.log('🎬 Starting animatePageIn for:', pathname, 'locale:', locale, 'isMobile:', isMobile);
     animatePageIn(pathname, false, locale, isMobile);
   }, [
     closeContact,

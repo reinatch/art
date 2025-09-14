@@ -1,6 +1,6 @@
 // app/layout.tsx
 import localFont from "next/font/local";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.scss";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -18,6 +18,7 @@ import { DataFetchProvider } from "@/lib/DataFetchContext";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { getLocale } from "next-intl/server";
+import { NavigationProvider } from "@/lib/useNavigation";
 const suisse_mono = localFont({
   src: "./fonts/SuisseIntlMono-Regular.ttf",
   variable: "--suisse_mono",
@@ -40,6 +41,14 @@ export const metadata: Metadata = {
   title: "ARTWORKS",
   description: "art works",
 };
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const revalidate = 3600;
 export default async function RootLayout({
   children,
@@ -68,10 +77,12 @@ export default async function RootLayout({
                     <ToggleContactProvider>
                       <TabsProvider>
                         <ThumbnailsProvider>
-                          <Header />
-                          {children}
-                          <Footer />
-                          <Sitemap />
+                          <NavigationProvider>
+                            <Header />
+                            {children}
+                            <Footer />
+                            <Sitemap />
+                          </NavigationProvider>
                         </ThumbnailsProvider>
                       </TabsProvider>
                     </ToggleContactProvider>

@@ -20,7 +20,7 @@ import ScrollToPlugin from "gsap/ScrollToPlugin";
 import { useDataFetchContext } from "@/lib/DataFetchContext";
 import { useToggleContact } from "@/lib/useToggleContact";
 import { usePathname } from "next/navigation";
-// import { isMobile } from "react-device-detect";
+// import { isMobile as reactisMobile } from "react-device-detect";
 // import { useLocale } from "next-intl";
 interface JornaisType {
   capa: ImageMedia;
@@ -197,25 +197,43 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
       setSelectedTab(tabs[0].slug);
     }
   }, [tabData, setTabs, setSelectedTab, setTabTitle]);
+
+
   useEffect(() => {
     const sitempa = document.querySelector("#sitemap");
     const handleClickOutside = (event: MouseEvent) => {
-      if (sitempa && !sitempa.contains(event.target as Node)) {
+      const target = event.target as HTMLElement;
+      
+      // Don't close if clicking on form elements or their children
+      if (target.closest('form') || target.closest('input') || target.closest('button') || target.closest('label')) {
+        return;
+      }
+      
+      // Don't close if clicking within the sitemap area
+      if (sitempa && !sitempa.contains(target)) {
         closeContact();
       }
     };
+    
     const handleScroll = () => {
       if (isContactOpen) {
         closeContact();
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    window.addEventListener("scroll", handleScroll);
+    
+    // Add listeners when contact is open on both mobile and desktop
+    if (isContactOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      window.addEventListener("scroll", handleScroll);
+    }
+    
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("scroll", handleScroll);
     };
   }, [closeContact, isContactOpen]);
+ 
+ 
   useGSAP(() => {
     gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
     gsap.registerPlugin(ScrollSmoother);
@@ -733,7 +751,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
        <div
          id="smooth-container"
          className={`${isProduction ? "h-[230dvh] md:h-[300dvh]" : ""} ${
-           isAbout ? "h-[680dvh] md:h-[680dvh] " : ""
+           isAbout ? "h-[650dvh] md:h-[680dvh] " : ""
          } ${isResidencias ? "h-[125dvh] md:h-[100dvh]" : ""}   `}
          ref={scrollContainerRef}
          style={{
