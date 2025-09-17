@@ -47,7 +47,6 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
       });
     });
   }, []);
-  
   const positionClass =
     position === "left" ? "left-0" : position === "right" ? "right-0" : "";
   return (

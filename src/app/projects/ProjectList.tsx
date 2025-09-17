@@ -23,7 +23,7 @@ import { shimmer, toBase64 } from "../../utils/imageUtils";
 import { useProjectos } from "@/utils/useProjectos";
 import { useProjectosData } from "@/utils/useProjectosData";
 import { FixedSizeList } from "react-window";
-import { isMobile } from "react-device-detect";
+// import { isMobile } from "react-device-detect";
 type FilterState = {
   selectedFilter: string | null;
   selectedArtist: number | null;
@@ -65,8 +65,27 @@ const ProjectList: React.FC = () => {
     []
   );
   useEffect(() => {
-    // Only enable click outside behavior on desktop, not mobile
-    if (isMobile) return;
+    // Prioritize window width over user agent for more reliable detection
+    const isMobileDevice = () => {
+      const isSmallScreen = window.innerWidth <= 900;
+      const hasMobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      // If screen is large (desktop size), treat as desktop regardless of user agent
+      if (window.innerWidth > 900) {
+        return false;
+      }
+      
+      // If screen is small, check user agent as well
+      return isSmallScreen || hasMobileUserAgent;
+    };
+    
+    // console.log('Device detection:', {
+    //   reactDeviceDetectMobile: isMobile,
+    //   windowWidth: window.innerWidth,
+    //   userAgent: navigator.userAgent,
+    //   isMobileDevice: isMobileDevice(),
+    //   finalDecision: isMobileDevice() ? 'MOBILE' : 'DESKTOP'
+    // });
     
     const sitempa = document.querySelector("#sitemap");
     const handleClickOutside = (event: MouseEvent) => {
@@ -89,10 +108,13 @@ const ProjectList: React.FC = () => {
       }
     };
     
-    // Only add listeners when contact is open
-    if (isContactOpen) {
+    // Add listeners when contact is open, but only on desktop
+    if (isContactOpen && !isMobileDevice()) {
+      console.log('Adding desktop event listeners - sitemap will close on click outside/scroll');
       document.addEventListener("mousedown", handleClickOutside);
       window.addEventListener("scroll", handleScroll);
+    } else if (isContactOpen) {
+      console.log('Mobile device detected - sitemap will only close via close button');
     }
     
     return () => {
@@ -100,6 +122,7 @@ const ProjectList: React.FC = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [closeContact, isContactOpen]);
+
   const getRandomInRange = useCallback(
     (min: number, max: number) => Math.random() * (max - min) + min,
     []

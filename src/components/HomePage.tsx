@@ -20,7 +20,6 @@ import AnimatedImages from "@/lib/AnimatedImages";
 import Marquee from "@/components/Marquee";
 import Image from "next/image";
 import { HomePageData, homeProjecto } from "@/utils/types";
-// import { getUserLocale, setUserLocale } from "@/services/locale";
 import { useHome } from "@/utils/useHome";
 import { isMobile } from "react-device-detect";
 import Sitemap from "./Sitemap";
@@ -34,16 +33,10 @@ const HomePageContent: React.FC = () => {
   const windowSize = useWindowSize();
   const { setIsVideoReady } = useDataFetchContext();
   const videoRef = useRef<HTMLVideoElement | null>(null);
-
-  // useEffect(() => {
-  //   const setLocaleCookie = async () => {
-  //     const userLocale = await getUserLocale();
-  //     if (userLocale !== locale) {
-  //       await setUserLocale(locale as "en" | "pt");
-  //     }
-  //   };
-  //   setLocaleCookie();
-  // }, [locale]);
+  const [isMobileClient, setIsMobileClient] = useState(false);
+  useEffect(() => {
+    setIsMobileClient(isMobile);
+  }, []);
   useEffect(() => {
     if (!data) return;
     setSections(data);
@@ -62,41 +55,42 @@ const HomePageContent: React.FC = () => {
       }
     };
   }, [setIsVideoReady]);
-
   useEffect(() => {
+    const isMobileDevice = () => {
+      const isSmallScreen = window.innerWidth <= 900;
+      const hasMobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if (window.innerWidth > 900) {
+        return false;
+      }
+      return isSmallScreen || hasMobileUserAgent;
+    };
     const sitempa = document.querySelector("#sitemap");
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      
-      // Don't close if clicking on form elements or their children
       if (target.closest('form') || target.closest('input') || target.closest('button') || target.closest('label')) {
         return;
       }
-      
-      // Don't close if clicking within the sitemap area
       if (sitempa && !sitempa.contains(target)) {
         closeContact();
       }
     };
-    
     const handleScroll = () => {
       if (isContactOpen) {
         closeContact();
       }
     };
-    
-    // Add listeners when contact is open on both mobile and desktop
-    if (isContactOpen) {
+    if (isContactOpen && !isMobileDevice()) {
+      console.log('Adding desktop event listeners - sitemap will close on click outside/scroll');
       document.addEventListener("mousedown", handleClickOutside);
       window.addEventListener("scroll", handleScroll);
+    } else if (isContactOpen) {
+      console.log('Mobile device detected - sitemap will only close via close button');
     }
-    
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("scroll", handleScroll);
     };
   }, [closeContact, isContactOpen]);
-
   gsap.registerPlugin(
     ScrollTrigger,
     ScrollSmoother,
@@ -107,50 +101,34 @@ const HomePageContent: React.FC = () => {
   );
   useGSAP(() => {
     if (!sections || sections.length === 0) return;
-    
-    // Set global GSAP performance settings
     gsap.config({
       force3D: true,
       nullTargetWarn: false,
     });
-    
-    // Cache DOM queries for better performance
     const sectionElements = sectionRefs.current;
     const movableArray: HTMLDivElement[] = gsap.utils.toArray(".movable");
     const scrolll = gsap.utils.toArray(".scroll-indicator");
-    
-    // Configure ScrollTrigger for better performance
     ScrollTrigger.config({ 
       ignoreMobileResize: true,
       autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
-      // refreshPriority: -1 // Lower priority for better performance
     });
-    
     if (ScrollTrigger.isTouch === 1) {
       ScrollTrigger.normalizeScroll(true);
     }
-    
     const mm = gsap.matchMedia();
-    
-    // Create smoother once and reuse
     const smoother: ScrollSmoother = ScrollSmoother.create({
       content: containerRef.current,
-      smooth: 2,
-      effects: true,
-      smoothTouch: 0.1, // Reduced for mobile performance
+      smooth: 1,
+      smoothTouch: 1,
       ignoreMobileResize: true,
-      normalizeScroll: true,
     });
     mm.add("(max-width: 899px)", () => {
-      // Optimized DOM updates for better performance
       gsap.set(scrolll, {
         autoAlpha: 0,
         opacity: 0,
         display: "none",
-        force3D: true, // Hardware acceleration
+        force3D: true, 
       });
-
-      // Mobile-optimized residency pinning
       gsap.timeline({
         scrollTrigger: {
           id: "residency-pin-mobile",
@@ -161,7 +139,6 @@ const HomePageContent: React.FC = () => {
           pinSpacing: false,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          // fastScrollEnd: true, // Better mobile performance
         },
       });
     });
@@ -170,21 +147,16 @@ const HomePageContent: React.FC = () => {
         autoAlpha: 0,
         opacity: 0,
         display: "none",
-        force3D: true, // Hardware acceleration
+        force3D: true, 
       });
-      
-      // Optimized scroll to section function
       const scrollToSection = (index: number) => {
         const target = sectionElements[index];
         if (target && smoother) {
           smoother.scrollTo(target, true);
         }
       };
-
-      // Throttled section navigation for better performance
       sectionElements.forEach((panel, index) => {
         if (!panel) return;
-        
         ScrollTrigger.create({
           id: `section-nav-${index}`,
           trigger: panel,
@@ -195,8 +167,6 @@ const HomePageContent: React.FC = () => {
           onEnterBack: () => scrollToSection(index),
         });
       });
-
-      // Optimized residency timeline with better performance
       gsap.timeline({
         scrollTrigger: {
           id: "residency-desktop",
@@ -205,22 +175,17 @@ const HomePageContent: React.FC = () => {
           end: "bottom center",
           pin: true,
           pinSpacing: true,
-          // anticipatePin: 1,
-          // fastScrollEnd: true,
           onUpdate: (self) => {
-            // Use requestAnimationFrame for heavy operations
             if (self.progress > 0.99 && self.direction === 1) {
               requestAnimationFrame(() => openContact());
             }
           },
         },
       });
-
       return () => {
         if (smoother) smoother.kill();
       };
     });
-    // Optimized home video animation with transform3d
     gsap
       .timeline({
         scrollTrigger: {
@@ -236,10 +201,8 @@ const HomePageContent: React.FC = () => {
         y: -40,
         duration: 1, 
         ease: "none",
-        force3D: true // Hardware acceleration
+        force3D: true 
       });
-
-    // Optimized scroll indicator animation
     gsap
       .timeline({
         scrollTrigger: {
@@ -255,23 +218,18 @@ const HomePageContent: React.FC = () => {
         ease: "none",
         force3D: true
       });
-    // Optimized sphere animation with better performance
     const sphere = document.querySelector(".production0_video");
     const target = document.querySelector(".production0_video_wrapper_target");
-    
     if (sphere && target) {
       const proxy = { skew: 0 };
       const skewSetter = gsap.quickSetter(sphere, "skewY", "deg");
       const clamp = gsap.utils.clamp(-20, 20);
-      
       const state = Flip.getState(sphere);
       target.appendChild(sphere);
-      
       const animation = Flip.from(state, {
         simple: true,
         ease: "power2.out"
       });
-
       ScrollTrigger.create({
         id: "sphere-animation",
         trigger: "#production0",
@@ -281,9 +239,8 @@ const HomePageContent: React.FC = () => {
         scrub: 1,
         animation,
         onUpdate: (self) => {
-          // Throttle skew calculations for better performance
           const velocity = self.getVelocity();
-          if (Math.abs(velocity) > 50) { // Only update if significant velocity
+          if (Math.abs(velocity) > 50) { 
             const skew = clamp(velocity / -200);
             if (Math.abs(skew) > Math.abs(proxy.skew)) {
               proxy.skew = skew;
@@ -299,7 +256,6 @@ const HomePageContent: React.FC = () => {
         },
       });
     }
-    // Optimized utility function with memoization
     const toPXCache = new Map<string, number>();
     const toPX = (value: string): number => {
       if (toPXCache.has(value)) {
@@ -310,8 +266,6 @@ const HomePageContent: React.FC = () => {
       toPXCache.set(value, result);
       return result;
     };
-
-    // Optimized project section animation
     gsap
       .timeline({
         scrollTrigger: {
@@ -340,10 +294,8 @@ const HomePageContent: React.FC = () => {
         ease: "none",
         force3D: true
       }, "start+=0.2");
-    // Optimized movable elements animation with reduced complexity
     const negativeXArray: HTMLDivElement[] = [];
     const positiveXArray: HTMLDivElement[] = [];
-    
     movableArray.forEach((item, i) => {
       if (i % 2 === 0) {
         negativeXArray.push(item);
@@ -351,8 +303,6 @@ const HomePageContent: React.FC = () => {
         positiveXArray.push(item);
       }
     });
-
-    // Only animate if elements exist
     if (negativeXArray.length > 0 || positiveXArray.length > 0) {
       gsap
         .timeline({
@@ -361,13 +311,13 @@ const HomePageContent: React.FC = () => {
             trigger: "#residency0",
             start: "top bottom",
             end: "bottom top",
-            toggleActions: "play none none reverse", // Better performance than scrub for this animation
+            toggleActions: "play none none reverse", 
           },
         })
         .from(negativeXArray, { 
           x: -2000, 
-          duration: 2, // Reduced duration
-          stagger: 0.1, // Reduced stagger
+          duration: 2, 
+          stagger: 0.1, 
           ease: "power2.out",
           force3D: true
         })
@@ -379,8 +329,6 @@ const HomePageContent: React.FC = () => {
           force3D: true
         }, "<0.2");
     }
-
-    // Add mapa fade-in animation on mobile when user starts scrolling
     mm.add("(max-width: 899px)", () => {
       const mapaElement = document.querySelector("#mapa");
       if (mapaElement) {
@@ -401,32 +349,19 @@ const HomePageContent: React.FC = () => {
         });
       }
     });
-
-
-
-    // Cleanup function with better error handling
     return () => {
       try {
-        // Clear toPX cache
         toPXCache.clear();
-        
-        // Return sphere to original position
         const sphereWrapper = document.querySelector(".production0_video_wrapper_main");
         if (sphereWrapper && sphere) {
           sphereWrapper.appendChild(sphere);
         }
-        
-        // Kill all ScrollTriggers efficiently
         ScrollTrigger.getAll().forEach((trigger) => {
           if (trigger) trigger.kill();
         });
-        
-        // Kill smoother if it exists
         if (smoother) {
           smoother.kill();
         }
-        
-        // Kill matchMedia
         mm.kill();
       } catch (error) {
         console.warn("Error during GSAP cleanup:", error);
@@ -437,13 +372,12 @@ const HomePageContent: React.FC = () => {
     <div id="smooth-wrapper">
       <div
         ref={containerRef}
-        id="content"
+        id="smooth-content"
         className="relative grid w-screen min-h-full "
       >
         {sections &&
           sections[0]?.acf &&
           Object.entries(sections[0].acf).map(([key, value], index) => {
-            // console.log(value)
             return (
               <div
                 key={key}
@@ -751,7 +685,6 @@ const HomePageContent: React.FC = () => {
                       >
                         {value.items &&
                           value.items.map((item: homeProjecto, idx: number) => {
-                            // console.log("Item Slug:", item.slug);
                             return(
                             <div
                               key={idx}
@@ -788,7 +721,6 @@ const HomePageContent: React.FC = () => {
                         {value.items0 &&
                           value.items0.map(
                             (item: homeProjecto, idx: number) => {
-                              // console.log("Item Slug:", item.slug);
                               return(
                               <div
                                 key={idx}
@@ -933,24 +865,18 @@ const HomePageContent: React.FC = () => {
                     >
                       {value?.link.title}
                     </TransitionLink>
-
                   </div>
                 )}
               </div>
             );
           })}
-          
-          
-
           {
-            isMobile && (
-
+            isMobileClient && (
           <div id="mapa" className="pt-10 flex md:hidden opacity-0  relative z-10 h-[80vh] w-screen bg-white border-t-2 border-black" >
             <Sitemap asSection/>
           </div>
-            )
+            ) 
           }
-
       </div>
     </div>
   );

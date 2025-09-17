@@ -29,6 +29,7 @@
     },
     "ProjectDetailPage": {
       "goBack": "Voltar para Projectos",
+      "goBackMobile": "Voltar",
       "prev": "Anterior",
       "next": "Próximo"
     },
@@ -42,7 +43,13 @@
     "Search":{
       "submit": "Pesquisar", 
       "results": "Resultados de Pesquisa", 
-      "searching": "pesquisando"
+      "searching": "pesquisando",
+      "noResults": "Nenhum resultado encontrado",
+      "tryAgain": "Tente palavras-chave diferentes",
+      "3char": "Digite pelo menos 3 caracteres",
+      "result": "resultado",
+      "resultes": "resultados",
+      "found": "encontrado"
     },
     "Footer":{
       "lets": "Conecta",

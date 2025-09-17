@@ -69,13 +69,80 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
   });
   const handleCardClick = contextSafe((id: number, index: number) => {
     const cardInner = document.querySelector(`.card-${id} .card-inner`);
+    
+    // Debug logging for iOS issues
+    console.log('🃏 Card click debug:', {
+      cardId: id,
+      currentFlipped: flippedCardId,
+      element: cardInner,
+      userAgent: navigator.userAgent,
+      isIOS: /iPad|iPhone|iPod/.test(navigator.userAgent),
+      devicePixelRatio: window.devicePixelRatio
+    });
+    
+    if (!cardInner) {
+      console.error('🃏 Card inner element not found for id:', id);
+      return;
+    }
+    
+    // Check current transform before animation
+    const computedStyle = window.getComputedStyle(cardInner);
+    console.log('🃏 Current transform before animation:', computedStyle.transform);
+    
     if (flippedCardId === id) {
-      gsap.to(cardInner, { rotateY: 0, duration: 0.2 });
+      console.log('🃏 Flipping card back to front');
+      gsap.to(cardInner, { 
+        rotateY: 0, 
+        duration: 0.2,
+        // iOS-specific fixes
+        force3D: true,
+        transformOrigin: "center center",
+        ease: "power2.inOut",
+        onStart: () => {
+          console.log('🃏 Back to front animation started');
+          // Ensure proper 3D context on iOS
+          gsap.set(cardInner, { 
+            transformStyle: "preserve-3d",
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+            perspective: "1000px"
+          });
+        },
+        onComplete: () => {
+          console.log('🃏 Back to front animation completed');
+          const finalStyle = window.getComputedStyle(cardInner);
+          console.log('🃏 Final transform:', finalStyle.transform);
+        }
+      });
       setFlippedCardId(null);
     } else {
+      console.log('🃏 Flipping card front to back');
       setFlippedCardId(id);
-      gsap.to(cardInner, { rotateY: 180, duration: 0.2 });
+      gsap.to(cardInner, { 
+        rotateY: 180, 
+        duration: 0.2,
+        // iOS-specific fixes
+        force3D: true,
+        transformOrigin: "center center", 
+        ease: "power2.inOut",
+        onStart: () => {
+          console.log('🃏 Front to back animation started');
+          // Ensure proper 3D context on iOS
+          gsap.set(cardInner, { 
+            transformStyle: "preserve-3d",
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+            perspective: "1000px"
+          });
+        },
+        onComplete: () => {
+          console.log('🃏 Front to back animation completed');
+          const finalStyle = window.getComputedStyle(cardInner);
+          console.log('🃏 Final transform:', finalStyle.transform);
+        }
+      });
     }
+    
     mm.add("(max-width: 899px)", () => {
       const showcaseCards: HTMLElement[] = gsap.utils.toArray(
         ".showcase--cards .card"
@@ -95,6 +162,36 @@ const Showcase: React.FC<ShowcaseProps> = ({ cardData, cardWidth }) => {
     });
   });
   useGSAP(() => {
+    const cardInners = document.querySelectorAll('.card-inner');
+    const cardFronts = document.querySelectorAll('.card-front');
+    const cardBacks = document.querySelectorAll('.card-back');
+
+    
+    gsap.set(cardInners, {
+      transformStyle: "preserve-3d",
+      backfaceVisibility: "hidden",
+      WebkitBackfaceVisibility: "hidden",
+      perspective: "1000px",
+      WebkitPerspective: "1000px",
+      transformOrigin: "center center",
+      force3D: true,
+      z: 0.01 
+    });
+    
+    gsap.set(cardFronts, {
+      backfaceVisibility: "hidden",
+      WebkitBackfaceVisibility: "hidden",
+      rotateY: 0,
+      force3D: true
+    });
+    
+    gsap.set(cardBacks, {
+      backfaceVisibility: "hidden", 
+      WebkitBackfaceVisibility: "hidden",
+      rotateY: 180,
+      force3D: true
+    });
+    
     gsap.registerPlugin(ScrollTrigger);
     const trigger = document.getElementById("servicos");
     const cards = showcaseRef.current?.querySelectorAll(".card");

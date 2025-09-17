@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
+import plugin from "tailwindcss/plugin";
 // import tailwindTypography from "@tailwindcss/typography";
 const config: Config = {
   darkMode: ["class"],
@@ -115,6 +116,39 @@ const config: Config = {
         },
     },
 },
-  plugins: [tailwindcssAnimate],
+  plugins: [
+    tailwindcssAnimate,
+    // Add custom utilities for cross-browser compatibility
+    plugin(function({ addUtilities }) {
+      addUtilities({
+        '.viewport-height-safe': {
+          height: '100vh',
+          // Use a fallback for dvh if needed via @supports in CSS, not here
+        },
+        '.viewport-width-safe': {
+          width: '100vw',
+        },
+        '.transform-3d-safe': {
+          'transform-style': 'preserve-3d',
+          '-webkit-transform-style': 'preserve-3d',
+          'perspective': '1000px',
+          '-webkit-perspective': '1000px',
+          'backface-visibility': 'hidden',
+          '-webkit-backface-visibility': 'hidden',
+          'transform': 'translateZ(0)',
+          'will-change': 'transform',
+        },
+        '.scroll-smooth-safe': {
+          '-webkit-overflow-scrolling': 'touch',
+          'scroll-behavior': 'smooth',
+        },
+        '.font-smooth': {
+          '-webkit-font-smoothing': 'antialiased',
+          '-moz-osx-font-smoothing': 'grayscale',
+          'text-rendering': 'optimizeLegibility',
+        }
+      });
+    })
+  ],
 };
 export default config;

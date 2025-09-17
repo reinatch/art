@@ -7,7 +7,7 @@ export default function Header() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(true);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
-  const { setIsNavOpen } = useNavigation(); // Access shared mobile nav state
+  const { setIsNavOpen } = useNavigation(); 
   const isHomePage = pathname === "/";
   const handleMouseEnter = () => {
     if (timeoutId) {
@@ -30,17 +30,14 @@ export default function Header() {
       if (id) clearTimeout(id);
     };
   }, []);
-
-  // Close navbar when pathname changes
   useEffect(() => {
     setIsOpen(false);
-    setIsNavOpen(false); // Also close mobile nav when route changes
+    setIsNavOpen(false); 
   }, [pathname, setIsNavOpen]);
-
   return (
     <header
       id="header"
-      className={`fixed flex justify-center w-screen mx-auto h-[10dvh] items-center z-[55] ${
+      className={`fixed flex justify-center w-screen mx-auto h-[10vh] items-center z-[55] ${
         isHomePage ? "mix-blend-difference md:mix-blend-normal" : ""
       }`}
       onMouseEnter={handleMouseEnter}

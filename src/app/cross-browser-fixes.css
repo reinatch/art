@@ -1,0 +1,174 @@
+/* Cross-Browser Compatibility Fixes */
+/* 1. Viewport Units Fallbacks */
+:root {
+  /* Fallback viewport units for browsers that don't support dvh/dvw */
+  --vh: 1vh;
+  --vw: 1vw;
+  --dvh: 1vh; /* Fallback */
+  --dvw: 1vw; /* Fallback */
+}
+/* JavaScript will update these custom properties */
+@supports (height: 100dvh) {
+  :root {
+    --dvh: 1dvh;
+  }
+}
+@supports (width: 100dvw) {
+  :root {
+    --dvw: 1dvw;
+  }
+}
+/* 2. Backdrop Filter Fallbacks */
+@supports (backdrop-filter: blur(20px)) {
+  .backdrop-blur-fallback {
+    backdrop-filter: blur(20px);
+  }
+}
+@supports not (backdrop-filter: blur(20px)) {
+  .backdrop-blur-fallback {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+}
+/* 3. Mix-Blend-Mode Fallbacks */
+@supports (mix-blend-mode: difference) {
+  .mix-blend-difference-fallback {
+    mix-blend-mode: difference;
+  }
+}
+@supports not (mix-blend-mode: difference) {
+  .mix-blend-difference-fallback {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+  }
+}
+/* 4. 3D Transform Improvements */
+.transform-3d-safe {
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  -moz-perspective: 1000px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  /* Force hardware acceleration */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  will-change: transform;
+}
+/* 5. Grid Fallbacks */
+.grid-fallback {
+  display: grid;
+  /* Fallback for browsers that don't support CSS Grid */
+  display: -ms-grid; /* IE 10-11 */
+}
+@supports not (display: grid) {
+  .grid-fallback {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .grid-fallback > * {
+    flex: 1 1 auto;
+  }
+}
+/* 6. Flexbox Improvements */
+.flex-safe {
+  display: flex;
+  display: -webkit-flex; /* Safari 6.1+ */
+  display: -ms-flexbox; /* IE 10 */
+}
+/* 7. Font Smoothing Cross-Browser */
+.font-smooth {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+/* 8. Touch Scrolling */
+.scroll-smooth {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-smooth {
+    scroll-behavior: auto;
+  }
+}
+/* 9. Input Zoom Prevention (iOS) */
+.input-no-zoom {
+  font-size: 16px; /* Prevents iOS zoom */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0; /* iOS override */
+}
+/* 10. Button Styling Reset */
+.button-reset {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+/* 11. Image Rendering */
+.image-crisp {
+  image-rendering: -webkit-optimize-contrast; /* Safari */
+  image-rendering: -moz-crisp-edges; /* Firefox */
+  image-rendering: -o-crisp-edges; /* Opera */
+  image-rendering: crisp-edges; /* Standard */
+}
+/* 12. Selection Styling */
+::selection {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: inherit;
+}
+::-moz-selection {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: inherit;
+}
+/* 13. Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+  background: transparent;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+/* Firefox scrollbar */
+* {
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
+}
+/* 14. Safe Area Insets (iOS notch support) */
+.safe-area-padding {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+/* 15. Focus Visible Improvements */
+.focus-visible-none {
+  outline: none;
+}
+.focus-visible-none:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+/* 16. Animation Performance */
+.animate-performant {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+/* Remove will-change after animation */
+.animate-performant.animation-done {
+  will-change: auto;
+}

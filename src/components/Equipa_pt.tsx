@@ -5,7 +5,6 @@ const SvgComponent = (
 ) => {
   const svgRef = useRef<SVGSVGElement>(null);
   return (
-
       <svg
         id="Layer_1"
         data-name="Layer 1"
@@ -1401,4 +1400,3 @@ const SvgComponent = (
         );
     };
     export default SvgComponent;
-    

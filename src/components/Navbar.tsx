@@ -36,7 +36,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
   const isResidenciesPage = pathname === "/residencias";
   const isProPage = pathname === "/projects";
   const isProjectPage = pathname.startsWith(`/projects/`);
-
   const navLinks = [
     { href: "/projects", label: t("projects"), isActive: isProPage },
     { href: "/production", label: t("production"), isActive: isProductionPage },
@@ -55,45 +54,28 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
     }, 4000);
     setTimeoutId(id);
   };
-  
   useEffect(() => {
     const id = setTimeout(() => {
       setIsOpen(false);
     }, 3000);
     setTimeoutId(id);
-    
-    // Cleanup function to clear timeout on unmount
     return () => {
       if (id) {
         clearTimeout(id);
       }
     };
   }, [setIsOpen]);
-
-  // Clear all timers and close dropdown when navigation happens
-  const handleNavLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const href = e.currentTarget.href;
-    console.log('🔗 Navigation clicked:', href, 'from:', pathname);
-    console.log('🔗 Dropdown state before:', isOpen);
-    console.log('🔗 Active timeouts before:', timeoutId ? 'YES' : 'NO');
-    
+  const handleNavLinkClick = () => {
     if (timeoutId) {
       clearTimeout(timeoutId);
       setTimeoutId(null);
-      console.log('🔗 Cleared existing timeout');
     }
     setIsOpen(false);
-    console.log('🔗 Dropdown closed');
   };
-
-
-
   const handleContactClick = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     e.preventDefault();
-    // console.log(e)
-    console.log("Contact clicked");  // Debug: Check if this is logged
     if (isContactOpen) {
       closeContact();
     } else {
@@ -140,7 +122,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
             targetOffsetTop = windowSize.height;
           }
         }
-        // console.log(`Scrolling to ${slug} at offset ${targetOffsetTop}`);
         gsap.to(window, {
           scrollTo: {
             y: targetOffsetTop,
@@ -151,12 +132,10 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
       }
     }
   };
-
-
   return (
     <div
       className={`fixed left-0 top-0 w-screen md:py-10 md:w-full mx-auto z-[1000]  ${
-        tabsFooter ? "h-[22dvh] md:h-[12dvh] bg-white" : "h-[12dvh]"
+        tabsFooter ? "h-[22vh] md:h-[12vh] bg-white" : "h-[12vh]"
       }`}
     >
       <div
@@ -169,7 +148,7 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
           <TransitionLink
             className={`${
               isProjectPage && isMobile ? "hidden" : ""
-            } hidden md:flex w-full md:w-[25vw] h-[5dvh] `}
+            } hidden md:flex w-full md:w-[25vw] h-[5vh] `}
             href={`/`}
             passHref
           >
@@ -184,7 +163,7 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                 width={300}
                 height={50}
                 loading="lazy"
-                className={`relative w-auto h-[5dvh] left-0 transition-opacity duration-100 ease-in-out ${
+                className={`relative w-auto h-[5vh] left-0 transition-opacity duration-100 ease-in-out ${
                   isHovered || isOpen || !isHomePage
                     ? "opacity-0"
                     : "opacity-100"
@@ -196,7 +175,7 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                 width={300}
                 height={50}
                 loading="lazy"
-                className={`absolute hidden md:block w-auto h-[5dvh] left-0 transition-opacity duration-100 ease-in-out ${
+                className={`absolute hidden md:block w-auto h-[5vh] left-0 transition-opacity duration-100 ease-in-out ${
                   isHovered || isOpen || !isHomePage
                     ? "opacity-100"
                     : "opacity-0"
@@ -211,14 +190,12 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
             } mt-4 flex md:hidden w-full md:w-[20vw] h-full `}
             href={`/`}
             onClick={() => {
-              console.log("Mobile logo clicked, closing mobile navbar and navigating");
-              // Close the mobile navigation before navigation
               setIsNavOpen(false);
             }}
             passHref
           >
             <div
-              className="relative flex md:items-end items-end justify-center md:justify-start m-auto md:m-0 w-[80vw] md:w-[20vw] h-[6dvh]"
+              className="relative flex md:items-end items-end justify-center md:justify-start m-auto md:m-0 w-[80vw] md:w-[20vw] h-[6vh]"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
@@ -238,7 +215,7 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                 width={300}
                 height={50}
                 loading="lazy"
-                className={`absolute md:hidden w-auto h-[4.5dvh] transition-opacity duration-100 ease-in-out ${
+                className={`absolute md:hidden w-auto h-[4.5vh] transition-opacity duration-100 ease-in-out ${
                   isHomePage ? "opacity-0" : "opacity-100"
                 }`}
               />
@@ -255,19 +232,19 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
           </div>
         ) : (
           <div
-            className="relative items-center justify-center hidden h-full gap-8 md:justify-between lg:flex" // Show on large screens
+            className="relative items-center justify-center hidden h-full gap-8 md:justify-between lg:flex" 
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
             <button
               ref={buttonRef}
               onClick={() => setIsOpen(!isOpen)}
-              className={`text-2xl text-black hover:text-[#6b6a6a] focus:outline-none transition-transform duration-300 h-[4dvh]`}
+              className={`text-2xl text-black hover:text-[#6b6a6a] focus:outline-none transition-transform duration-300 h-[4vh]`}
             >
               <svg
                 className={`w-auto h-full  transform ${
                   isOpen ? "-rotate-[135deg]" : "rotate-0"
-                } transition-transform duration-500`} // Rotate in the opposite direction
+                } transition-transform duration-500`} 
                 fill="black"
                 stroke="black"
                 viewBox="0 0 30 30"
@@ -301,9 +278,6 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
               >
                 {t("contact")}
               </div>
-              {/* <Link href="/about" className={`block pt-1 whitespace-nowrap text-black`}>
-                        test
-                      </Link> */}
             </nav>
           </div>
         )}

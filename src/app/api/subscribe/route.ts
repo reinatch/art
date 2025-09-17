@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   const MailchimpAudience = process.env.MAILCHIMP_AUDIENCE_ID;
 
   if (!MailchimpKey || !MailchimpServer || !MailchimpAudience) {
-    console.error('Missing Mailchimp environment variables');
+    // console.error('Missing Mailchimp environment variables');
     return NextResponse.json({ error: 'Missing Mailchimp environment variables' }, { status: 500 });
   }
 

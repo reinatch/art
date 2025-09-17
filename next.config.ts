@@ -7,6 +7,7 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig: NextConfig = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 })({
+  devIndicators: false,
   sassOptions: {
     implementation: "sass",
     silenceDeprecations: ["legacy-js-api"],

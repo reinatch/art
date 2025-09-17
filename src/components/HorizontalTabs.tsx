@@ -10,8 +10,6 @@ import Showcase from "./AcordionCards";
 import Image from "next/image";
 import RandomVideoPosition from "./RandomVideoPosition";
 import Jornais from "./Jornais";
-// import SvgComponent_en from "./Equipa_en";
-// import SvgComponent_pt from "./Equipa_pt";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import ScrollTrigger from "gsap/ScrollTrigger";
@@ -19,9 +17,7 @@ import ScrollSmoother from "gsap/ScrollSmoother";
 import ScrollToPlugin from "gsap/ScrollToPlugin";
 import { useDataFetchContext } from "@/lib/DataFetchContext";
 import { useToggleContact } from "@/lib/useToggleContact";
-import { usePathname } from "next/navigation";
-// import { isMobile as reactisMobile } from "react-device-detect";
-// import { useLocale } from "next-intl";
+import { isMobile} from "react-device-detect";
 interface JornaisType {
   capa: ImageMedia;
   contra: ImageMedia;
@@ -69,9 +65,6 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
   const { setIsVideoReady } = useDataFetchContext();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const { isContactOpen, closeContact } = useToggleContact();
-  const pathname = usePathname();
-  
-  // Hover image state
   const [hoveredImage, setHoveredImage] = useState<{
     url: string;
     alt: string;
@@ -79,27 +72,13 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
     y: number;
     sizes?: { medium_large: string };
   } | null>(null);
-  // Add mobile detection
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Visibility flag to control show/hide animation
+  const [isMobileClient, setIsMobileClient] = useState(false);
   const [hoverVisible, setHoverVisible] = useState(false);
-  // ref to the floating element so we can animate with GSAP
   const hoverRef = useRef<HTMLDivElement | null>(null);
   const hideTimeoutRef = useRef<number | null>(null);
-
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    return () => window.removeEventListener('resize', checkMobile);
+    setIsMobileClient(isMobile);
   }, []);
-
-  // cleanup timeout on unmount
   useEffect(() => {
     return () => {
       if (hideTimeoutRef.current) {
@@ -108,46 +87,30 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
       }
     };
   }, []);
-
-  // Handle mouse enter for team member with image - only on desktop
   const handleMouseEnter = (image: ImageMedia, nome: string, event: React.MouseEvent) => {
-    if (isMobile || !image?.url) return; // Skip on mobile
-
-    // clear any pending hide timeout
+    if (isMobileClient || !image?.url) return; 
     if (hideTimeoutRef.current) {
       window.clearTimeout(hideTimeoutRef.current);
       hideTimeoutRef.current = null;
     }
-
-    // Use the actual mouse coordinates so the hover image appears where the cursor is
     const clientX = event.clientX;
     const clientY = event.clientY;
-
-    // set the image quickly so it can render
     setHoveredImage({
       url: image.url,
       alt: nome,
       x: clientX + 15,
       y: clientY - 50,
     });
-
-    // kill previous tweens for the hover element
     if (hoverRef.current) gsap.killTweensOf(hoverRef.current);
-
-    // place element at cursor using transforms and animate in
     if (hoverRef.current) {
       gsap.set(hoverRef.current, { x: clientX + 15, y: clientY - 50, scale: 0.95, opacity: 0 });
       setHoverVisible(true);
       gsap.to(hoverRef.current, { opacity: 1, scale: 1, duration: 0.22, ease: 'power2.out' });
     }
   };
-
-  // Handle mouse leave - only on desktop
   const handleMouseLeave = () => {
-    if (isMobile) return; // Skip on mobile
-
+    if (isMobileClient) return; 
     if (hoverRef.current) {
-      // animate out then clear
       gsap.killTweensOf(hoverRef.current);
       gsap.to(hoverRef.current, {
         opacity: 0,
@@ -164,12 +127,8 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
       setHoveredImage(null);
     }
   };
-
-  // Handle mouse move to update position - only on desktop
   const handleMouseMove = (event: React.MouseEvent) => {
-    if (isMobile || !hoverRef.current) return; // Skip on mobile
-
-    // Smoothly animate to the new cursor position
+    if (isMobileClient || !hoverRef.current) return; 
     gsap.to(hoverRef.current, {
       x: event.clientX + 15,
       y: event.clientY - 50,
@@ -177,11 +136,6 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
       ease: 'power3.out',
     });
   };
-  
-  // const locale = useLocale();
-  const isProduction = pathname === `/production`;
-  const isAbout = pathname === `/about`;
-  const isResidencias = pathname === `/residencias`;
   useEffect(() => {
     if (tabData.length > 0 && tabData[0].acf) {
       const tabs = Object.entries(tabData[0].acf).map(([key, value]) => {
@@ -197,53 +151,49 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
       setSelectedTab(tabs[0].slug);
     }
   }, [tabData, setTabs, setSelectedTab, setTabTitle]);
-
-
   useEffect(() => {
+    const isMobileDevice = () => {
+      const isSmallScreen = window.innerWidth <= 900;
+      const hasMobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if (window.innerWidth > 900) {
+        return false;
+      }
+      return isSmallScreen || hasMobileUserAgent;
+    };
     const sitempa = document.querySelector("#sitemap");
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      
-      // Don't close if clicking on form elements or their children
       if (target.closest('form') || target.closest('input') || target.closest('button') || target.closest('label')) {
         return;
       }
-      
-      // Don't close if clicking within the sitemap area
       if (sitempa && !sitempa.contains(target)) {
         closeContact();
       }
     };
-    
     const handleScroll = () => {
       if (isContactOpen) {
         closeContact();
       }
     };
-    
-    // Add listeners when contact is open on both mobile and desktop
-    if (isContactOpen) {
+    if (isContactOpen && !isMobileDevice()) {
+      console.log('Adding desktop event listeners - sitemap will close on click outside/scroll');
       document.addEventListener("mousedown", handleClickOutside);
       window.addEventListener("scroll", handleScroll);
+    } else if (isContactOpen) {
+      console.log('Mobile device detected - sitemap will only close via close button');
     }
-    
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("scroll", handleScroll);
     };
   }, [closeContact, isContactOpen]);
- 
- 
   useGSAP(() => {
     gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
     gsap.registerPlugin(ScrollSmoother);
-    // sectionRefs.current.forEach((section, i) => {
-    //   // console.log(`Section ${i} offsetTop: ${section?.offsetTop}`);
-    // });
   }, []);
   useGSAP(() => {
     const mm = gsap.matchMedia();
-    const scrollSmootherInstance = new ScrollSmoother({
+    const scrollSmootherInstance = ScrollSmoother.create({
       content: scrollContainerRef.current,
       smooth: 1,
       smoothTouch: 1,
@@ -301,7 +251,6 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
       })
       .from(movableArray, { x: -2000, duration: 5, stagger: 1 });
   }, [scrollContainerRef, setSelectedTab]);
-
   useEffect(() => {
      const videoElement = videoRef.current;
      const handleVideoCanPlay = () => {
@@ -317,7 +266,6 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
      };
    }, [setIsVideoReady]);
    const renderContent = (key: string, tabContent: TabContent) => {
-     // console.log(tabContent);
      switch (key) {
        case "splash":
          if (tabContent.video?.url) {
@@ -363,7 +311,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
        case "about_aw":
          return (
            <div
-             className="relative w-full  gap-10  flex flex-col md:flex-row h-fit  md:h-[80dvh] py-4 "
+             className="relative w-full  gap-10  flex flex-col md:flex-row h-screen  md:h-[80dvh] py-4 "
              style={{ columnFill: "auto" }}
            >
              <div className="w-full md:w-1/2">
@@ -417,7 +365,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
            return (
              <div
                id="svgimage"
-               className="svgimage relative w-full text-4xl flex flex-col gap-10 h-fit md:h-[80dvh]  py-8 pt-[10dvh] "
+               className="svgimage relative w-full text-4xl flex flex-col gap-10 h-screen md:h-[80dvh]  py-8 pt-[10dvh] "
              >
                <div className="flex flex-col w-full gap-10 md:w-[60vw] md:mx-auto items-center">
                  {tabContent.heading && (
@@ -432,11 +380,9 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                      dangerouslySetInnerHTML={{ __html: tabContent.description }}
                    />
                  )}
-               
                </div>
              </div>
            );
-         
        case "team":
          return (
            <div className="relative w-full 
@@ -444,11 +390,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
         3xl:text-teams-1600
         4xl:text-teams-1920
         5xl:text-teams-2000
-        
            leading-snug gap-10 h-full  md:h-[75dvh] py-4 mt-[10dvh] md:mt-0 columns-1 md:columns-3  justify-start" style={{ columnFill: "auto" }}>
- 
- 
-      
              {/* Render grafico as an image if present */}
              {tabContent.grafico && tabContent.grafico.url && (
                <div className="w-1/2 pb-8">
@@ -462,13 +404,11 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                  />
                </div>
              )}
- 
              {/* Example rendering for legenda */}
              {tabContent.producao && tabContent.producao.length > 0 && (
                <div className="pb-8 text-rodape leading-tight">
                  {/* <h3>Legenda</h3> */}
                  <ul>
- 
                    {tabContent.producao.map((prod, idx) => (
                    <div key={idx}>
                      {prod.equipas && prod.equipas.length > 0 && (
@@ -478,7 +418,6 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                            <li key={eidx} className="gap-4 flex">
                              <span className="w-[1em] font-mono">{e.id_name}</span>
                              <span className="lowercase  font-mono">{"[" + e.titulo + "]"}</span>
-  
                            </li>
                          ))}
                        </ul>
@@ -494,7 +433,6 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                            <li key={eidx} className="gap-4 flex">
                              <span className="w-[1em] font-mono">{e.id_name}</span>
                              <span className="lowercase font-mono font-bold">{"[" + e.titulo + "]"}</span>
-  
                            </li>
                          ))}
                        </ul>
@@ -504,7 +442,6 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                  </ul>
                </div>
              )}
- 
              {/* Example rendering for direccao */}
              {tabContent.chefia && tabContent.chefia.cargos && tabContent.chefia.cargos.length > 0 && (
                <div className="pb-4">
@@ -525,13 +462,11 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                  </ul>
                </div>
              )}
- 
              {/* Example rendering for producao */}
              {tabContent.producao && tabContent.producao.length > 0 && (
                <div  className="">
                  {tabContent.producao.map((prod, idx) => (
                    <div key={idx}>
-                   
                  <h3 className="uppercase">{prod.titulo} <sup className="font-mono text-teams">{prod.id_name}</sup></h3>
                    <div >
                      {prod.equipas && prod.equipas.length > 0 && (
@@ -562,7 +497,6 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                  ))}
                </div>
              )}
- 
              {/* Example rendering for projecto */}
              {tabContent.projecto && tabContent.projecto.length > 0 && (
                <div className="pb-4">
@@ -598,7 +532,6 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                  ))}
                </div>
              )}
- 
              {/* Render content if it exists */}
              {tabContent.content && (
                <div
@@ -608,13 +541,9 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
              )}
            </div>
          );
- 
- 
- 
- 
          case "support_artists":
          return (
-           <div className="relative w-full  gap-10 flex flex-col md:flex-row h-fit  md:h-[80dvh] py-4">
+           <div className="relative w-full  gap-10 flex flex-col md:flex-row h-screen  md:h-[80dvh] py-4">
              <div className="flex flex-col justify-start w-full gap-10 md:w-1/2">
                {tabContent.heading && (
                  <div
@@ -746,16 +675,12 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
      }
    };
    return (
-     <div id="smooth-wrapper" className="
-     ">
+     <div id="smooth-wrapper" className="">
        <div
-         id="smooth-container"
-         className={`${isProduction ? "h-[230dvh] md:h-[300dvh]" : ""} ${
-           isAbout ? "h-[650dvh] md:h-[680dvh] " : ""
-         } ${isResidencias ? "h-[125dvh] md:h-[100dvh]" : ""}   `}
+         id="smooth-content"
+         className={`relative w-screen min-h-full pb-[20vh] md:pb-[5vh] `}
          ref={scrollContainerRef}
          style={{
-           // Improve mobile scrolling performance
            WebkitOverflowScrolling: 'touch',
          }}
        >
@@ -770,10 +695,10 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                    sectionRefs.current[index] = el;
                  }}
                  className={`   relative md:pt-[12dvh]
-                   ${key === "no_entulho" ? "md:overflow-hidden  md:px-32 " : ""} 
-                   ${key === "mission" ? "h-fit md:h-screen  md:px-32 " : ""}
-                   ${key === "teams" ? "h-fit md:h-screen md:pt-[20dvh]  md:px-32 " : ""}
-                   ${key === "about_aw" ? "h-fit md:px-32 " : ""}
+                   ${key === "no_entulho" ? "md:overflow-x-hidden h-[125vh] md:h-screen py-[10vh]  md:px-32 " : ""} 
+                   ${key === "mission" ? "h-full md:h-screen  md:px-32 " : ""}
+                   ${key === "teams" ? "h-full md:h-screen md:pt-[20dvh]  md:px-32 " : ""}
+                   ${key === "about_aw" ? "h-full md:px-32 " : ""}
                    ${key === "support_artists" ? "md:px-32 " : ""}
                    ${
                      key === "jornais"
@@ -800,13 +725,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                        ? "px-4 md:px-12"
                        : ""
                    }
-                   
                    `}
-                 style={{
-                   // Optimize mobile rendering
-                   transform: isMobile ? 'translateZ(0)' : undefined,
-                   willChange: isMobile ? 'auto' : undefined
-                 }}
                >
                  {renderContent(key, tabContent)}
                </div>
@@ -814,18 +733,15 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
            }
          )}
        </div>
-       
        {/* Floating hover image - only render on desktop */}
-       {!isMobile && (
+       {!isMobileClient && (
          <div
            ref={hoverRef}
            className={`fixed pointer-events-none z-50 transform origin-top-left ${hoverVisible ? '' : ''}`}
            style={{
-             // We let GSAP control transforms (x/y) for smooth movement — keep container at top-left
              left: 0,
              top: 0,
              visibility: hoveredImage ? 'visible' : 'hidden',
-             // initial transform styles will be applied by GSAP
            }}
          >
            {hoveredImage && (
@@ -843,5 +759,4 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
      </div>
    );
  };
- 
  export default HorizontalTabs;

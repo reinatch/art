@@ -1,7 +1,6 @@
 // components/Loading.tsx
 import React from 'react';
 import Image from 'next/image';
-
 const Loading: React.FC = () => {
   return (
     <div className='flex h-full justify-center items-center'>
@@ -18,5 +17,4 @@ const Loading: React.FC = () => {
     </div> 
   );
 };
-
 export default Loading;

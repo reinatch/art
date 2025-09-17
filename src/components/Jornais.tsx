@@ -33,47 +33,33 @@ const Jornais: React.FC<ShowcaseProps> = ({ jornaisData, cardWidth }) => {
   const showcaseCount = jornaisData ? jornaisData.length : 0;
   const centerIndex = Math.floor(showcaseCount / 2);
   const depthFactor = 1;
-
-  // Performance: Only update mobile state when necessary
   useEffect(() => {
     const mobile = detectMobile || windowSize.width < 900;
     if (mobile !== isMobile) {
       setIsMobile(mobile);
     }
   }, [windowSize.width, isMobile]);
-
   // Step 2: Dynamic Height Calculation - Performance Optimized
   useEffect(() => {
     if (!showcaseRef.current || !jornaisData?.length) return;
-
     const calculateOptimalHeight = () => {
       const cards = showcaseRef.current?.querySelectorAll('.card');
       if (!cards?.length) return;
-
       // Base calculations
       const cardCount = cards.length;
       const baseCardHeight = isMobile ? 400 : 500; // Estimated card height
       const spacing = isMobile ? 30 : 50; // Spacing between cards
-      
-      // Calculate height based on layout
       let calculatedHeight: string;
-      
       if (isMobile) {
-        // Mobile: Cards are stacked/overlapped horizontally
         calculatedHeight = `${baseCardHeight + (spacing * 2)}px`;
       } else {
-        // Desktop: Cards use 3D perspective and animations
-        const animationSpace = cardCount * 100; // Space for animations
-        const perspectiveSpace = 200; // Additional space for 3D effects
+        const animationSpace = cardCount * 100; 
+        const perspectiveSpace = 200;
         calculatedHeight = `${baseCardHeight + animationSpace + perspectiveSpace}px`;
       }
-      
       setContainerHeight(calculatedHeight);
     };
-
-    // Debounce calculations for better performance
     const timeoutId = setTimeout(calculateOptimalHeight, 100);
-    
     return () => clearTimeout(timeoutId);
   }, [isMobile, jornaisData, showcaseCount]);
   // console.log(jornaisData)

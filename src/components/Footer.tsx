@@ -10,15 +10,16 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import Search from "@/components/Search";
 import { Link as TransitionLink } from "next-transition-router";
-import { useLocale, useTranslations } from "next-intl";
+import {  useTranslations } from "next-intl";
 import { useWindowSize } from "@custom-react-hooks/use-window-size";
 import LocaleSwitcher from "./Switcher";
 import { useToggleContact } from "@/lib/useToggleContact";
 import { useToggleSearch } from "@/lib/useToggleSearch";
 import { useNavigation } from "@/lib/useNavigation";
+import SearchOverlay from "./SearchOverlay";
 export default function Footer() {
   const pathname = usePathname();
-  const locale = useLocale();
+  // const locale = useLocale();
   const windowSize = useWindowSize();
   const t = useTranslations("NavbarLinks");
   const p = useTranslations("ProjectDetailPage");
@@ -69,7 +70,6 @@ export default function Footer() {
     },
     [closeContact, isContactOpen, openContact]
   );
-
   // For navigation links - only close contact if open, don't open if closed
   const handleNavClick = useCallback(
     () => {
@@ -198,7 +198,7 @@ export default function Footer() {
     <div
       className={`"${
         isProjectPage ? "pl-32" : ""
-      } hidden relative -bottom-[1.25dvh] cenas_essencials w-full md:flex overflow-x-auto gap-3 justify-center items-center py-10 "`}
+      } hidden relative -bottom-[1.25vh] cenas_essencials w-full md:flex overflow-x-auto gap-3 justify-center items-center py-10 "`}
     >
       {thumbnails.map((thumbnail) => (
         <a
@@ -234,7 +234,7 @@ export default function Footer() {
   );
   const renderTabs = () => (
     <div
-      className={` w-full hidden   md:relative md:-bottom-[1.25dvh] absolute md:flex-nowrap cenas_essencials md:flex justify-center items-center space-x-4 font-mono text-md"`}
+      className={` w-full hidden   md:relative md:-bottom-[1.25vh] absolute md:flex-nowrap cenas_essencials md:flex justify-center items-center space-x-4 font-mono text-md"`}
     >
       <div className="py-2 ">{tabTitle} </div>
       <span className="py-2 font-works">→</span>
@@ -272,16 +272,18 @@ export default function Footer() {
   const renderSearchInput = () => (
     <div
       ref={searchInputRef}
-      className="cenas_essencials bottom-0 absolute flex caret_container flex-end justify-center items-end w-full h-[7dvh]"
+      className="cenas_essencials bottom-0 absolute flex caret_container flex-end justify-center items-end w-full h-[7vh]"
     >
       <Search />
     </div>
   );
   return (
+    <>
+    <SearchOverlay />
     <footer
       id="footer"
-      className={`fixed z-[55] w-screen  h-[10dvh] md:h-[12dvh] ${
-        isHome && !isNavOpen ? "mix-blend-difference md:mix-blend-normal bg-transparent text-white md:text-black md:bg-white"
+      className={`fixed z-[55] w-screen  h-[10vh] md:h-[12vh] ${
+        isHome && !isNavOpen && !isSearchOpen ? "mix-blend-difference md:mix-blend-normal bg-transparent text-white md:text-black md:bg-white"
           : "" } ${ isHome ? "bg-transparent md:bg-white" : "bg-white" } font-mono text-rodape text-black left-0 bottom-0 text-center inset-x-0 mx-auto container-full `}
     >
       <div
@@ -333,7 +335,7 @@ export default function Footer() {
           <Link
             href="mailto:info@artworks.pt"
             passHref
-            className="flex items-center footerLuva h-[6dvh]"
+            className="flex items-center footerLuva h-[6vh]"
             onMouseEnter={() => setToMailHovered(true)}
             onMouseLeave={() => setToMailHovered(false)}
           >
@@ -359,7 +361,6 @@ export default function Footer() {
                 data-flip-id="img"
               />
                         {/* <video src=" /videos/luva/output.gif" autoPlay loop muted className="relative w-auto h-full transition-opacity duration-300 ease-in-out will-change-transform" data-flip-id="img" poster=""></video> */}
-
             </div>
             <span
               className={`toMail relative top-2 text-rodape pl-4 ${
@@ -382,37 +383,35 @@ export default function Footer() {
           </div>
         )}
         {isProjectPage ? (
-          <div className="absolute flex flex-col font-mono w-max md:flex-row right-4 md:right-10 bottom-4 md:bottom-10">
-            <span className="flex gap-2 leading-3 md:flex-row">
-              <TransitionLink
-                className="hidden md:block"
-                href={`/projects/${prevProject?.slug}`}
-              >
-                {p("prev")}{" "}
+          <>
+            {/* Desktop version */}
+            <div className="absolute hidden md:flex flex-col font-mono w-max md:flex-row right-4 md:right-10 bottom-4 md:bottom-10">
+              <span className="flex gap-2 leading-3 md:flex-row">
+                <TransitionLink
+                  className="block"
+                  href={`/projects/${prevProject?.slug}`}
+                >
+                  {p("prev")}{" "}
+                </TransitionLink>
+                <span className="block"> / </span>
+                <TransitionLink
+                  className="block"
+                  href={`/projects/${nextProject?.slug}`}
+                >
+                  {" "}
+                  {p("next")}
+                </TransitionLink>
+              </span>
+            </div>
+            {/* Mobile version */}
+            <div className="uppercase absolute right-4 md:left-10  z-[55] text-start bottom-4 md:bottom-10 leading-3  w-[20vw]">
+              <TransitionLink href={`/projects/`} onClick={handleNavClick}>
+                <div className="justify-end flex font-mono leading-3 text-rodape">
+                  <span className="pr-2 font-intl">← </span> {p("goBackMobile")}
+                </div>
               </TransitionLink>
-              <TransitionLink
-                className="block md:hidden"
-                href={`/projects/${prevProject?.slug}`}
-              >
-                {locale === "pt" ? "Ante" : "Prev"}
-              </TransitionLink>
-              <span className=":block"> / </span>
-              <TransitionLink
-                className="hidden md:block"
-                href={`/projects/${nextProject?.slug}`}
-              >
-                {" "}
-                {p("next")}
-              </TransitionLink>
-              <TransitionLink
-                className="block md:hidden"
-                href={`/projects/${nextProject?.slug}`}
-              >
-                {" "}
-                {locale === "pt" ? "Prox" : "Next"}
-              </TransitionLink>
-            </span>
-          </div>
+            </div>
+          </>
         ) : (
           <div className="absolute z-50 flex whitespace-nowrap right-4 md:right-10 bottom-3 md:bottom-8">
             <LocaleSwitcher />
@@ -492,5 +491,6 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+    </>
   );
 }

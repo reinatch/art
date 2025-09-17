@@ -30,6 +30,7 @@
     },
     "ProjectDetailPage": {
       "goBack": "Back to Projects",
+      "goBackMobile": "Back",
       "prev": "Previous",
       "next": "Next"
     },
@@ -43,7 +44,14 @@
     "Search":{
       "submit": "Search", 
       "results": "Search Result", 
-      "searching": "Searching"
+      "searching": "Searching",
+      "noResults": "No results found",
+      "tryAgain": "Try different keywords",
+      "3char": "Type at least 3 characters to search",
+      "result": "result",
+      "resultes": "results",
+      "found": "found"
+
     },
     "Footer":{
       "lets": "Let's",

@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { useLocale } from "next-intl";
 import { Locale } from "@/i18n/config";
@@ -11,33 +10,12 @@ export default function LocaleSwitcher() {
   const router = useRouter();
   const activeLocale = useLocale();
   const [currentLocale, setCurrentLocale] = useState<Locale>(activeLocale as Locale);
-
-  // const handleClick = async (locale: Locale) => {
-  //   const res = await fetch("/api/locale", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ locale }),
-  //   });
-  //   if (res.ok) {
-  //     setCurrentLocale(locale);
-  //     router.refresh();
-  //   } else {
-  //     const data = await res.json();
-  //     console.error("Error updating locale:", data.error);
-  //   }
-  // };
   useEffect(() => {
     console.log(currentLocale)
   }, [currentLocale])
-
-  
   const handleClick = async (locale: Locale) => {
     await setUserLocale(locale);
-    setCurrentLocale(locale); // Update the local state
-    console.log(locale)
-    // window.location.reload(); // Reload the page to apply the new locale
+    setCurrentLocale(locale); 
     router.refresh();
   };
   return (

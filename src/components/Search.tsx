@@ -106,9 +106,9 @@ const Search: React.FC = () => {
     };
   }, [isSearchOpen, isModalOpen, closeSearch, openSearch]);
   return (
-    <div className="relative mx-auto w-[50vw]">
+    <div className="relative mx-auto w-[50vw]  md:-bottom-2 bottom-96">
       <div className="flex flex-col gap-4">
-        <div className="flex">
+        <div className="flex flex-end">
           <form className="w-11/12" onSubmit={handleSubmit} action={""}>
             <input
               name="query"

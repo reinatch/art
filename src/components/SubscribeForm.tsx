@@ -1,4 +1,3 @@
-// components/SubscribeForm.tsx
 "use client";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
@@ -9,24 +8,19 @@ const SubscribeForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   const t = useTranslations("Sitemap");
-
-  // Prevent event bubbling for form interactions
   const handleFormClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
-
   const handleInputFocus = (e: React.FocusEvent) => {
     e.stopPropagation();
   };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, setter: (value: string) => void) => {
     e.stopPropagation();
     setter(e.target.value);
   };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    e.stopPropagation(); // Prevent bubbling
+    e.stopPropagation(); 
     setStatus(null);
     setError(null);
     setButtonDisabled(true);

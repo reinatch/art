@@ -44,7 +44,7 @@ export default function CustomCursor() {
   return (
     <div
       ref={cursorRef}
-      className="cursor hidden md:block w-5 h-5 bg-white rounded-full fixed top-0 left-0 pointer-events-none z-[1000] mix-blend-difference"
+      className="cursor hidden md:block w-5 h-5 bg-white rounded-full fixed top-0 left-0 pointer-events-none z-[1000] mix-blend-difference-fallback"
     >
       <div
         className="shape opacity-0 h-full w-full absolute"

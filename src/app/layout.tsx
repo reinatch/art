@@ -19,6 +19,9 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { getLocale } from "next-intl/server";
 import { NavigationProvider } from "@/lib/useNavigation";
+
+// Import browser compatibility
+import "../utils/browserCompatibility";
 const suisse_mono = localFont({
   src: "./fonts/SuisseIntlMono-Regular.ttf",
   variable: "--suisse_mono",
