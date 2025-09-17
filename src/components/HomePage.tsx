@@ -167,21 +167,33 @@ const HomePageContent: React.FC = () => {
           onEnterBack: () => scrollToSection(index),
         });
       });
-      gsap.timeline({
-        scrollTrigger: {
-          id: "residency-desktop",
-          trigger: "#residency0",
-          start: "top top",
-          end: "bottom center",
-          pin: true,
-          pinSpacing: true,
-          onUpdate: (self) => {
-            if (self.progress > 0.99 && self.direction === 1) {
-              requestAnimationFrame(() => openContact());
-            }
-          },
-        },
-      });
+      // gsap.timeline({
+      //   scrollTrigger: {
+      //     id: "residency-desktop",
+      //     trigger: "#residency0",
+      //     start: "top top",
+      //     end: "bottom center",
+      //     pin: true,
+      //     pinSpacing: true,
+      //     onUpdate: (self) => {
+      //       if (self.progress > 0.99 && self.direction === 1) {
+      //         requestAnimationFrame(() => openContact());
+      //       }
+      //     },
+      //   },
+      // });
+      //       gsap.timeline({
+      //   scrollTrigger: {
+      //     id: "residency-pin-mobiles",
+      //     trigger: "#residency0",
+      //     start: "top top",
+      //     end: () => `+=${(document.querySelector("#mapa") as HTMLElement)?.offsetHeight || 500}`,
+      //     pin: "#residency0",
+      //     pinSpacing: false,
+      //     anticipatePin: 1,
+      //     invalidateOnRefresh: true,
+      //   },
+      // });
       return () => {
         if (smoother) smoother.kill();
       };
@@ -262,7 +274,7 @@ const HomePageContent: React.FC = () => {
         return toPXCache.get(value)!;
       }
       const result = (parseFloat(value) / 100) *
-        (/dvh/gi.test(value) ? windowSize.height : windowSize.width);
+        (/vh/gi.test(value) ? windowSize.height : windowSize.width);
       toPXCache.set(value, result);
       return result;
     };
@@ -277,19 +289,19 @@ const HomePageContent: React.FC = () => {
         },
       })
       .to("#pro-title", { 
-        y: toPX("-50dvh"), 
+        y: toPX("-50vh"), 
         duration: 1, 
         ease: "none",
         force3D: true
       }, "start")
       .from("#pro-row2", { 
-        y: toPX("50dvh"), 
+        y: toPX("50vh"), 
         duration: 1, 
         ease: "none",
         force3D: true
       }, "start+=0.1")
       .from("#pro-link", { 
-        y: toPX("60dvh"), 
+        y: toPX("60vh"), 
         duration: 1, 
         ease: "none",
         force3D: true
@@ -329,7 +341,7 @@ const HomePageContent: React.FC = () => {
           force3D: true
         }, "<0.2");
     }
-    mm.add("(max-width: 899px)", () => {
+    // mm.add("(max-width: 899px)", () => {
       const mapaElement = document.querySelector("#mapa");
       if (mapaElement) {
         gsap.timeline({
@@ -348,7 +360,7 @@ const HomePageContent: React.FC = () => {
           }
         });
       }
-    });
+    // });
     return () => {
       try {
         toPXCache.clear();
@@ -394,10 +406,10 @@ const HomePageContent: React.FC = () => {
                 } 
                 ${key === "production1" ? "h-auto md:h-screen" : ""}   
                 ${key === "production0" ? "my-20 md:my-0" : ""}   
-                ${key === "project0" ? "h-[40dvh]" : ""}   
+                ${key === "project0" ? "h-[40vh]" : ""}   
                 ${
                   key === "project1"
-                    ? "h-[270dvh] pb-[10dvh] md:h-screen md:pb-0"
+                    ? "h-[270vh] pb-[10vh] md:h-screen md:pb-0"
                     : ""
                 }   
                 ${
@@ -412,7 +424,7 @@ const HomePageContent: React.FC = () => {
                 panel  relative flex flex-col items-center  w-screen gap-8 sm:items-start rounded-3xl snap-start`}
               >
                 {key === "home_splash" && (
-                  <div className="flex flex-col items-center h-screen w-screen  md:h-[76dvh] md:mt-[12dvh] md:w-full gap-8  sm:items-start ">
+                  <div className="flex flex-col items-center h-screen w-screen  md:h-[76vh] md:mt-[12vh] md:w-full gap-8  sm:items-start ">
                     <video
                       ref={videoRef}
                       poster={value.poster.url}
@@ -430,7 +442,7 @@ const HomePageContent: React.FC = () => {
                   </div>
                 )}
                 {key === "about0" && (
-                  <div className="about-section  px-0  md:px-10 md:py-8 md:pb-[10dvh] text-center  w-11/12 self-center flex flex-col justify-center gap-4 md:gap-[10dvh] h-[25dvh] md:h-[80dvh]  md:mt-[10dvh] ">
+                  <div className="about-section  px-0  md:px-10 md:py-8 md:pb-[10vh] text-center  w-11/12 self-center flex flex-col justify-center gap-4 md:gap-[10vh] h-[25vh] md:h-[80vh]  md:mt-[10vh] ">
                     <div
                       id="target"
                       className="w-full md:w-10/12 m-auto 
@@ -465,7 +477,7 @@ const HomePageContent: React.FC = () => {
                   </div>
                 )}
                 {key === "about1" && (
-                  <div className="about-section px-4 mt-20 gap-4 md:gap-0  md:px-10 md:py-20 w-full flex-col justify-around h-[80dvh]  md:mt-[10dvh] grid-cols-1 grid md:grid-cols-2 relative">
+                  <div className="about-section px-4 mt-20 gap-4 md:gap-0  md:px-10 md:py-20 w-full flex-col justify-around h-[80vh]  md:mt-[10vh] grid-cols-1 grid md:grid-cols-2 relative">
                     <div
                       className="w-full leading-tight title text-corpo-a md:w-10/12"
                       style={{ gridArea: "title" }}
@@ -552,7 +564,7 @@ const HomePageContent: React.FC = () => {
                   </div>
                 )}
                 {key === "production0" && (
-                  <div className="production-section px-4 py-0 md:px-10 md:py-20 gap-8 md:gap-0 w-full flex-col justify-around h-[80dvh] md:mt-[10dvh] grid grid-cols-1 md:grid-cols-2 relative grid-rows-[15%_40%_30%_15%] md:grid-rows-[75%_25%]">
+                  <div className="production-section px-4 py-0 md:px-10 md:py-20 gap-8 md:gap-0 w-full flex-col justify-around h-[80vh] md:mt-[10vh] grid grid-cols-1 md:grid-cols-2 relative grid-rows-[15%_40%_30%_15%] md:grid-rows-[75%_25%]">
                     <div
                       className="w-full leading-tight toAnim text-corpo-a md:w-10/12 title"
                       style={{ gridArea: "title" }}
@@ -602,7 +614,7 @@ const HomePageContent: React.FC = () => {
                       </AnimatedText>
                     </div>
                     <div
-                      className="production0_video_wrapper_main  md:max-h-[40dvh] max-w-full md:max-w-[90%] perspective-200"
+                      className="production0_video_wrapper_main  md:max-h-[40vh] max-w-full md:max-w-[90%] perspective-200"
                       style={{ gridArea: "image" }}
                     >
                       <video
@@ -629,7 +641,7 @@ const HomePageContent: React.FC = () => {
                   </div>
                 )}
                 {key === "production1" && (
-                  <div className="production-section px-8 md:px-20 w-screen md:w-full items-center flex-col grid gap-2 relative  h-[80dvh] py-8 mt-[10dvh]">
+                  <div className="production-section px-8 md:px-20 w-screen md:w-full items-center flex-col grid gap-2 relative  h-[80vh] py-8 mt-[10vh]">
                     <div
                       id="productionHighlight"
                       className="marquee mx-8 text-rodape  title1 font-mono capitalize flex w-[65dvw] md:w-[95%]  overflow-x-hidden gap-4 "
@@ -650,17 +662,17 @@ const HomePageContent: React.FC = () => {
                     </div>
                     <div
                       id="secondGsap"
-                      className="flex flex-col items-center h-[70dvh] w-full md:w-full row-start-2  sm:items-start rounded-3xl "
+                      className="flex flex-col items-center h-[70vh] w-full md:w-full row-start-2  sm:items-start rounded-3xl "
                     >
                       <div className="production0_video_target flex w-[80dvw] md:w-full h-full">
-                        <div className="production0_video_wrapper_target w-full h-[70dvh] perspective-200"></div>
+                        <div className="production0_video_wrapper_target w-full h-[70vh] perspective-200"></div>
                       </div>
                     </div>
                   </div>
                 )}
                 {/* Project Sections */}
                 {key === "project0" && (
-                  <div className="project-value h-[40dvh] md:mt-[10dvh] w-full text-center items-center py-8 gap-32">
+                  <div className="project-value h-[40vh] md:mt-[10vh] w-full text-center items-center py-8 gap-32">
                     <div
                       id="pro-title"
                       className="flex flex-col items-center w-full gap-16 text-center "
@@ -672,13 +684,13 @@ const HomePageContent: React.FC = () => {
                         {value.subtitle}
                       </span>
                     </div>
-                    {/* <div className="h-[12dvh] w-full snap-start "></div> */}
+                    {/* <div className="h-[12vh] w-full snap-start "></div> */}
                   </div>
                 )}
                 {key === "project1" && (
-                  <div className="project-section h-[80dvh] md:mt-[10dvh] w-full text-center items-center py-8 gap-32 ">
-                    {/* <div className="h-[12dvh] w-full snap-start "></div> */}
-                    <div className="h-[80dvh] flex flex-col md:grid pb-[10dvh] justify-between md:justify-center gap-10 md:gap-12 w-10/12 md:w-full mx-auto md:mx-0">
+                  <div className="project-section h-[80vh] md:mt-[10vh] w-full text-center items-center py-8 gap-32 ">
+                    {/* <div className="h-[12vh] w-full snap-start "></div> */}
+                    <div className="h-[80vh] flex flex-col md:grid pb-[10vh] justify-between md:justify-center gap-10 md:gap-12 w-10/12 md:w-full mx-auto md:mx-0">
                       <div
                         id="pro-row1"
                         className="grid justify-around w-full grid-cols-1 gap-10 flex-nowrap sm:grid-cols-3 md:w-full"
@@ -688,11 +700,11 @@ const HomePageContent: React.FC = () => {
                             return(
                             <div
                               key={idx}
-                              className="flex flex-col items-center h-full md:h-[20dvh] w-auto gap-4"
+                              className="flex flex-col items-center h-full md:h-[20vh] w-auto gap-4"
                             >
                               <TransitionLink
                                 href={`/projects/${item.slug}`} 
-                                className="flex flex-col items-center h-auto md:h-[20dvh] w-auto gap-4"
+                                className="flex flex-col items-center h-auto md:h-[20vh] w-auto gap-4"
                               >
                                 <Image
                                   width={1000}
@@ -724,11 +736,11 @@ const HomePageContent: React.FC = () => {
                               return(
                               <div
                                 key={idx}
-                                className="flex flex-col items-center h-full md:h-[20dvh] md:w-auto gap-4"
+                                className="flex flex-col items-center h-full md:h-[20vh] md:w-auto gap-4"
                               >
                                 <TransitionLink
                                   href={`/projects/${item.slug}`}
-                                  className="flex flex-col items-center h-auto md:h-[20dvh] w-auto gap-4"
+                                  className="flex flex-col items-center h-auto md:h-[20vh] w-auto gap-4"
                                 >
                                   <Image
                                     width={1000}
@@ -764,7 +776,7 @@ const HomePageContent: React.FC = () => {
                 )}
                 {/* Residency Sections */}
                 {key === "residency0" && (
-                  <div className="residency-section px-4 md:px-10 text-center w-full flex flex-col justify-center h-[80dvh] mt-[12dvh] relative py-8">
+                  <div className="residency-section px-4 md:px-10 text-center w-full flex flex-col justify-center h-[80vh] mt-[12vh] relative py-8">
                     <div className="text-[1.5em] md:text-destaque-xl">
                       <AnimatedText
                         trigger="#residency0"
@@ -871,11 +883,12 @@ const HomePageContent: React.FC = () => {
             );
           })}
           {
-            isMobileClient && (
-          <div id="mapa" className="pt-10 flex md:hidden opacity-0  relative z-10 h-[80vh] w-screen bg-white border-t-2 border-black" >
+            // isMobileClient && (
+          <div id="mapa" className="pt-10 flex opacity-0   relative z-10 h-[80vh] md:h-[60vh] w-screen bg-white border-t-2 border-black" >
             <Sitemap asSection/>
           </div>
-            ) 
+            // ) 
+            
           }
       </div>
     </div>

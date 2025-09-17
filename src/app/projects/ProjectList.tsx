@@ -24,6 +24,7 @@ import { useProjectos } from "@/utils/useProjectos";
 import { useProjectosData } from "@/utils/useProjectosData";
 import { FixedSizeList } from "react-window";
 // import { isMobile } from "react-device-detect";
+
 type FilterState = {
   selectedFilter: string | null;
   selectedArtist: number | null;
@@ -64,6 +65,8 @@ const ProjectList: React.FC = () => {
     },
     []
   );
+
+  
   useEffect(() => {
     // Prioritize window width over user agent for more reliable detection
     const isMobileDevice = () => {

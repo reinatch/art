@@ -77,42 +77,43 @@ export default function Navbar({ isOpen, setIsOpen }: NavbarProps) {
   ) => {
     e.preventDefault();
 
-
     if(isHomePage){  
-      
-      // Use ScrollSmoother to scroll to #mapa on home page
       const mapaElement = document.querySelector('#mapa');
       if (mapaElement) {
-        // Use GSAP ScrollToPlugin with ScrollSmoother
+        // Kill any existing scrollTo animations first
+        gsap.killTweensOf(window);
+        
+        // Get the exact position of the mapa element
+        const rect = mapaElement.getBoundingClientRect();
+        const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetPosition = rect.top + currentScrollTop;
+        
+        // Use GSAP ScrollToPlugin with more robust settings
         gsap.to(window, {
           scrollTo: {
-            y: mapaElement,
+            y: targetPosition,
             autoKill: false,
+            offsetY: 0
           },
-          duration: 1,
-          ease: "power2.inOut"
+          duration: 1.5,
+          ease: "power2.inOut",
+          overwrite: "auto",
+          onComplete: () => {
+            // Ensure we're at the exact position
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'auto'
+            });
+          }
         });
       }
-                    //  const smoother = ScrollSmoother.get();
-                    //   if (smoother) {
-                    //     smoother.scrollTo(mapaElement, true);
-                    //   } else {
-                    //     // Fallback to direct element scroll
-                    //     mapaElement?.scrollIntoView({ 
-                    //       behavior: 'smooth',
-                    //       block: 'start'
-                    //     });
-                    //   }
-
-    }else {
-
+    } else {
       if (isContactOpen) {
         closeContact();
       } else {
         openContact();
       }
     }
-
   };
   //mobile
   const {

@@ -403,8 +403,9 @@ header {
 }
 .jornais {
   .jornais--cards {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(6dvw, 80dvw));
+    display: flex;
+    
+    justify-content: center;
     position: relative;
     height: 100%;
     width: 100%;
@@ -415,6 +416,7 @@ header {
     // height: 80dvh;
     @media (max-width: 768px) {
       display: grid;
+      grid-template-columns: repeat(2, minmax(6dvw, 80dvw));
       // transform: translateY(-50%);
       // top: 50%;
     }
@@ -429,6 +431,9 @@ header {
     border-radius: 10px;
     background-color: white;
     overflow: hidden;
+    max-height: 60vh;
+    // Maintain aspect ratio of 704x855 (≈ 0.824)
+    aspect-ratio: 704 / 855;
     // transition: transform 0.3s ease;
     transform-style: preserve-3d;
     will-change: transform;
@@ -437,6 +442,7 @@ header {
       width: 80vw;
       max-height: 60dvh;
       height: auto;
+      aspect-ratio: 704 / 855;
       // transform: translateY(-50%);
       // top: 50%;
     }
@@ -449,8 +455,9 @@ header {
   }
   .card img {
     // max-height: 61dvh;
-    height: auto;
+    height: 100%;
     width: 100%;
+    object-fit: cover;
   }
   @media (max-width: 768px) {
     .card img {

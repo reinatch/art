@@ -146,7 +146,47 @@ const config: Config = {
           '-webkit-font-smoothing': 'antialiased',
           '-moz-osx-font-smoothing': 'grayscale',
           'text-rendering': 'optimizeLegibility',
-        }
+        },
+        // Header specific utilities
+        '.header-height': {
+          height: '10vh',
+        },
+        '.header-tabs-height': {
+          height: '22vh',
+        },
+        '.header-tabs-height-md': {
+          '@media (min-width: 768px)': {
+            height: '12vh',
+          },
+        },
+        '.header-padding': {
+          padding: '0 2rem',
+        },
+        '.header-padding-lg': {
+          '@media (min-width: 1024px)': {
+            padding: '0 2.5rem',
+          },
+        },
+        '.header-padding-md': {
+          '@media (min-width: 768px)': {
+            padding: '2.5rem 2rem',
+          },
+        },
+        '.logo-desktop-height': {
+          height: '5vh',
+        },
+        '.logo-mobile-height': {
+          height: '6vh',
+        },
+        '.logo-svg-desktop-height': {
+          height: '4vh',
+        },
+        '.logo-svg-mobile-height': {
+          height: '4.5vh',
+        },
+        '.nav-button-height': {
+          height: '4vh',
+        },
       });
     })
   ],

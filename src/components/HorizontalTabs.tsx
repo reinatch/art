@@ -270,8 +270,8 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
        case "splash":
          if (tabContent.video?.url) {
            return (
-             <div className="flex flex-col items-center gap-8 rounded-sm md:rounded-xl w-full relative mt-[20dvh] md:mt-0">
-               <div className="relative w-full h-full md:h-[76dvh] py-4 md:py-0 text-4xl flex flex-col gap-10">
+             <div className="flex flex-col items-center gap-8 rounded-sm md:rounded-xl w-full relative mt-[20vh] md:mt-0">
+               <div className="relative w-full h-full md:h-[76vh] py-4 md:py-0 text-4xl flex flex-col gap-10">
                  {/* Render video if it exists */}
                  {tabContent.video?.url && (
                    <video
@@ -311,7 +311,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
        case "about_aw":
          return (
            <div
-             className="relative w-full  gap-10  flex flex-col md:flex-row h-screen  md:h-[80dvh] py-4 "
+             className="relative w-full  gap-10  flex flex-col md:flex-row h-screen  md:h-[80vh] py-4 "
              style={{ columnFill: "auto" }}
            >
              <div className="w-full md:w-1/2">
@@ -346,7 +346,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
          );
        case "mission":
           return (
-           <div className="relative w-full  gap-10 flex flex-col md:flex-row md:h-[80dvh] py-4 mt-[10dvh] md:mt-0">
+           <div className="relative w-full  gap-10 flex flex-col md:flex-row md:h-[80vh] py-4 mt-[10vh] md:mt-0">
              {tabContent.description && (
                <div
                  className="w-full gap-10 text-destaque md:w-1/2"
@@ -365,12 +365,12 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
            return (
              <div
                id="svgimage"
-               className="svgimage relative w-full text-4xl flex flex-col gap-10 h-screen md:h-[80dvh]  py-8 pt-[10dvh] "
+               className="svgimage relative w-full text-4xl flex flex-col gap-10 h-screen md:h-[80vh]    "
              >
                <div className="flex flex-col w-full gap-10 md:w-[60vw] md:mx-auto items-center">
                  {tabContent.heading && (
                    <div
-                     className="w-2/3 gap-10 m-auto text-center text-destaque  md:w-2/3 md:m-0"
+                     className="w-2/3 gap-10 m-auto text-center text-destaque  md:w-full md:m-0"
                      dangerouslySetInnerHTML={{ __html: tabContent.heading }}
                    />
                  )}
@@ -390,7 +390,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
         3xl:text-teams-1600
         4xl:text-teams-1920
         5xl:text-teams-2000
-           leading-snug gap-10 h-full  md:h-[75dvh] py-4 mt-[10dvh] md:mt-0 columns-1 md:columns-3  justify-start" style={{ columnFill: "auto" }}>
+           leading-snug gap-10 h-full  md:h-[75vh] py-4 mt-[10vh] md:mt-0 columns-1 md:columns-3  justify-start" style={{ columnFill: "auto" }}>
              {/* Render grafico as an image if present */}
              {tabContent.grafico && tabContent.grafico.url && (
                <div className="w-1/2 pb-8">
@@ -543,7 +543,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
          );
          case "support_artists":
          return (
-           <div className="relative w-full  gap-10 flex flex-col md:flex-row h-screen  md:h-[80dvh] py-4">
+           <div className="relative w-full  gap-10 flex flex-col md:flex-row h-screen  md:h-[80vh] py-4">
              <div className="flex flex-col justify-start w-full gap-10 md:w-1/2">
                {tabContent.heading && (
                  <div
@@ -577,14 +577,14 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
        case "jornais":
          const jornaisArray: JornaisType[] | undefined = tabContent.jornais;
          return (
-           <div className="relative w-full text-4xl md:px-60 flex flex-col gap-10 mt-[20dvh] md:mt-0">
+           <div className="relative w-full text-4xl md:px-60 flex flex-col gap-10 mt-[20vh] md:mt-0">
              <Jornais jornaisData={jornaisArray} cardWidth={500} />
            </div>
          );
        case "art_production":
          return (
            <div
-             className="relative w-full  gap-10 h-[70dvh] md:h-[76dvh] py-4 columns-1 md:columns-2"
+             className="relative w-full  gap-10 h-[70vh] md:h-[76vh] py-4 columns-1 md:columns-2"
              style={{ columnFill: "auto" }}
            >
              <div className="flex flex-col justify-between w-full gap-10 ">
@@ -621,7 +621,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
          );
        case "no_entulho":
          return (
-           <div className="relative w-full  gap-10 flex flex-col md:flex-row  h-[80dvh] py-4 md:py-0 mt-[20dvh] md:mt-0">
+           <div className="relative w-full  gap-10 flex flex-col md:flex-row  h-[80vh] py-4 md:py-0 mt-[20vh] md:mt-0">
              <RandomVideoPosition
                src="/videos/luva/1/a.webm"
                poster="/images/residencias/5.png"
@@ -694,10 +694,10 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                  ref={(el: HTMLDivElement | null) => {
                    sectionRefs.current[index] = el;
                  }}
-                 className={`   relative md:pt-[12dvh]
+                 className={`   relative md:pt-[12vh]
                    ${key === "no_entulho" ? "md:overflow-x-hidden h-[125vh] md:h-screen py-[10vh]  md:px-32 " : ""} 
                    ${key === "mission" ? "h-full md:h-screen  md:px-32 " : ""}
-                   ${key === "teams" ? "h-full md:h-screen md:pt-[20dvh]  md:px-32 " : ""}
+                   ${key === "teams" ? "h-full md:h-screen md:pt-[0vh]  md:px-32 " : ""}
                    ${key === "about_aw" ? "h-full md:px-32 " : ""}
                    ${key === "support_artists" ? "md:px-32 " : ""}
                    ${
@@ -712,7 +712,7 @@ const HorizontalTabs: React.FC<HorizontalTabsProps> = ({ tabData }) => {
                    }
                    ${
                      key === "splash"
-                       ? "px-4 h-[30dvh] md:px-40 md:h-screen  mt-[22dvh] md:mt-0 mb-8 md:pb-0"
+                       ? "px-4 h-[30vh] md:px-40 md:h-screen  mt-[12rem] md:mt-0 mb-8 md:pb-0"
                        : "px-4 "
                    }
                    ${
