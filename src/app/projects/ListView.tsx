@@ -87,16 +87,38 @@ const ListView: React.FC<ListViewProps> = ({
             data-id={projecto.id}
             className={`hover__item-image_inner fixed top-0 h-auto w-[20vw] object-cover hidden z-10`}
           >
-            <Image
-              className="hover__item-image absolute z-50 rounded-md"
-              src={projecto.featured_image.url}
-              alt={projecto.title.rendered}
-              width={projecto.featured_image.width / 4}
-              height={projecto.featured_image.height / 4}
-              placeholder="blur"
-              blurDataURL={projecto.featured_image.blurDataURL}
-              loading="lazy"
-            />
+            {projecto.featured_image && projecto.featured_image.url ? (
+              <Image
+                className="hover__item-image absolute z-50 rounded-md"
+                src={projecto.featured_image.url}
+                alt={projecto.title.rendered || 'Project image'}
+                width={projecto.featured_image.width ? projecto.featured_image.width / 4 : 300}
+                height={projecto.featured_image.height ? projecto.featured_image.height / 4 : 200}
+                placeholder={projecto.featured_image.blurDataURL ? "blur" : "empty"}
+                blurDataURL={projecto.featured_image.blurDataURL || undefined}
+                loading="lazy"
+                onError={(e) => {
+                  console.error('Failed to load hover image:', {
+                    projectId: projecto.id,
+                    slug: projecto.slug,
+                    imageUrl: projecto.featured_image.url,
+                    title: projecto.title.rendered,
+                    hasBlurData: !!projecto.featured_image.blurDataURL,
+                    width: projecto.featured_image.width,
+                    height: projecto.featured_image.height
+                  });
+                  // Hide the hover element when image fails to load
+                  const hoverElement = e.currentTarget.closest('.hover-element') as HTMLElement;
+                  if (hoverElement) {
+                    hoverElement.style.display = 'none';
+                  }
+                }}
+              />
+            ) : (
+              <div className="w-full h-32 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm">
+                No Hover Image
+              </div>
+            )}
           </div>
         </div>
       </div>

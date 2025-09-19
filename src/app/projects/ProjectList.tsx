@@ -253,7 +253,7 @@ const ProjectList: React.FC = () => {
   }, []);
   return (
     <div className="flex flex-col items-center w-screen text-sm md:text-xl justify-items-center h-screen min-h-screen pb-32 px-4 md:px-10 gap-4">
-      <div className="project-inner flex w-full flex-col h-[80dvh] mt-[12dvh] gap-4 md:gap-8 ">
+      <div className="project-inner flex w-full flex-col h-[80dvh] mt-[8rem] gap-4 md:gap-8 ">
         <div className="filtering flex justify-between w-full uppercase">
           {/* Filter Options - updated to use filterState */}
           <FilterOptions

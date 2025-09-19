@@ -21,6 +21,7 @@ export default function Logo({ isOpen = false }: LogoProps) {
 
   const isHomePage = pathname === "/";
   const isProjectPage = pathname.startsWith("/projects/");
+  const isProjectDetailPage = pathname.startsWith("/projects/") && pathname.split("/").length > 2;
 
   useEffect(() => {
     setIsMobile(detectMobile);
@@ -40,6 +41,7 @@ export default function Logo({ isOpen = false }: LogoProps) {
           isHovered={isHovered}
           setIsHovered={setIsHovered}
           isHomePage={isHomePage}
+          isProjectDetailPage={isProjectDetailPage}
           isOpen={isOpen}
           variant="desktop"
         />
@@ -56,6 +58,7 @@ export default function Logo({ isOpen = false }: LogoProps) {
           isHovered={isHovered}
           setIsHovered={setIsHovered}
           isHomePage={isHomePage}
+          isProjectDetailPage={isProjectDetailPage}
           isOpen={isOpen}
           variant="mobile"
         />
@@ -68,13 +71,14 @@ interface LogoContainerProps {
   isHovered: boolean;
   setIsHovered: (hovered: boolean) => void;
   isHomePage: boolean;
+  isProjectDetailPage: boolean;
   isOpen: boolean;
   variant: "desktop" | "mobile";
 }
 
-function LogoContainer({ isHovered, setIsHovered, isHomePage, isOpen, variant }: LogoContainerProps) {
+function LogoContainer({ isHovered, setIsHovered, isHomePage, isProjectDetailPage, isOpen, variant }: LogoContainerProps) {
   const containerClasses = variant === "desktop" 
-    ? "relative flex md:items-start items-center justify-center md:justify-start m-auto md:m-0 w-[80vw] md:w-[40vw] h-full"
+    ? "relative flex md:items-center items-center  justify-center md:justify-start m-auto md:m-0 w-[80vw] md:w-[40vw] h-full"
     : `relative flex md:items-end items-end justify-center md:justify-start m-auto md:m-0 w-[80vw] md:w-[20vw]  ${isHomePage ? "h-12" : "h-10"}`;
 
   return (
@@ -84,7 +88,7 @@ function LogoContainer({ isHovered, setIsHovered, isHomePage, isOpen, variant }:
       onMouseLeave={() => setIsHovered(false)}
     >
       {variant === "desktop" ? (
-        <DesktopLogos isHovered={isHovered} isHomePage={isHomePage} isOpen={isOpen} />
+        <DesktopLogos isHovered={isHovered} isHomePage={isHomePage} isProjectDetailPage={isProjectDetailPage} isOpen={isOpen} />
       ) : (
         <MobileLogos isHomePage={isHomePage} />
       )}
@@ -95,12 +99,19 @@ function LogoContainer({ isHovered, setIsHovered, isHomePage, isOpen, variant }:
 interface LogoImagesProps {
   isHovered?: boolean;
   isHomePage: boolean;
+  isProjectDetailPage?: boolean;
   isOpen?: boolean;
 }
 
-function DesktopLogos({ isHovered, isHomePage, isOpen }: LogoImagesProps) {
+function DesktopLogos({ isHovered, isHomePage, isProjectDetailPage, isOpen }: LogoImagesProps) {
   // Same logic as original Navbar: show open logo when hovered, navigation is open, or not on home page
   const showOpen = isHovered || isOpen || !isHomePage;
+  
+  // On project detail pages: use logo.svg, on homepage: use la.svg, on other pages: use logo.svg
+  const openLogoSrc = isProjectDetailPage ? "/logo.svg" : (isHomePage ? "/la.svg" : "/logo.svg");
+  
+  // Add vertical centering for logo.svg to match the height baseline of la.svg
+  const isUsingLogoSvg = openLogoSrc === "/logo.svg";
   
   return (
     <>
@@ -110,19 +121,19 @@ function DesktopLogos({ isHovered, isHomePage, isOpen }: LogoImagesProps) {
         width={300}
         height={50}
         loading="lazy"
-        className={`relative w-auto h-[3.25rem] left-0 transition-opacity duration-100 ease-in-out ${
+        className={`relative w-auto h-[5dvh] left-0 transition-opacity duration-100 ease-out ${
           showOpen ? "opacity-0" : "opacity-100"
         }`}
       />
       <Image
-        src="/logo.svg"
+        src={openLogoSrc}
         alt="Logo Open"
         width={300}
         height={50}
         loading="lazy"
-        className={`absolute hidden md:block w-auto h-full left-0 transition-opacity duration-100 ease-in-out ${
+        className={`absolute hidden md:block w-auto  left-0 transition-opacity duration-100 ease-out ${
           showOpen ? "opacity-100" : "opacity-0"
-        }`}
+        } ${isUsingLogoSvg ? "object-center  h-[4dvh]" : " h-[5dvh]"}`}
       />
     </>
   );

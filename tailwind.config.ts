@@ -187,6 +187,21 @@ const config: Config = {
         '.nav-button-height': {
           height: '4vh',
         },
+        // Mobile viewport utilities for cross-browser compatibility
+        '.mobile-viewport-height': {
+          height: '100vh',
+          '@supports (height: 100dvh)': {
+            height: '100dvh',
+          },
+          '@supports (-webkit-touch-callout: none)': {
+            height: '-webkit-fill-available',
+          },
+        },
+        '.mobile-safe-area': {
+          'padding-bottom': 'env(safe-area-inset-bottom, 0px)',
+          'overscroll-behavior': 'contain',
+          '-webkit-overflow-scrolling': 'touch',
+        },
       });
     })
   ],

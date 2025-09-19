@@ -152,6 +152,43 @@ input, select, textarea {
     font-size: 16px !important; /* Force 16px to prevent zoom */
     transform: scale(1) !important; /* Prevent scaling */
   }
+  
+  // Mobile browser compatibility fixes
+  #sitemap {
+    // Ensure proper height calculation on mobile
+    min-height: 100vh;
+    min-height: 100dvh;
+    
+    // Prevent overscroll and rubber band effect
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    
+    // Ensure proper positioning
+    bottom: 0;
+    left: 0;
+    right: 0;
+    
+    // Add safe area support for notched devices
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    
+    // iOS Safari specific fixes
+    @supports (-webkit-touch-callout: none) {
+      height: -webkit-fill-available;
+      min-height: -webkit-fill-available;
+    }
+    
+    // Chrome mobile specific fixes
+    @supports (height: 100dvh) {
+      height: 100dvh;
+      min-height: 100dvh;
+    }
+    
+    // Prevent content jumping on mobile keyboards
+    @media (max-height: 500px) {
+      max-height: 100vh;
+      overflow-y: auto;
+    }
+  }
 }
 // .animated-text .line {
 //   font-variation-settings: "wght" var(--wght);

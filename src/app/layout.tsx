@@ -19,6 +19,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { getLocale } from "next-intl/server";
 import { NavigationProvider } from "@/lib/useNavigation";
+import { ViewportProvider } from "@/lib/ViewportContext";
 
 // Import browser compatibility
 import "../utils/browserCompatibility";
@@ -71,29 +72,31 @@ export default async function RootLayout({
         className={`${suisse_mono.variable} ${suisse_intl.variable} ${suisse_works.variable} !cursor-none overflow-x-hidden font-intl`}
       >
         <NextIntlClientProvider messages={messages}>
-                <TemplateTransition>
-          <DataFetchProvider>
-            <ReactQueryProvider>
-              <CursorContextProvider>
-                <CustomCursor />
-                  <ToggleSearchProvider>
-                    <ToggleContactProvider>
-                      <TabsProvider>
-                        <ThumbnailsProvider>
-                          <NavigationProvider>
-                            <Header />
-                            {children}
-                            <Footer />
-                            <Sitemap />
-                          </NavigationProvider>
-                        </ThumbnailsProvider>
-                      </TabsProvider>
-                    </ToggleContactProvider>
-                  </ToggleSearchProvider>
-              </CursorContextProvider>
-            </ReactQueryProvider>
-          </DataFetchProvider>
-                </TemplateTransition>
+          <ViewportProvider>
+            <TemplateTransition>
+              <DataFetchProvider>
+                <ReactQueryProvider>
+                  <CursorContextProvider>
+                    <CustomCursor />
+                      <ToggleSearchProvider>
+                        <ToggleContactProvider>
+                          <TabsProvider>
+                            <ThumbnailsProvider>
+                              <NavigationProvider>
+                                <Header />
+                                {children}
+                                <Footer />
+                                <Sitemap />
+                              </NavigationProvider>
+                            </ThumbnailsProvider>
+                          </TabsProvider>
+                        </ToggleContactProvider>
+                      </ToggleSearchProvider>
+                  </CursorContextProvider>
+                </ReactQueryProvider>
+              </DataFetchProvider>
+            </TemplateTransition>
+          </ViewportProvider>
         </NextIntlClientProvider>
       </body>
     </html>

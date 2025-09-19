@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useToggleContact } from "@/lib/useToggleContact";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 
 interface NavigationProps {
   isOpen: boolean;
@@ -24,6 +25,11 @@ export default function Navigation({ isOpen, setIsOpen, onMouseEnter, onMouseLea
   
   const isHomePage = pathname === "/";
 
+  // Register GSAP plugins
+  React.useEffect(() => {
+    gsap.registerPlugin(ScrollToPlugin);
+  }, []);
+
   const navLinks = [
     { href: "/projects", label: t("projects"), isActive: pathname === "/projects" },
     { href: "/production", label: t("production"), isActive: pathname === "/production" },
@@ -39,17 +45,60 @@ export default function Navigation({ isOpen, setIsOpen, onMouseEnter, onMouseLea
     e.preventDefault();
 
     if (isHomePage) {
-      // Scroll to #mapa on home page
-      const mapaElement = document.querySelector('#mapa');
+      // Robust scroll to #mapa using GSAP with position verification
+      const mapaElement = document.querySelector('#mapa') as HTMLElement;
+      console.log('Mapa element found:', mapaElement);
+      
       if (mapaElement) {
-        gsap.to(window, {
-          scrollTo: {
-            y: mapaElement,
-            autoKill: false,
-          },
-          duration: 1,
-          ease: "power2.inOut"
+        console.log('Scrolling to mapa element with GSAP');
+        
+        // First make the element visible and wait for layout
+        gsap.set(mapaElement, { autoAlpha: 1 });
+        
+        // Use requestAnimationFrame to ensure layout is complete
+        requestAnimationFrame(() => {
+          // Get the actual position after visibility change
+          const rect = mapaElement.getBoundingClientRect();
+          const targetY = window.pageYOffset + rect.top;
+          
+          console.log('Target scroll position:', targetY);
+          
+          // Use GSAP to scroll to calculated position
+          gsap.to(window, {
+            duration: 1.5,
+            scrollTo: {
+              y: targetY,
+              autoKill: false
+            },
+            ease: "power2.inOut",
+            onComplete: () => {
+              console.log('First scroll complete, verifying position...');
+              
+              // Verify we reached the target
+              setTimeout(() => {
+                const currentScroll = window.pageYOffset;
+                const difference = Math.abs(currentScroll - targetY);
+                
+                console.log('Current scroll:', currentScroll, 'Target:', targetY, 'Difference:', difference);
+                
+                // If we're not close enough, do one more precise scroll
+                if (difference > 50) {
+                  console.log('Doing precision scroll...');
+                  gsap.to(window, {
+                    duration: 0.5,
+                    scrollTo: {
+                      y: targetY,
+                      autoKill: false
+                    },
+                    ease: "power1.out"
+                  });
+                }
+              }, 100);
+            }
+          });
         });
+      } else {
+        console.error('Mapa element not found!');
       }
     } else {
       // Toggle contact overlay

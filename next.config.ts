@@ -7,14 +7,14 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig: NextConfig = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 })({
-  devIndicators: false,
+  // devIndicators: false,
   sassOptions: {
     implementation: "sass",
     silenceDeprecations: ["legacy-js-api"],
   },
 
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   eslint: {
     ignoreDuringBuilds: true,
@@ -22,13 +22,17 @@ const nextConfig: NextConfig = withBundleAnalyzer({
   images: {
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
-    formats: ["image/avif", "image/webp"], // WebP & AVIF for better performance
+    formats: ["image/webp"], // Removed AVIF for better iOS compatibility
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
       {
-        // protocol: "http",
-        // hostname: "localhost",
         protocol: "https",
         hostname: "backend.artworks.pt",
+      },
+      {
+        protocol: "https",
+        hostname: "*.artworks.pt", // Allow subdomains
       },
     ],
   },

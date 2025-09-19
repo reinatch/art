@@ -67,17 +67,41 @@ const GalleryView: React.FC<GalleryViewProps> = ({
                       href={`/projects/${projecto.slug}`}
                       className="flex flex-col gap-4"
                     >
-                      {projecto.featured_image && (
+                      {projecto.featured_image && projecto.featured_image.url ? (
                         <Image
                           src={projecto.featured_image.url}
-                          alt={projecto.title.rendered}
-                          width={projecto.featured_image.width / 4}
-                          height={projecto.featured_image.height / 4}
-                          placeholder="blur"
-                          blurDataURL={projecto.featured_image.blurDataURL}
+                          alt={projecto.title.rendered || 'Project image'}
+                          width={projecto.featured_image.width ? projecto.featured_image.width / 4 : 300}
+                          height={projecto.featured_image.height ? projecto.featured_image.height / 4 : 200}
+                          placeholder={projecto.featured_image.blurDataURL ? "blur" : "empty"}
+                          blurDataURL={projecto.featured_image.blurDataURL || undefined}
                           className="w-full h-auto rounded-md"
                           loading="lazy"
+                          unoptimized={/iPad|iPhone|iPod/.test(typeof navigator !== 'undefined' ? navigator.userAgent : '')}
+                          onError={(e) => {
+                            const isiOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
+                            console.error('Failed to load project image:', {
+                              projectId: projecto.id,
+                              slug: projecto.slug,
+                              imageUrl: projecto.featured_image.url,
+                              title: projecto.title.rendered,
+                              hasBlurData: !!projecto.featured_image.blurDataURL,
+                              width: projecto.featured_image.width,
+                              height: projecto.featured_image.height,
+                              isIOS: isiOS,
+                              windowLocation: typeof window !== 'undefined' ? window.location.href : 'SSR'
+                            });
+                            // Replace the image with a fallback instead of hiding it
+                            const fallbackDiv = document.createElement('div');
+                            fallbackDiv.className = 'w-full h-32 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm';
+                            fallbackDiv.textContent = isiOS ? 'iOS Image Error' : 'Image Failed to Load';
+                            e.currentTarget.parentElement?.replaceChild(fallbackDiv, e.currentTarget);
+                          }}
                         />
+                      ) : (
+                        <div className="w-full h-32 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm">
+                          No Image Available
+                        </div>
                       )}
                       <div className="flex flex-col">
                         <div className="uppercase text-rodape font-intl truncate">
@@ -208,17 +232,37 @@ const GalleryView: React.FC<GalleryViewProps> = ({
                           href={`/projects/${projecto.slug}`}
                           className="flex flex-col gap-4"
                         >
-                          {projecto.featured_image && (
+                          {projecto.featured_image && projecto.featured_image.url ? (
                             <Image
                               src={projecto.featured_image.url}
-                              alt={projecto.title.rendered}
-                              width={projecto.featured_image.width / 4}
-                              height={projecto.featured_image.height / 4}
-                              placeholder="blur"
-                              blurDataURL={projecto.featured_image.blurDataURL}
+                              alt={projecto.title.rendered || 'Project image'}
+                              width={projecto.featured_image.width ? projecto.featured_image.width / 4 : 300}
+                              height={projecto.featured_image.height ? projecto.featured_image.height / 4 : 200}
+                              placeholder={projecto.featured_image.blurDataURL ? "blur" : "empty"}
+                              blurDataURL={projecto.featured_image.blurDataURL || undefined}
                               className="w-full h-auto rounded-md"
                               loading="lazy"
+                              onError={(e) => {
+                                console.error('Failed to load project image:', {
+                                  projectId: projecto.id,
+                                  slug: projecto.slug,
+                                  imageUrl: projecto.featured_image.url,
+                                  title: projecto.title.rendered,
+                                  hasBlurData: !!projecto.featured_image.blurDataURL,
+                                  width: projecto.featured_image.width,
+                                  height: projecto.featured_image.height
+                                });
+                                // Replace the image with a fallback instead of hiding it
+                                const fallbackDiv = document.createElement('div');
+                                fallbackDiv.className = 'w-full h-32 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm';
+                                fallbackDiv.textContent = 'Image Failed to Load';
+                                e.currentTarget.parentElement?.replaceChild(fallbackDiv, e.currentTarget);
+                              }}
                             />
+                          ) : (
+                            <div className="w-full h-32 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm">
+                              No Image Available
+                            </div>
                           )}
                           <div className="flex flex-col">
                             <div className="uppercase text-rodape font-intl truncate">

@@ -66,7 +66,13 @@ export default function TabsNavigation() {
       {tabs.map((tab) => (
         <TabItem
           key={tab.slug}
-          tab={tab}
+          tab={tab as {
+            slug: string;
+            label: string;
+            content?: {
+              image?: { url: string };
+            };
+          }}
           selectedTab={selectedTab}
           onTabClick={handleTabsClick}
         />
